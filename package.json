@@ -1,0 +1,19 @@
+{
+  "name": "pass-down",
+  "version": "0.0.0",
+  "description": "TBD",
+  "main": "pass-down.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahrus/pass-down.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bahrus/pass-down/issues"
+  },
+  "homepage": "https://github.com/bahrus/pass-down#readme"
+}
