@@ -106,6 +106,101 @@ export class PassDown extends observeCssSelector(HTMLElement) {
             target: target,
             rules: rules
         });
+        this.attchEvListnrs(target, rules);
+    }
+    attchEvListnrs(target, rules) {
+        for (const key in rules) {
+            const rule = rules[key];
+            target.addEventListener(key, (e) => {
+                this._hndEv(key, e, rule, target);
+            });
+            if (!rule.skipInit) {
+                const fakeEvent = {
+                    isFake: true,
+                    detail: target.value,
+                    target: target
+                };
+                this._hndEv(key, fakeEvent, rule, target);
+            }
+        }
+        target.removeAttribute('disabled');
+    }
+    _hndEv(key, e, rule, target) {
+        //if(this.hasAttribute('debug')) debugger;
+        //if(!e) return;
+        //if(e.stopPropagation && !this._noblock) e.stopPropagation();
+        if (rule.if && !e.target.matches(rule.if))
+            return;
+        rule.lastEvent = e;
+        this.passDown(target.nextElementSibling, e, rule, 0);
+    }
+    passDown(start, e, rule, count) {
+        let nextSib = start;
+        while (nextSib) {
+            if (nextSib.tagName !== 'SCRIPT') {
+                rule.map.forEach(map => {
+                    if (map.isNext || (nextSib.matches && nextSib.matches(map.cssSelector))) {
+                        count++;
+                        this.setVal(e, nextSib, map);
+                    }
+                    const fec = nextSib.firstElementChild;
+                    // if (this.id && fec && nextSib!.hasAttribute(p_d_if)) {
+                    //     //if(!nextSibling[PDIf]) nextSibling[PDIf] = JSON.parse(nextSibling.getAttribute(p_d_if));
+                    //     if (this.matches(nextSib!.getAttribute(p_d_if) as string)) {
+                    //         this.passDown(fec, e, count);
+                    //         let addedSMOTracker = (<any>nextSib)[_addedSMO];
+                    //         if (!addedSMOTracker) addedSMOTracker = (<any>nextSib)[_addedSMO] = {};
+                    //         if (!addedSMOTracker[this.id]) {
+                    //             if (nextSib !== null) this.addMutObs(nextSib, true);
+                    //             (<any>nextSib)[_addedSMO][this.id] = true;
+                    //         }
+                    //     }
+                    // }
+                });
+            }
+            //if (rule. && count >= this._m) break;
+            nextSib = nextSib.nextElementSibling;
+        }
+    }
+    setVal(e, target, map) {
+        map.setProps.forEach(setProp => {
+            const propFromEvent = this.getPropFromPath(e, setProp.propSource);
+            this.commit(target, setProp.propTarget, propFromEvent);
+        });
+        //const gpfp = this.getPropFromPath.bind(this);
+        //const propFromEvent = map.propSource ? gpfp(e, map.propSource) : gpfp(e, 'detail.value') || gpfp(e, 'target.value');
+    }
+    commit(target, key, val) {
+        target[key] = val;
+    }
+    getPropFromPath(val, path) {
+        if (!path || path === '.')
+            return val;
+        return this.getProp(val, path.split('.'));
+    }
+    getProp(val, pathTokens) {
+        let context = val;
+        let firstToken = true;
+        const cp = 'composedPath';
+        const cp_ = cp + '_';
+        pathTokens.forEach(token => {
+            if (context) {
+                if (firstToken && context[cp]) {
+                    firstToken = false;
+                    const cpath = token.split(cp_);
+                    if (cpath.length === 1) {
+                        context = context[cpath[0]];
+                    }
+                    else {
+                        context = context[cp]()[parseInt(cpath[1])];
+                    }
+                }
+                else {
+                    context = context[token];
+                }
+            }
+        });
+        return context;
     }
 }
 define(PassDown);

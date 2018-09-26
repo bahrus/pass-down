@@ -17,7 +17,8 @@ export interface ICssPropMap {
 interface IEventRule{
     skipInit?: boolean
     map?: ICssPropMap[];
-    
+    if?:string;
+    lastEvent?: Event;
 }
 const pass_to = 'pass-to';
 const pass_to_next = 'pass-to-next';
@@ -124,7 +125,109 @@ export class PassDown extends observeCssSelector(HTMLElement){
             target: target,
             rules: rules
         })
+        this.attchEvListnrs(target, rules);
     }
+    attchEvListnrs(target: HTMLElement, rules: {[key: string] : IEventRule}){
+        for(const key in rules){
+            const rule = rules[key];
+            target.addEventListener(key, (e: Event) =>{
+                this._hndEv(key, e, rule, target);
+            });
+            if(!rule.skipInit){
+                const fakeEvent = {
+                    isFake: true,
+                    detail: (<any>target).value,
+                    target: target
+                };
+                this._hndEv(key, (<any>fakeEvent) as Event, rule, target);
+            }
+        }
+        target.removeAttribute('disabled');
+
+    }
+    _hndEv(key: string, e: Event, rule: IEventRule, target:HTMLElement){
+        //if(this.hasAttribute('debug')) debugger;
+        //if(!e) return;
+        //if(e.stopPropagation && !this._noblock) e.stopPropagation();
+        if(rule.if && !(e.target as HTMLElement).matches(rule.if)) return;
+        rule.lastEvent = e;
+        this.passDown(target.nextElementSibling as HTMLElement, e, rule, 0)
+        
+    }
+
+    passDown(start: HTMLElement | null, e: Event, rule: IEventRule, count: number) {
+        let nextSib = start;
+        while (nextSib) {
+            if (nextSib.tagName !== 'SCRIPT') {
+                rule.map!.forEach(map => {
+                    if (map.isNext || (nextSib!.matches && nextSib!.matches(map.cssSelector))) {
+                        count++;
+                        this.setVal(e, nextSib, map)
+                    }
+                    const fec = nextSib!.firstElementChild as HTMLElement;
+                    // if (this.id && fec && nextSib!.hasAttribute(p_d_if)) {
+                    //     //if(!nextSibling[PDIf]) nextSibling[PDIf] = JSON.parse(nextSibling.getAttribute(p_d_if));
+                    //     if (this.matches(nextSib!.getAttribute(p_d_if) as string)) {
+                    //         this.passDown(fec, e, count);
+                    //         let addedSMOTracker = (<any>nextSib)[_addedSMO];
+                    //         if (!addedSMOTracker) addedSMOTracker = (<any>nextSib)[_addedSMO] = {};
+                    //         if (!addedSMOTracker[this.id]) {
+                    //             if (nextSib !== null) this.addMutObs(nextSib, true);
+                    //             (<any>nextSib)[_addedSMO][this.id] = true;
+                    //         }
+                    //     }
+
+                    // }
+                })
+            }
+            //if (rule. && count >= this._m) break;
+            nextSib = nextSib.nextElementSibling as HTMLElement;
+        }
+    }
+
+    setVal(e: Event, target: any, map: ICssPropMap){
+        map.setProps.forEach(setProp =>{
+            const propFromEvent = this.getPropFromPath(e, setProp.propSource);
+            this.commit(target, setProp.propTarget, propFromEvent);
+        })
+        //const gpfp = this.getPropFromPath.bind(this);
+        //const propFromEvent = map.propSource ? gpfp(e, map.propSource) : gpfp(e, 'detail.value') || gpfp(e, 'target.value');
+        
+       
+    }
+
+    commit(target: HTMLElement, key: string, val: any){
+        (<any>target)[key] = val;
+    }
+
+    getPropFromPath(val: any, path: string){
+        if(!path || path==='.') return val;
+        return this.getProp(val, path.split('.'));
+    }
+    getProp(val: any, pathTokens: string[]){
+        let context = val;
+        let firstToken = true;
+        const cp = 'composedPath';
+        const cp_ = cp + '_';
+        pathTokens.forEach(token => {
+            if(context)  {
+                if(firstToken && context[cp]){
+                    firstToken = false;
+                    const cpath = token.split(cp_);
+                    if(cpath.length === 1){
+                        context = context[cpath[0]];
+                    }else{
+                        context = context[cp]()[parseInt(cpath[1])];
+                    }
+                }else{
+                    context = context[token];
+                }
+                
+            }
+        });
+        return context;
+    }
+
 }
 
 define(PassDown);
