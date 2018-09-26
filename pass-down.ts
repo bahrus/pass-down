@@ -53,7 +53,7 @@ export class PassDown extends observeCssSelector(HTMLElement){
         }
     }
     parseBr(s: string){
-        return s.split('}').map(t => t.substr(1)); 
+        return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
     parse(target: HTMLElement){
         console.log(target);
@@ -72,37 +72,57 @@ export class PassDown extends observeCssSelector(HTMLElement){
                         rule.skipInit = true;
                         break;
                     default:
-                        const lhsRHS = this.toLHSRHS(token);
-                        const lhs = lhsRHS.lhs;
-                        switch(lhs){
-                            case pass_to:
-                            case pass_to_next:
-                                rule.map = [];
-                                break;
-                        }
-                        const cssProp = {
-                        } as ICssPropMap;
-                        rule.map!.push(cssProp);
-                        //let toNext = false;
-                        switch(lhs){
-                            case pass_to_next:
-                            case and_to_next:
-                                cssProp.max = 1;
-                                cssProp.isNext = true;
-                                break;
-                        }
-                        const rhs = this.parseBr(lhsRHS.rhs);
-                        let vals;
-                        if(!cssProp.isNext){
-                            cssProp.max = parseInt(rhs[2]);
-                            vals = rhs[1];
-                            cssProp.cssSelector = rhs[0];
+                        if(token.startsWith('if(')){
+                            console.log('TODO');
                         }else{
-                            vals = rhs[0]
+                            const lhsRHS = this.toLHSRHS(token);
+                            const lhs = lhsRHS.lhs;
+                            switch(lhs){
+                                case pass_to:
+                                case pass_to_next:
+                                    rule.map = [];
+                                    break;
+                            }
+                            const cssProp = {
+                            } as ICssPropMap;
+                            rule.map!.push(cssProp);
+                            //let toNext = false;
+                            switch(lhs){
+                                case pass_to_next:
+                                case and_to_next:
+                                    cssProp.max = 1;
+                                    cssProp.isNext = true;
+                                    break;
+                            }
+                            const rhs = this.parseBr(lhsRHS.rhs);
+                            let vals;
+                            if(!cssProp.isNext){
+                                cssProp.max = parseInt(rhs[2]);
+                                vals = rhs[1];
+                                cssProp.cssSelector = rhs[0];
+                            }else{
+                                vals = rhs[1];
+                            }
+                            cssProp.setProps = [];
+                            vals.split(';').forEach(val =>{
+                                const lR = this.toLHSRHS(val);
+                                cssProp.setProps.push({
+                                    propSource: lR.rhs,
+                                    propTarget: lR.lhs
+                                })
+                            })
                         }
+
 
                 }
             }
+        })
+        setTimeout(() => this.initTarget(target, rules), 50);
+    }
+    initTarget(target:HTMLElement, rules: {[key: string] : IEventRule}){
+        console.log({
+            target: target,
+            rules: rules
         })
     }
 }
