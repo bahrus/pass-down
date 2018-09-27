@@ -1,6 +1,9 @@
 import { observeCssSelector } from 'xtal-latx/observeCssSelector.js';
 import { define } from 'xtal-latx/define.js';
+import { qsa } from 'xtal-latx/qsa.js';
 const p_d_on = 'p-d-on';
+const p_d_rules = 'p-d-rules';
+const p_d_if = 'p-d-if';
 const pass_to = 'pass-to';
 const pass_to_next = 'pass-to-next';
 const and_to = 'and-to';
@@ -99,42 +102,66 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                 }
             }
         });
-        setTimeout(() => this.initTarget(target, rules), 50);
+        target[p_d_rules] = rules;
+        setTimeout(() => this.initTarget(target), 50);
     }
-    initTarget(target, rules) {
+    initTarget(target) {
         console.log({
             target: target,
-            rules: rules
+            rules: target[p_d_rules]
         });
-        this.attchEvListnrs(target, rules);
+        this.attchEvListnrs(target);
+        this.addMutObs(target);
     }
-    attchEvListnrs(target, rules) {
+    addMutObs(target) {
+        let elToObs = target.parentElement;
+        if (!elToObs['__addedMutObs']) {
+            const obs = new MutationObserver((m) => {
+                qsa('[data-on]', elToObs).forEach(el => {
+                    const rules = el[p_d_rules];
+                    if (rules) {
+                        for (const key in rules) {
+                            const rule = rules[key];
+                            if (rule.lastEvent) {
+                                this._hndEv(rule.lastEvent);
+                            }
+                        }
+                    }
+                });
+            });
+            obs.observe(elToObs, {
+                childList: true,
+                subtree: true
+            });
+            elToObs['__addedMutObs'] = true;
+        }
+    }
+    attchEvListnrs(target) {
+        const rules = target[p_d_rules];
         for (const key in rules) {
             const rule = rules[key];
-            target.addEventListener(key, (e) => {
-                this._hndEv(key, e, rule, target);
-            });
+            target.addEventListener(key, this._hndEv);
             if (!rule.skipInit) {
                 const fakeEvent = {
+                    type: key,
                     isFake: true,
                     detail: target.value,
                     target: target
                 };
-                this._hndEv(key, fakeEvent, rule, target);
+                this._hndEv(fakeEvent);
             }
         }
         target.removeAttribute('disabled');
     }
-    _hndEv(key, e, rule, target) {
-        //if(this.hasAttribute('debug')) debugger;
-        //if(!e) return;
-        //if(e.stopPropagation && !this._noblock) e.stopPropagation();
+    _hndEv(e) {
+        const target = e.target;
+        const rule = target[p_d_rules][e.type];
         if (rule.if && !e.target.matches(rule.if))
             return;
         rule.lastEvent = e;
-        this.passDown(target.nextElementSibling, e, rule, 0);
+        this.passDown(target, e, rule, 0, target);
     }
-    passDown(start, e, rule, count) {
+    passDown(start, e, rule, count, original) {
         let nextSib = start;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
@@ -144,21 +171,16 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                         this.setVal(e, nextSib, map);
                     }
                     const fec = nextSib.firstElementChild;
-                    // if (this.id && fec && nextSib!.hasAttribute(p_d_if)) {
-                    //     //if(!nextSibling[PDIf]) nextSibling[PDIf] = JSON.parse(nextSibling.getAttribute(p_d_if));
-                    //     if (this.matches(nextSib!.getAttribute(p_d_if) as string)) {
-                    //         this.passDown(fec, e, count);
-                    //         let addedSMOTracker = (<any>nextSib)[_addedSMO];
-                    //         if (!addedSMOTracker) addedSMOTracker = (<any>nextSib)[_addedSMO] = {};
-                    //         if (!addedSMOTracker[this.id]) {
-                    //             if (nextSib !== null) this.addMutObs(nextSib, true);
-                    //             (<any>nextSib)[_addedSMO][this.id] = true;
-                    //         }
-                    //     }
-                    // }
+                    if (fec && nextSib.hasAttribute(p_d_if)) {
+                        const pdIF = nextSib.getAttribute(p_d_if);
+                        if (pdIF) {
+                            if (original.matches(pdIF)) {
+                                this.passDown(fec, e, rule, count, original);
+                            }
+                        }
+                    }
                 });
             }
-            //if (rule. && count >= this._m) break;
             nextSib = nextSib.nextElementSibling;
         }
     }

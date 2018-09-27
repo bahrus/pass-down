@@ -1,7 +1,10 @@
 import {observeCssSelector} from 'xtal-latx/observeCssSelector.js';
 import {define} from 'xtal-latx/define.js';
+import {qsa} from 'xtal-latx/qsa.js';
 
 const p_d_on = 'p-d-on';
+const p_d_rules = 'p-d-rules';
+const p_d_if = 'p-d-if';
 
 export interface ISetProp{
     propTarget: string;
@@ -24,6 +27,9 @@ const pass_to = 'pass-to';
 const pass_to_next = 'pass-to-next';
 const and_to = 'and-to';
 const and_to_next = 'and-to-next';
+interface IPDTarget extends HTMLElement{
+    [p_d_rules] : {[key: string] : IEventRule}
+}
 
 export class PassDown extends observeCssSelector(HTMLElement){
     static get is(){return 'pass-down';}
@@ -56,7 +62,7 @@ export class PassDown extends observeCssSelector(HTMLElement){
     parseBr(s: string){
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
-    parse(target: HTMLElement){
+    parse(target: IPDTarget){
         console.log(target);
         const on = (target.dataset.on as string).split(' ');
         const rules : {[key: string] : IEventRule} = {};
@@ -118,44 +124,69 @@ export class PassDown extends observeCssSelector(HTMLElement){
                 }
             }
         })
-        setTimeout(() => this.initTarget(target, rules), 50);
+        target[p_d_rules] = rules;
+        setTimeout(() => this.initTarget(target), 50);
     }
-    initTarget(target:HTMLElement, rules: {[key: string] : IEventRule}){
+    initTarget(target: IPDTarget){
         console.log({
             target: target,
-            rules: rules
+            rules: target[p_d_rules]
         })
-        this.attchEvListnrs(target, rules);
+        this.attchEvListnrs(target);
+        this.addMutObs(target);
     }
-    attchEvListnrs(target: HTMLElement, rules: {[key: string] : IEventRule}){
+    addMutObs(target: Element) {
+        let elToObs = target.parentElement as HTMLElement;
+        if(!(<any>elToObs)['__addedMutObs']){
+            const obs = new MutationObserver((m : MutationRecord[]) =>{
+                qsa('[data-on]', elToObs).forEach(el => {
+                    const rules = ((<any>el) as IPDTarget)[p_d_rules];
+                    if(rules){
+                        for(const key in rules){
+                            const rule = rules[key];
+                            if(rule.lastEvent){
+                                this._hndEv(rule.lastEvent);
+                            }
+                        }
+                    }
+                })
+            });
+            obs.observe(elToObs, {
+                childList: true,
+                subtree: true
+            });
+            (<any>elToObs)['__addedMutObs'] = true;
+        }
+        
+    }
+    attchEvListnrs(target: IPDTarget){
+        const rules = target[p_d_rules];
         for(const key in rules){
             const rule = rules[key];
-            target.addEventListener(key, (e: Event) =>{
-                this._hndEv(key, e, rule, target);
-            });
+            target.addEventListener(key, this._hndEv)
             if(!rule.skipInit){
                 const fakeEvent = {
+                    type: key,
                     isFake: true,
                     detail: (<any>target).value,
                     target: target
                 };
-                this._hndEv(key, (<any>fakeEvent) as Event, rule, target);
+                this._hndEv((<any>fakeEvent) as Event);
             }
         }
         target.removeAttribute('disabled');
 
     }
-    _hndEv(key: string, e: Event, rule: IEventRule, target:HTMLElement){
-        //if(this.hasAttribute('debug')) debugger;
-        //if(!e) return;
-        //if(e.stopPropagation && !this._noblock) e.stopPropagation();
+    _hndEv(e: Event){
+        const target = e.target as IPDTarget;
+        const rule = target[p_d_rules][e.type];
         if(rule.if && !(e.target as HTMLElement).matches(rule.if)) return;
         rule.lastEvent = e;
-        this.passDown(target.nextElementSibling as HTMLElement, e, rule, 0)
+        this.passDown(target, e, rule, 0, target);
         
     }
 
-    passDown(start: HTMLElement | null, e: Event, rule: IEventRule, count: number) {
+    passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, original: IPDTarget) {
         let nextSib = start;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
@@ -165,22 +196,17 @@ export class PassDown extends observeCssSelector(HTMLElement){
                         this.setVal(e, nextSib, map)
                     }
                     const fec = nextSib!.firstElementChild as HTMLElement;
-                    // if (this.id && fec && nextSib!.hasAttribute(p_d_if)) {
-                    //     //if(!nextSibling[PDIf]) nextSibling[PDIf] = JSON.parse(nextSibling.getAttribute(p_d_if));
-                    //     if (this.matches(nextSib!.getAttribute(p_d_if) as string)) {
-                    //         this.passDown(fec, e, count);
-                    //         let addedSMOTracker = (<any>nextSib)[_addedSMO];
-                    //         if (!addedSMOTracker) addedSMOTracker = (<any>nextSib)[_addedSMO] = {};
-                    //         if (!addedSMOTracker[this.id]) {
-                    //             if (nextSib !== null) this.addMutObs(nextSib, true);
-                    //             (<any>nextSib)[_addedSMO][this.id] = true;
-                    //         }
-                    //     }
+                    if(fec && nextSib.hasAttribute(p_d_if)){
+                        const pdIF = nextSib.getAttribute(p_d_if);
+                        if(pdIF){
+                            if(original.matches(pdIF)){
 
-                    // }
+                                this.passDown(fec, e, rule, count, original);
+                            }
+                        }
+                    }
                 })
             }
-            //if (rule. && count >= this._m) break;
             nextSib = nextSib.nextElementSibling as HTMLElement;
         }
     }
