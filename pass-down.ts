@@ -41,16 +41,15 @@ export class PassDown extends observeCssSelector(HTMLElement){
     }
     insertListener(e: any){
         if (e.animationName === PassDown.is) {
-            const target = e.target;
+            const region = e.target;
             setTimeout(() =>{
-                this.parse(target);
-                //this.registerScript(target);
+                this.getTargets(region);
             }, 0);
         }
     }
     onPropsChange(){
         if(!this._conn) return;
-        this.addCSSListener(PassDown.is, '[data-on]', this.insertListener);
+        this.addCSSListener(PassDown.is, '[pass-down-region]', this.insertListener);
     }
     toLHSRHS(s: string){
         const pos = s.indexOf(':');
@@ -62,8 +61,13 @@ export class PassDown extends observeCssSelector(HTMLElement){
     parseBr(s: string){
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
+    getTargets(region: HTMLElement){
+        qsa('[data-on]', region).forEach(target =>{
+            this.parse(target as IPDTarget);
+        })
+
+    }
     parse(target: IPDTarget){
-        console.log(target);
         const on = (target.dataset.on as string).split(' ');
         const rules : {[key: string] : IEventRule} = {};
         let rule : IEventRule;
@@ -168,7 +172,9 @@ export class PassDown extends observeCssSelector(HTMLElement){
                 const fakeEvent = {
                     type: key,
                     isFake: true,
-                    detail: (<any>target).value,
+                    detail: {
+                        value: (<any>target).value,
+                    },
                     target: target
                 };
                 this._hndEv((<any>fakeEvent) as Event);
@@ -187,6 +193,7 @@ export class PassDown extends observeCssSelector(HTMLElement){
     }
 
     passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, original: IPDTarget) {
+        debugger; 
         let nextSib = start;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {

@@ -17,17 +17,16 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     }
     insertListener(e) {
         if (e.animationName === PassDown.is) {
-            const target = e.target;
+            const region = e.target;
             setTimeout(() => {
-                this.parse(target);
-                //this.registerScript(target);
+                this.getTargets(region);
             }, 0);
         }
     }
     onPropsChange() {
         if (!this._conn)
             return;
-        this.addCSSListener(PassDown.is, '[data-on]', this.insertListener);
+        this.addCSSListener(PassDown.is, '[pass-down-region]', this.insertListener);
     }
     toLHSRHS(s) {
         const pos = s.indexOf(':');
@@ -39,8 +38,12 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     parseBr(s) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
+    getTargets(region) {
+        qsa('[data-on]', region).forEach(target => {
+            this.parse(target);
+        });
+    }
     parse(target) {
-        console.log(target);
         const on = target.dataset.on.split(' ');
         const rules = {};
         let rule;
@@ -145,7 +148,9 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                 const fakeEvent = {
                     type: key,
                     isFake: true,
-                    detail: target.value,
+                    detail: {
+                        value: target.value,
+                    },
                     target: target
                 };
                 this._hndEv(fakeEvent);
@@ -162,6 +167,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         this.passDown(target, e, rule, 0, target);
     }
     passDown(start, e, rule, count, original) {
+        debugger;
         let nextSib = start;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
