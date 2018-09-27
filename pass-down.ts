@@ -140,6 +140,7 @@ export class PassDown extends observeCssSelector(HTMLElement){
         this.addMutObs(target);
     }
     addMutObs(target: Element) {
+        return;
         let elToObs = target.parentElement as HTMLElement;
         if(!(<any>elToObs)['__addedMutObs']){
             const obs = new MutationObserver((m : MutationRecord[]) =>{
@@ -193,7 +194,6 @@ export class PassDown extends observeCssSelector(HTMLElement){
     }
 
     passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, original: IPDTarget) {
-        debugger; 
         let nextSib = start;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
@@ -207,7 +207,6 @@ export class PassDown extends observeCssSelector(HTMLElement){
                         const pdIF = nextSib.getAttribute(p_d_if);
                         if(pdIF){
                             if(original.matches(pdIF)){
-
                                 this.passDown(fec, e, rule, count, original);
                             }
                         }
