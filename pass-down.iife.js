@@ -93,17 +93,16 @@ class PassDown extends observeCssSelector(HTMLElement) {
     }
     insertListener(e) {
         if (e.animationName === PassDown.is) {
-            const target = e.target;
+            const region = e.target;
             setTimeout(() => {
-                this.parse(target);
-                //this.registerScript(target);
+                this.getTargets(region);
             }, 0);
         }
     }
     onPropsChange() {
         if (!this._conn)
             return;
-        this.addCSSListener(PassDown.is, '[data-on]', this.insertListener);
+        this.addCSSListener(PassDown.is, '[pass-down-region]', this.insertListener);
     }
     toLHSRHS(s) {
         const pos = s.indexOf(':');
@@ -115,8 +114,16 @@ class PassDown extends observeCssSelector(HTMLElement) {
     parseBr(s) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
+    getTargets(region) {
+        Array.from(region.children).forEach(child => {
+            const ds = child.dataset;
+            if (ds && ds.on && !child[p_d_rules]) {
+                this.parse(child);
+            }
+        });
+        setTimeout(() => this.addMutObs(region), 50);
+    }
     parse(target) {
-        console.log(target);
         const on = target.dataset.on.split(' ');
         const rules = {};
         let rule;
@@ -179,7 +186,7 @@ class PassDown extends observeCssSelector(HTMLElement) {
             }
         });
         target[p_d_rules] = rules;
-        setTimeout(() => this.initTarget(target), 50);
+        this.initTarget(target);
     }
     initTarget(target) {
         console.log({
@@ -187,29 +194,15 @@ class PassDown extends observeCssSelector(HTMLElement) {
             rules: target[p_d_rules]
         });
         this.attchEvListnrs(target);
-        this.addMutObs(target);
+        //this.addMutObs(target);
     }
-    addMutObs(target) {
-        let elToObs = target.parentElement;
-        if (!elToObs['__addedMutObs']) {
-            const obs = new MutationObserver((m) => {
-                qsa('[data-on]', elToObs).forEach(el => {
-                    const rules = el[p_d_rules];
-                    if (rules) {
-                        for (const key in rules) {
-                            const rule = rules[key];
-                            if (rule.lastEvent) {
-                                this._hndEv(rule.lastEvent);
-                            }
-                        }
-                    }
-                });
-            });
-            obs.observe(elToObs, {
-                childList: true,
-                subtree: true
-            });
-        }
+    addMutObs(region) {
+        const obs = new MutationObserver((m) => {
+            this.getTargets(region);
+        });
+        obs.observe(region, {
+            childList: true,
+        });
     }
     attchEvListnrs(target) {
         const rules = target[p_d_rules];
@@ -220,7 +213,9 @@ class PassDown extends observeCssSelector(HTMLElement) {
                 const fakeEvent = {
                     type: key,
                     isFake: true,
-                    detail: target.value,
+                    detail: {
+                        value: target.value,
+                    },
                     target: target
                 };
                 this._hndEv(fakeEvent);

@@ -1,6 +1,5 @@
 import { observeCssSelector } from "./node_modules/xtal-latx/observeCssSelector.js";
 import { define } from "./node_modules/xtal-latx/define.js";
-import { qsa } from "./node_modules/xtal-latx/qsa.js";
 var p_d_on = 'p-d-on';
 var p_d_rules = 'p-d-rules';
 var p_d_if = 'p-d-if';
@@ -31,10 +30,9 @@ function (_observeCssSelector) {
       var _this = this;
 
       if (e.animationName === PassDown.is) {
-        var target = e.target;
+        var region = e.target;
         setTimeout(function () {
-          _this.parse(target); //this.registerScript(target);
-
+          _this.getTargets(region);
         }, 0);
       }
     }
@@ -42,7 +40,7 @@ function (_observeCssSelector) {
     key: "onPropsChange",
     value: function onPropsChange() {
       if (!this._conn) return;
-      this.addCSSListener(PassDown.is, '[data-on]', this.insertListener);
+      this.addCSSListener(PassDown.is, '[pass-down-region]', this.insertListener);
     }
   }, {
     key: "toLHSRHS",
@@ -61,11 +59,26 @@ function (_observeCssSelector) {
       });
     }
   }, {
-    key: "parse",
-    value: function parse(target) {
+    key: "getTargets",
+    value: function getTargets(region) {
       var _this2 = this;
 
-      console.log(target);
+      Array.from(region.children).forEach(function (child) {
+        var ds = child.dataset;
+
+        if (ds && ds.on && !child[p_d_rules]) {
+          _this2.parse(child);
+        }
+      });
+      setTimeout(function () {
+        return _this2.addMutObs(region);
+      }, 50);
+    }
+  }, {
+    key: "parse",
+    value: function parse(target) {
+      var _this3 = this;
+
       var on = target.dataset.on.split(' ');
       var rules = {};
       var rule;
@@ -86,7 +99,7 @@ function (_observeCssSelector) {
               if (token.startsWith('if(')) {
                 console.log('TODO');
               } else {
-                var lhsRHS = _this2.toLHSRHS(token);
+                var lhsRHS = _this3.toLHSRHS(token);
 
                 var lhs = lhsRHS.lhs;
 
@@ -108,7 +121,7 @@ function (_observeCssSelector) {
                     break;
                 }
 
-                var rhs = _this2.parseBr(lhsRHS.rhs);
+                var rhs = _this3.parseBr(lhsRHS.rhs);
 
                 var vals;
 
@@ -122,7 +135,7 @@ function (_observeCssSelector) {
 
                 cssProp.setProps = [];
                 vals.split(';').forEach(function (val) {
-                  var lR = _this2.toLHSRHS(val);
+                  var lR = _this3.toLHSRHS(val);
 
                   cssProp.setProps.push({
                     propSource: lR.rhs,
@@ -135,9 +148,7 @@ function (_observeCssSelector) {
         }
       });
       target[p_d_rules] = rules;
-      setTimeout(function () {
-        return _this2.initTarget(target);
-      }, 50);
+      this.initTarget(target);
     }
   }, {
     key: "initTarget",
@@ -146,37 +157,19 @@ function (_observeCssSelector) {
         target: target,
         rules: target[p_d_rules]
       });
-      this.attchEvListnrs(target);
-      this.addMutObs(target);
+      this.attchEvListnrs(target); //this.addMutObs(target);
     }
   }, {
     key: "addMutObs",
-    value: function addMutObs(target) {
-      var _this3 = this;
+    value: function addMutObs(region) {
+      var _this4 = this;
 
-      var elToObs = target.parentElement;
-
-      if (!elToObs['__addedMutObs']) {
-        var obs = new MutationObserver(function (m) {
-          qsa('[data-on]', elToObs).forEach(function (el) {
-            var rules = el[p_d_rules];
-
-            if (rules) {
-              for (var key in rules) {
-                var rule = rules[key];
-
-                if (rule.lastEvent) {
-                  _this3._hndEv(rule.lastEvent);
-                }
-              }
-            }
-          });
-        });
-        obs.observe(elToObs, {
-          childList: true,
-          subtree: true
-        });
-      }
+      var obs = new MutationObserver(function (m) {
+        _this4.getTargets(region);
+      });
+      obs.observe(region, {
+        childList: true
+      });
     }
   }, {
     key: "attchEvListnrs",
@@ -191,7 +184,9 @@ function (_observeCssSelector) {
           var fakeEvent = {
             type: key,
             isFake: true,
-            detail: target.value,
+            detail: {
+              value: target.value
+            },
             target: target
           };
 
@@ -213,7 +208,7 @@ function (_observeCssSelector) {
   }, {
     key: "passDown",
     value: function passDown(start, e, rule, count, original) {
-      var _this4 = this;
+      var _this5 = this;
 
       var nextSib = start;
 
@@ -223,7 +218,7 @@ function (_observeCssSelector) {
             if (map.isNext || nextSib.matches && nextSib.matches(map.cssSelector)) {
               count++;
 
-              _this4.setVal(e, nextSib, map);
+              _this5.setVal(e, nextSib, map);
             }
 
             var fec = nextSib.firstElementChild;
@@ -233,7 +228,7 @@ function (_observeCssSelector) {
 
               if (pdIF) {
                 if (original.matches(pdIF)) {
-                  _this4.passDown(fec, e, rule, count, original);
+                  _this5.passDown(fec, e, rule, count, original);
                 }
               }
             }
@@ -246,12 +241,12 @@ function (_observeCssSelector) {
   }, {
     key: "setVal",
     value: function setVal(e, target, map) {
-      var _this5 = this;
+      var _this6 = this;
 
       map.setProps.forEach(function (setProp) {
-        var propFromEvent = _this5.getPropFromPath(e, setProp.propSource);
+        var propFromEvent = _this6.getPropFromPath(e, setProp.propSource);
 
-        _this5.commit(target, setProp.propTarget, propFromEvent);
+        _this6.commit(target, setProp.propTarget, propFromEvent);
       }); //const gpfp = this.getPropFromPath.bind(this);
       //const propFromEvent = map.propSource ? gpfp(e, map.propSource) : gpfp(e, 'detail.value') || gpfp(e, 'target.value');
     }

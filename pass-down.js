@@ -1,6 +1,5 @@
 import { observeCssSelector } from 'xtal-latx/observeCssSelector.js';
 import { define } from 'xtal-latx/define.js';
-import { qsa } from 'xtal-latx/qsa.js';
 const p_d_on = 'p-d-on';
 const p_d_rules = 'p-d-rules';
 const p_d_if = 'p-d-if';
@@ -39,9 +38,13 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
     getTargets(region) {
-        qsa('[data-on]', region).forEach(target => {
-            this.parse(target);
+        Array.from(region.children).forEach(child => {
+            const ds = child.dataset;
+            if (ds && ds.on && !child[p_d_rules]) {
+                this.parse(child);
+            }
         });
+        setTimeout(() => this.addMutObs(region), 50);
     }
     parse(target) {
         const on = target.dataset.on.split(' ');
@@ -106,7 +109,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
             }
         });
         target[p_d_rules] = rules;
-        setTimeout(() => this.initTarget(target), 50);
+        this.initTarget(target);
     }
     initTarget(target) {
         console.log({
@@ -114,31 +117,15 @@ export class PassDown extends observeCssSelector(HTMLElement) {
             rules: target[p_d_rules]
         });
         this.attchEvListnrs(target);
-        this.addMutObs(target);
+        //this.addMutObs(target);
     }
-    addMutObs(target) {
-        return;
-        let elToObs = target.parentElement;
-        if (!elToObs['__addedMutObs']) {
-            const obs = new MutationObserver((m) => {
-                qsa('[data-on]', elToObs).forEach(el => {
-                    const rules = el[p_d_rules];
-                    if (rules) {
-                        for (const key in rules) {
-                            const rule = rules[key];
-                            if (rule.lastEvent) {
-                                this._hndEv(rule.lastEvent);
-                            }
-                        }
-                    }
-                });
-            });
-            obs.observe(elToObs, {
-                childList: true,
-                subtree: true
-            });
-            elToObs['__addedMutObs'] = true;
-        }
+    addMutObs(region) {
+        const obs = new MutationObserver((m) => {
+            this.getTargets(region);
+        });
+        obs.observe(region, {
+            childList: true,
+        });
     }
     attchEvListnrs(target) {
         const rules = target[p_d_rules];
