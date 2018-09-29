@@ -94,7 +94,7 @@
     </script>
     </xtal-deco>
     <!-- Use xtal-tree view model component to provide snapshots of flat data to iron-list -->
-    <xtal-tree id="myTree" ></xtal-tree>
+    <xtal-tree id="myTree" data-on="viewable-nodes-changed: pass-to:iron-list{items:target.viewableNodes} and-pass-to:#handleViewableNodesChanged{nodes:target.viewableNodes}" ></xtal-tree>
     <p-d on="viewable-nodes-changed" to="iron-list{items}"></p-d>
     <p-d on="viewable-nodes-changed" to="#handleViewableNodesChanged{nodes}" skip-init m="1"></p-d>
     <!-- <toggled-node-action></toggled-node-action> -->
