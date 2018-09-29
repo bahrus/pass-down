@@ -147,7 +147,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         target.removeAttribute('disabled');
     }
     _hndEv(e) {
-        const ct = e.currentTarget || e.target;
+        const ct = (e.currentTarget || e.target);
         const rule = ct[p_d_rules][e.type];
         if (rule.if && !e.target.matches(rule.if))
             return;

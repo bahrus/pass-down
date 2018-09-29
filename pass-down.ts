@@ -175,7 +175,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
 
     }
     _hndEv(e: Event) {
-        const ct = e.currentTarget || e.target as IPDTarget;
+        const ct = (e.currentTarget || e.target) as IPDTarget;
         const rule = ct[p_d_rules][e.type];
         if (rule.if && !(e.target as HTMLElement).matches(rule.if)) return;
         rule.lastEvent = e;
