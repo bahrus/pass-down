@@ -147,13 +147,13 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         target.removeAttribute('disabled');
     }
     _hndEv(e) {
-        const target = e.target;
-        const rule = target[p_d_rules][e.type];
+        const ct = e.currentTarget || e.target;
+        const rule = ct[p_d_rules][e.type];
         if (rule.if && !e.target.matches(rule.if))
             return;
         rule.lastEvent = e;
         rule.map.forEach(v => v.count = 0);
-        this.passDown(target, e, rule, 0, target, null);
+        this.passDown(ct, e, rule, 0, ct, null);
     }
     passDown(start, e, rule, count, topEl, mutEl) {
         let nextSib = start;
@@ -181,8 +181,6 @@ export class PassDown extends observeCssSelector(HTMLElement) {
             const propFromEvent = this.getPropFromPath(e, setProp.propSource);
             this.commit(target, setProp.propTarget, propFromEvent);
         });
-        //const gpfp = this.getPropFromPath.bind(this);
-        //const propFromEvent = map.propSource ? gpfp(e, map.propSource) : gpfp(e, 'detail.value') || gpfp(e, 'target.value');
     }
     commit(target, key, val) {
         target[key] = val;

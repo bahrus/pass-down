@@ -48,18 +48,15 @@
 
     <!-- ================== Buttons / Search field ========================== -->
     <button data-on="click: pass-to-next:{input:.} skip-init">Expand All</button>
-    <!-- <p-d on="click" if="button" to="{input:.}"></p-d> -->
     <expand-all-action></expand-all-action>
-    <button>Collapse All</button>
-    <p-d on="click" to="{input:.}"></p-d>
+    <button data-on="click: pass-to-next:{input:.} skip-init">Collapse All</button>
     <collapse-all-action></collapse-all-action>
 
     <!-- =================== Sort Buttons ================================= -->
-    <span>
+    <span data-on="click: pass-to:xtal-tree{sorted:target.dataset.dir}{1}">
       <button data-dir="asc">Sort Asc</button>
       <button data-dir="desc">Sort Desc</button>
     </span>
-    <p-d on="click" if="button" to="xtal-tree{sorted:target.dataset.dir}" m="1"></p-d>
     <input type="text" placeholder="Search">
     <p-d id="searchInput" on="input" to="xtal-split{search}"></p-d>
     <p-d on="input" to="xtal-tree{searchString}" m="1"></p-d>
