@@ -1,11 +1,12 @@
 import { observeCssSelector } from 'xtal-latx/observeCssSelector.js';
 import { define } from 'xtal-latx/define.js';
-import { qsa } from 'xtal-latx/qsa.js';
+//import { qsa } from 'xtal-latx/qsa.js';
 import { debounce } from 'xtal-latx/debounce.js';
 
-const p_d_on = 'p-d-on';
+//const p_d_on = 'p-d-on';
 const p_d_rules = 'p-d-rules';
-const p_d_if = 'p-d-if';
+const p_d_r = 'pass-down-region';
+//const p_d_if = 'p-d-if';
 
 export interface ISetProp {
     propTarget: string;
@@ -16,6 +17,7 @@ export interface ICssPropMap {
     cssSelector: string;
     setProps: ISetProp[];
     max?: number;
+    count?:number;
     isNext?: boolean;
 }
 interface IEventRule {
@@ -29,7 +31,8 @@ const pass_to_next = 'pass-to-next';
 const and_to = 'and-to';
 const and_to_next = 'and-to-next';
 interface IPDTarget extends HTMLElement {
-    [p_d_rules]: { [key: string]: IEventRule }
+    [p_d_rules]: { [key: string]: IEventRule };
+    __region: string;
 }
 
 export class PassDown extends observeCssSelector(HTMLElement) {
@@ -50,7 +53,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     }
     onPropsChange() {
         if (!this._conn) return;
-        this.addCSSListener(PassDown.is, '[pass-down-region]', this.insertListener);
+        this.addCSSListener(PassDown.is, `[${p_d_r}]`, this.insertListener);
     }
     toLHSRHS(s: string) {
         const pos = s.indexOf(':');
@@ -62,7 +65,8 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     parseBr(s: string) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
-    getTargets(region: HTMLElement) {
+    getTargets(region: IPDTarget) {
+        region.__region = region.getAttribute(p_d_r)!;
         Array.from(region.children).forEach(child => {
             const ds = (<HTMLElement>child).dataset;
             if (ds && ds.on && !(<any>child)[p_d_rules]) {
@@ -137,16 +141,12 @@ export class PassDown extends observeCssSelector(HTMLElement) {
 
     }
     initTarget(target: IPDTarget) {
-        console.log({
-            target: target,
-            rules: target[p_d_rules]
-        })
         this.attchEvListnrs(target);
         //this.addMutObs(target);
     }
-    addMutObs(region: HTMLElement) {
+    addMutObs(region: IPDTarget) {
         const obs = new MutationObserver((m: MutationRecord[]) => {
-            this.getTargets(region);
+            debounce(() => this.getTargets(region), 50);
         });
         obs.observe(region, {
             childList: true,
@@ -157,7 +157,8 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         const rules = target[p_d_rules];
         for (const key in rules) {
             const rule = rules[key];
-            target.addEventListener(key, this._hndEv)
+            const b = this._hndEv.bind(this);
+            target.addEventListener(key, b);
             if (!rule.skipInit) {
                 const fakeEvent = {
                     type: key,
@@ -178,27 +179,25 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         const rule = target[p_d_rules][e.type];
         if (rule.if && !(e.target as HTMLElement).matches(rule.if)) return;
         rule.lastEvent = e;
-        this.passDown(target, e, rule, 0, target);
+        rule.map!.forEach(v => v.count = 0);
+        this.passDown(target, e, rule, 0, target, null);
 
     }
 
-    passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, original: IPDTarget) {
+    passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, topEl: IPDTarget, mutEl: IPDTarget | null) {
         let nextSib = start;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
                 rule.map!.forEach(map => {
+                    if(map.max! > 0 && map.count! > map.max!) return;
                     if (map.isNext || (nextSib!.matches && nextSib!.matches(map.cssSelector))) {
-                        count++;
+                        map.count!++;
                         this.setVal(e, nextSib, map)
                     }
                     const fec = nextSib!.firstElementChild as HTMLElement;
-                    if (fec && nextSib.hasAttribute(p_d_if)) {
-                        const pdIF = nextSib.getAttribute(p_d_if);
-                        if (pdIF) {
-                            if (original.matches(pdIF)) {
-                                this.passDown(fec, e, rule, count, original);
-                            }
-                        }
+                    const pdr = nextSib.getAttribute(p_d_r);
+                    if (fec && pdr && (pdr.indexOf(topEl.__region) === 0)) {
+                        this.passDown(fec, e, rule, count, topEl, mutEl);
                     }
                 })
             }
@@ -227,24 +226,8 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     }
     getProp(val: any, pathTokens: string[]) {
         let context = val;
-        let firstToken = true;
-        const cp = 'composedPath';
-        const cp_ = cp + '_';
         pathTokens.forEach(token => {
-            if (context) {
-                if (firstToken && context[cp]) {
-                    firstToken = false;
-                    const cpath = token.split(cp_);
-                    if (cpath.length === 1) {
-                        context = context[cpath[0]];
-                    } else {
-                        context = context[cp]()[parseInt(cpath[1])];
-                    }
-                } else {
-                    context = context[token];
-                }
-
-            }
+            if (context) context = context[token];
         });
         return context;
     }

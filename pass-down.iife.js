@@ -77,6 +77,14 @@ function observeCssSelector(superClass) {
         }
     };
 }
+const debounce = (fn, time) => {
+    let timeout;
+    return function () {
+        const functionCall = () => fn.apply(this, arguments);
+        clearTimeout(timeout);
+        timeout = setTimeout(functionCall, time);
+    };
+};
 const p_d_on = 'p-d-on';
 const p_d_rules = 'p-d-rules';
 const p_d_if = 'p-d-if';
@@ -189,16 +197,12 @@ class PassDown extends observeCssSelector(HTMLElement) {
         this.initTarget(target);
     }
     initTarget(target) {
-        console.log({
-            target: target,
-            rules: target[p_d_rules]
-        });
         this.attchEvListnrs(target);
         //this.addMutObs(target);
     }
     addMutObs(region) {
         const obs = new MutationObserver((m) => {
-            this.getTargets(region);
+            debounce(() => this.getTargets(region), 50);
         });
         obs.observe(region, {
             childList: true,
@@ -229,6 +233,7 @@ class PassDown extends observeCssSelector(HTMLElement) {
         if (rule.if && !e.target.matches(rule.if))
             return;
         rule.lastEvent = e;
+        rule.map.forEach(v => v.count = 0);
         this.passDown(target, e, rule, 0, target);
     }
     passDown(start, e, rule, count, original) {
@@ -236,8 +241,10 @@ class PassDown extends observeCssSelector(HTMLElement) {
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
                 rule.map.forEach(map => {
+                    if (map.max > 0 && map.count > map.max)
+                        return;
                     if (map.isNext || (nextSib.matches && nextSib.matches(map.cssSelector))) {
-                        count++;
+                        map.count++;
                         this.setVal(e, nextSib, map);
                     }
                     const fec = nextSib.firstElementChild;
@@ -272,25 +279,9 @@ class PassDown extends observeCssSelector(HTMLElement) {
     }
     getProp(val, pathTokens) {
         let context = val;
-        let firstToken = true;
-        const cp = 'composedPath';
-        const cp_ = cp + '_';
         pathTokens.forEach(token => {
-            if (context) {
-                if (firstToken && context[cp]) {
-                    firstToken = false;
-                    const cpath = token.split(cp_);
-                    if (cpath.length === 1) {
-                        context = context[cpath[0]];
-                    }
-                    else {
-                        context = context[cp]()[parseInt(cpath[1])];
-                    }
-                }
-                else {
-                    context = context[token];
-                }
-            }
+            if (context)
+                context = context[token];
         });
         return context;
     }

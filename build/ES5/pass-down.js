@@ -1,5 +1,6 @@
 import { observeCssSelector } from "./node_modules/xtal-latx/observeCssSelector.js";
 import { define } from "./node_modules/xtal-latx/define.js";
+import { debounce } from "./node_modules/xtal-latx/debounce.js";
 var p_d_on = 'p-d-on';
 var p_d_rules = 'p-d-rules';
 var p_d_if = 'p-d-if';
@@ -153,10 +154,6 @@ function (_observeCssSelector) {
   }, {
     key: "initTarget",
     value: function initTarget(target) {
-      console.log({
-        target: target,
-        rules: target[p_d_rules]
-      });
       this.attchEvListnrs(target); //this.addMutObs(target);
     }
   }, {
@@ -165,7 +162,9 @@ function (_observeCssSelector) {
       var _this4 = this;
 
       var obs = new MutationObserver(function (m) {
-        _this4.getTargets(region);
+        debounce(function () {
+          return _this4.getTargets(region);
+        }, 50);
       });
       obs.observe(region, {
         childList: true
@@ -203,6 +202,9 @@ function (_observeCssSelector) {
       var rule = target[p_d_rules][e.type];
       if (rule.if && !e.target.matches(rule.if)) return;
       rule.lastEvent = e;
+      rule.map.forEach(function (v) {
+        return v.count = 0;
+      });
       this.passDown(target, e, rule, 0, target);
     }
   }, {
@@ -215,8 +217,10 @@ function (_observeCssSelector) {
       while (nextSib) {
         if (nextSib.tagName !== 'SCRIPT') {
           rule.map.forEach(function (map) {
+            if (map.max > 0 && map.count > map.max) return;
+
             if (map.isNext || nextSib.matches && nextSib.matches(map.cssSelector)) {
-              count++;
+              map.count++;
 
               _this5.setVal(e, nextSib, map);
             }
@@ -265,24 +269,8 @@ function (_observeCssSelector) {
     key: "getProp",
     value: function getProp(val, pathTokens) {
       var context = val;
-      var firstToken = true;
-      var cp = 'composedPath';
-      var cp_ = cp + '_';
       pathTokens.forEach(function (token) {
-        if (context) {
-          if (firstToken && context[cp]) {
-            firstToken = false;
-            var cpath = token.split(cp_);
-
-            if (cpath.length === 1) {
-              context = context[cpath[0]];
-            } else {
-              context = context[cp]()[parseInt(cpath[1])];
-            }
-          } else {
-            context = context[token];
-          }
-        }
+        if (context) context = context[token];
       });
       return context;
     }

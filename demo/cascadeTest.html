@@ -15,7 +15,7 @@
   <div pass-down-region>
     
     <xtal-state-watch data-onx="history-changed: pass-to:#handleViewableNodesChanged{firstVisibleIndex:target.history}" watch level="local"></xtal-state-watch>
-    <!-- <p-d on="history-changed" to="#handleViewableNodesChanged{firstVisibleIndex:target.history}" m="1"></p-d> -->
+    <p-d on="history-changed" to="#handleViewableNodesChanged{firstVisibleIndex:target.history}" m="1"></p-d>
     <h3>Basic xtal-cascade demo</h3>
     
     <script>
@@ -47,8 +47,8 @@
     </script>
 
     <!-- ================== Buttons / Search field ========================== -->
-    <button>Expand All</button>
-    <p-d on="click" if="button" to="{input:.}"></p-d>
+    <button data-on="click: pass-to-next:{input:.} skip-init">Expand All</button>
+    <!-- <p-d on="click" if="button" to="{input:.}"></p-d> -->
     <expand-all-action></expand-all-action>
     <button>Collapse All</button>
     <p-d on="click" to="{input:.}"></p-d>
