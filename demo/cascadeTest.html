@@ -127,10 +127,8 @@
     </script>
     </xtal-deco>
     <!--  ============== Use xtal-cascade to manage node selection with checkboxes. ============= -->
-    <xtal-cascade id="myCascade"></xtal-cascade>
-    <p-d on="selected-root-nodes-changed" to="{input:target}" m="1"></p-d>
-    <selected-nodes-change-action></selected-nodes-change-action>
-    <p-d on="value-changed" to="iron-list{items}"></p-d>
+    <xtal-cascade id="myCascade" data-on="selected-root-nodes-changed: pass-to-next:{input:target}"></xtal-cascade>
+    <selected-nodes-change-action data-on="value-changed: pass-to:iron-list{items:target.value}"></selected-nodes-change-action>
     <!-- =============== Style the tree UI elements -->
     <style>
       div.row {
