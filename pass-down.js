@@ -153,23 +153,34 @@ export class PassDown extends observeCssSelector(HTMLElement) {
             return;
         rule.lastEvent = e;
         rule.map.forEach(v => v.count = 0);
-        this.passDown(ct, e, rule, 0, ct, null);
+        //this.passDown(ct, e, rule, 0, ct, null);
+        this.passDown({
+            start: ct,
+            e: e,
+            rule: rule,
+            //count: 0,
+            topEl: ct,
+        });
     }
-    passDown(start, e, rule, count, topEl, mutEl) {
-        let nextSib = start;
+    // passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, topEl: IPDTarget, mutEl: IPDTarget | null) {
+    passDown(p) {
+        let nextSib = p.start;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
-                rule.map.forEach(map => {
+                p.rule.map.forEach(map => {
                     if (map.max > 0 && map.count > map.max)
                         return;
                     if (map.isNext || (nextSib.matches && nextSib.matches(map.cssSelector))) {
                         map.count++;
-                        this.setVal(e, nextSib, map);
+                        this.setVal(p.e, nextSib, map);
                     }
                     const fec = nextSib.firstElementChild;
                     const pdr = nextSib.getAttribute(p_d_r);
-                    if (fec && pdr && (pdr.indexOf(topEl.__region) === 0)) {
-                        this.passDown(fec, e, rule, count, topEl, mutEl);
+                    if (fec && pdr && (pdr.indexOf(p.topEl.__region) === 0)) {
+                        const cl = Object.assign({}, p);
+                        cl.start = fec;
+                        this.passDown(cl);
+                        // this.passDown(fec, e, rule, count, topEl, mutEl);
                     }
                 });
             }
