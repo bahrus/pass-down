@@ -8,7 +8,7 @@ pass-down imposes a strict downward unidirectional flow direction amongst siblin
 
 
 ## Syntax
-Place the component only once anywhere in your "page", and identify those regions of DOM where you want the component to allow the children to unidrectionally "socialize":
+Place the component only once anywhere in your "page", and identify those regions of DOM where you want the component to allow the children to unidirectionally "socialize":
 
 ```html
 <body>
