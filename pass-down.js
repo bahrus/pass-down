@@ -66,6 +66,9 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                     case 'skip-init':
                         rule.skipInit = true;
                         break;
+                    case 'recursive':
+                        rule.recursive = true;
+                        break;
                     default:
                         if (token.startsWith('if(')) {
                             console.log('TODO');
@@ -120,6 +123,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     }
     addMutObs(region) {
         const obs = new MutationObserver((m) => {
+            console.log('mut');
             debounce(() => this.getTargets(region), 50);
         });
         obs.observe(region, {
@@ -152,7 +156,12 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         if (rule.if && !e.target.matches(rule.if))
             return;
         rule.lastEvent = e;
-        rule.map.forEach(v => v.count = 0);
+        if (rule.recursive) {
+            rule.stack = [];
+        }
+        rule.map.forEach(v => {
+            v.count = 0;
+        });
         //this.passDown(ct, e, rule, 0, ct, null);
         this.passDown({
             start: ct,
@@ -174,13 +183,19 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                         map.count++;
                         this.setVal(p.e, nextSib, map);
                     }
-                    const fec = nextSib.firstElementChild;
-                    const pdr = nextSib.getAttribute(p_d_r);
-                    if (fec && pdr && (pdr.indexOf(p.topEl.__region) === 0)) {
-                        const cl = Object.assign({}, p);
-                        cl.start = fec;
-                        this.passDown(cl);
-                        // this.passDown(fec, e, rule, count, topEl, mutEl);
+                    if (p.rule.recursive) {
+                        const fec = nextSib.firstElementChild;
+                        const isPDR = nextSib.hasAttribute(p_d_r);
+                        // console.log({
+                        //     fec: fec,
+                        //     pdr: isPDR
+                        // })
+                        if (fec && isPDR) {
+                            //console.log(fec.localName);
+                            const cl = Object.assign({}, p);
+                            cl.start = fec;
+                            this.passDown(cl);
+                        }
                     }
                 });
             }

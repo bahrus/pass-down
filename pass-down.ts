@@ -25,6 +25,8 @@ interface IEventRule {
     map?: ICssPropMap[];
     if?: string;
     lastEvent?: Event;
+    recursive?: boolean;
+    stack?: IPDTarget[];
 }
 const pass_to = 'pass-to';
 const pass_to_next = 'pass-to-next';
@@ -42,8 +44,8 @@ interface IPassDownParams {
     //count: number,
     topEl: IPDTarget,
     mutEl?: IPDTarget,
-    stack?: IPDTarget[];
-    recursively?: boolean,
+    
+    //recursively?: boolean,
 }
 
 export class PassDown extends observeCssSelector(HTMLElement) {
@@ -101,6 +103,9 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                     case 'skip-init':
                         rule.skipInit = true;
                         break;
+                    case 'recursive':
+                        rule.recursive = true;
+                        break;
                     default:
                         if (token.startsWith('if(')) {
                             console.log('TODO');
@@ -157,10 +162,12 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     }
     addMutObs(region: IPDTarget) {
         const obs = new MutationObserver((m: MutationRecord[]) => {
+            console.log('mut');
             debounce(() => this.getTargets(region), 50);
         });
         obs.observe(region, {
             childList: true,
+            //subtree: true,
         });
 
     }
@@ -190,7 +197,12 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         const rule = ct[p_d_rules][e.type];
         if (rule.if && !(e.target as HTMLElement).matches(rule.if)) return;
         rule.lastEvent = e;
-        rule.map!.forEach(v => v.count = 0);
+        if(rule.recursive){
+            rule.stack = [];
+        }
+        rule.map!.forEach(v => {
+            v.count = 0
+        });
         //this.passDown(ct, e, rule, 0, ct, null);
         this.passDown({
             start: ct,
@@ -213,14 +225,21 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                         map.count!++;
                         this.setVal(p.e, nextSib, map);
                     }
-                    const fec = nextSib!.firstElementChild as HTMLElement;
-                    const pdr = nextSib.getAttribute(p_d_r);
-                    if (fec && pdr && (pdr.indexOf(p.topEl.__region) === 0)) {
-                        const cl = Object.assign({}, p);
-                        cl.start = fec;
-                        this.passDown(cl);
-                        // this.passDown(fec, e, rule, count, topEl, mutEl);
+                    if(p.rule.recursive){
+                        const fec = nextSib!.firstElementChild as HTMLElement;
+                        const isPDR = nextSib.hasAttribute(p_d_r);
+                        // console.log({
+                        //     fec: fec,
+                        //     pdr: isPDR
+                        // })
+                        if (fec && isPDR) {
+                            //console.log(fec.localName);
+                            const cl = Object.assign({}, p);
+                            cl.start = fec;
+                            this.passDown(cl);
+                        }
                     }
+
                 })
             }
             nextSib = nextSib.nextElementSibling as HTMLElement;

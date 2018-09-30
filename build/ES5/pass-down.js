@@ -1,9 +1,10 @@
 import { observeCssSelector } from "./node_modules/xtal-latx/observeCssSelector.js";
-import { define } from "./node_modules/xtal-latx/define.js";
-import { debounce } from "./node_modules/xtal-latx/debounce.js";
-var p_d_on = 'p-d-on';
+import { define } from "./node_modules/xtal-latx/define.js"; //import { qsa } from 'xtal-latx/qsa.js';
+
+import { debounce } from "./node_modules/xtal-latx/debounce.js"; //const p_d_on = 'p-d-on';
+
 var p_d_rules = 'p-d-rules';
-var p_d_if = 'p-d-if';
+var p_d_r = 'pass-down-region';
 var pass_to = 'pass-to';
 var pass_to_next = 'pass-to-next';
 var and_to = 'and-to';
@@ -41,7 +42,7 @@ function (_observeCssSelector) {
     key: "onPropsChange",
     value: function onPropsChange() {
       if (!this._conn) return;
-      this.addCSSListener(PassDown.is, '[pass-down-region]', this.insertListener);
+      this.addCSSListener(PassDown.is, "[".concat(p_d_r, "]"), this.insertListener);
     }
   }, {
     key: "toLHSRHS",
@@ -64,6 +65,7 @@ function (_observeCssSelector) {
     value: function getTargets(region) {
       var _this2 = this;
 
+      region.__region = region.getAttribute(p_d_r);
       Array.from(region.children).forEach(function (child) {
         var ds = child.dataset;
 
@@ -95,6 +97,9 @@ function (_observeCssSelector) {
             case 'skip-init':
               rule.skipInit = true;
               break;
+
+            case 'recursive':
+              rule.recursive = true;
 
             default:
               if (token.startsWith('if(')) {
@@ -177,7 +182,10 @@ function (_observeCssSelector) {
 
       for (var key in rules) {
         var rule = rules[key];
-        target.addEventListener(key, this._hndEv);
+
+        var b = this._hndEv.bind(this);
+
+        target.addEventListener(key, b);
 
         if (!rule.skipInit) {
           var fakeEvent = {
@@ -198,42 +206,55 @@ function (_observeCssSelector) {
   }, {
     key: "_hndEv",
     value: function _hndEv(e) {
-      var target = e.target;
-      var rule = target[p_d_rules][e.type];
+      var ct = e.currentTarget || e.target;
+      var rule = ct[p_d_rules][e.type];
       if (rule.if && !e.target.matches(rule.if)) return;
       rule.lastEvent = e;
+
+      if (rule.recursive) {
+        rule.stack = [];
+      }
+
       rule.map.forEach(function (v) {
-        return v.count = 0;
+        v.count = 0;
+      }); //this.passDown(ct, e, rule, 0, ct, null);
+
+      this.passDown({
+        start: ct,
+        e: e,
+        rule: rule,
+        //count: 0,
+        topEl: ct
       });
-      this.passDown(target, e, rule, 0, target);
-    }
+    } // passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, topEl: IPDTarget, mutEl: IPDTarget | null) {
+
   }, {
     key: "passDown",
-    value: function passDown(start, e, rule, count, original) {
+    value: function passDown(p) {
       var _this5 = this;
 
-      var nextSib = start;
+      var nextSib = p.start;
 
       while (nextSib) {
         if (nextSib.tagName !== 'SCRIPT') {
-          rule.map.forEach(function (map) {
+          p.rule.map.forEach(function (map) {
             if (map.max > 0 && map.count > map.max) return;
 
             if (map.isNext || nextSib.matches && nextSib.matches(map.cssSelector)) {
               map.count++;
 
-              _this5.setVal(e, nextSib, map);
+              _this5.setVal(p.e, nextSib, map);
             }
 
-            var fec = nextSib.firstElementChild;
+            if (p.rule.recursive) {
+              var fec = nextSib.firstElementChild;
+              var pdr = nextSib.getAttribute(p_d_r);
 
-            if (fec && nextSib.hasAttribute(p_d_if)) {
-              var pdIF = nextSib.getAttribute(p_d_if);
+              if (fec && pdr && pdr.indexOf(p.topEl.__region) === 0) {
+                var cl = Object.assign({}, p);
+                cl.start = fec;
 
-              if (pdIF) {
-                if (original.matches(pdIF)) {
-                  _this5.passDown(fec, e, rule, count, original);
-                }
+                _this5.passDown(cl);
               }
             }
           });
@@ -251,8 +272,7 @@ function (_observeCssSelector) {
         var propFromEvent = _this6.getPropFromPath(e, setProp.propSource);
 
         _this6.commit(target, setProp.propTarget, propFromEvent);
-      }); //const gpfp = this.getPropFromPath.bind(this);
-      //const propFromEvent = map.propSource ? gpfp(e, map.propSource) : gpfp(e, 'detail.value') || gpfp(e, 'target.value');
+      });
     }
   }, {
     key: "commit",

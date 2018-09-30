@@ -85,9 +85,10 @@ const debounce = (fn, time) => {
         timeout = setTimeout(functionCall, time);
     };
 };
-const p_d_on = 'p-d-on';
+//import { qsa } from 'xtal-latx/qsa.js';
+//const p_d_on = 'p-d-on';
 const p_d_rules = 'p-d-rules';
-const p_d_if = 'p-d-if';
+const p_d_r = 'pass-down-region';
 const pass_to = 'pass-to';
 const pass_to_next = 'pass-to-next';
 const and_to = 'and-to';
@@ -110,7 +111,7 @@ class PassDown extends observeCssSelector(HTMLElement) {
     onPropsChange() {
         if (!this._conn)
             return;
-        this.addCSSListener(PassDown.is, '[pass-down-region]', this.insertListener);
+        this.addCSSListener(PassDown.is, `[${p_d_r}]`, this.insertListener);
     }
     toLHSRHS(s) {
         const pos = s.indexOf(':');
@@ -123,6 +124,7 @@ class PassDown extends observeCssSelector(HTMLElement) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
     getTargets(region) {
+        region.__region = region.getAttribute(p_d_r);
         Array.from(region.children).forEach(child => {
             const ds = child.dataset;
             if (ds && ds.on && !child[p_d_rules]) {
@@ -148,6 +150,8 @@ class PassDown extends observeCssSelector(HTMLElement) {
                     case 'skip-init':
                         rule.skipInit = true;
                         break;
+                    case 'recursive':
+                        rule.recursive = true;
                     default:
                         if (token.startsWith('if(')) {
                             console.log('TODO');
@@ -212,7 +216,8 @@ class PassDown extends observeCssSelector(HTMLElement) {
         const rules = target[p_d_rules];
         for (const key in rules) {
             const rule = rules[key];
-            target.addEventListener(key, this._hndEv);
+            const b = this._hndEv.bind(this);
+            target.addEventListener(key, b);
             if (!rule.skipInit) {
                 const fakeEvent = {
                     type: key,
@@ -228,32 +233,45 @@ class PassDown extends observeCssSelector(HTMLElement) {
         target.removeAttribute('disabled');
     }
     _hndEv(e) {
-        const target = e.target;
-        const rule = target[p_d_rules][e.type];
+        const ct = (e.currentTarget || e.target);
+        const rule = ct[p_d_rules][e.type];
         if (rule.if && !e.target.matches(rule.if))
             return;
         rule.lastEvent = e;
-        rule.map.forEach(v => v.count = 0);
-        this.passDown(target, e, rule, 0, target);
+        if (rule.recursive) {
+            rule.stack = [];
+        }
+        rule.map.forEach(v => {
+            v.count = 0;
+        });
+        //this.passDown(ct, e, rule, 0, ct, null);
+        this.passDown({
+            start: ct,
+            e: e,
+            rule: rule,
+            //count: 0,
+            topEl: ct,
+        });
     }
-    passDown(start, e, rule, count, original) {
-        let nextSib = start;
+    // passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, topEl: IPDTarget, mutEl: IPDTarget | null) {
+    passDown(p) {
+        let nextSib = p.start;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
-                rule.map.forEach(map => {
+                p.rule.map.forEach(map => {
                     if (map.max > 0 && map.count > map.max)
                         return;
                     if (map.isNext || (nextSib.matches && nextSib.matches(map.cssSelector))) {
                         map.count++;
-                        this.setVal(e, nextSib, map);
+                        this.setVal(p.e, nextSib, map);
                     }
-                    const fec = nextSib.firstElementChild;
-                    if (fec && nextSib.hasAttribute(p_d_if)) {
-                        const pdIF = nextSib.getAttribute(p_d_if);
-                        if (pdIF) {
-                            if (original.matches(pdIF)) {
-                                this.passDown(fec, e, rule, count, original);
-                            }
+                    if (p.rule.recursive) {
+                        const fec = nextSib.firstElementChild;
+                        const pdr = nextSib.getAttribute(p_d_r);
+                        if (fec && pdr && (pdr.indexOf(p.topEl.__region) === 0)) {
+                            const cl = Object.assign({}, p);
+                            cl.start = fec;
+                            this.passDown(cl);
                         }
                     }
                 });
@@ -266,8 +284,6 @@ class PassDown extends observeCssSelector(HTMLElement) {
             const propFromEvent = this.getPropFromPath(e, setProp.propSource);
             this.commit(target, setProp.propTarget, propFromEvent);
         });
-        //const gpfp = this.getPropFromPath.bind(this);
-        //const propFromEvent = map.propSource ? gpfp(e, map.propSource) : gpfp(e, 'detail.value') || gpfp(e, 'target.value');
     }
     commit(target, key, val) {
         target[key] = val;

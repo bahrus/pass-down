@@ -59,9 +59,9 @@
       <button data-dir="asc">Sort Asc</button>
       <button data-dir="desc">Sort Desc</button>
     </span>
-    <input type="text" placeholder="Search">
-    <p-d id="searchInput" on="input" to="xtal-split{search}"></p-d>
-    <p-d on="input" to="xtal-tree{searchString}" m="1"></p-d>
+    <input type="text" placeholder="Search" data-on="input: pass-to:xtal-split{search:target.value} and-pass-to:xtal-tree{searchString:target.value}{1} recursive" >
+    <!-- <p-d id="searchInput" on="input" to="xtal-split{search}"></p-d>
+    <p-d on="input" to="xtal-tree{searchString}" m="1"></p-d> -->
 
     <!-- ================== Retrieve sample json file that has a dump of a bower file directory ============ -->
     <xtal-fetch fetch href="https://unpkg.com/xtal-tree@0.0.22/directory.json" as="json" data-on="result-changed: pass-to:xtal-tree,xtal-cascade{nodes:target.value}{2}"></xtal-fetch>
@@ -153,10 +153,10 @@
     </style>
 
     <!-- =================== Configure the flat list generator (iron-list) -->
-    <iron-list style="height:400px" id="nodeList" mutable-data p-d-if="#searchInput">
+    <iron-list style="height:400px" id="nodeList" mutable-data pass-down-region>
       <template>
-        <div class="node" style$="[[item.style]]" p-d-if="#searchInput">
-          <div class="row" p-d-if="#searchInput">
+        <div class="node" style$="[[item.style]]" pass-down-region>
+          <div class="row" pass-down-region>
             <span class="expander" node="[[item]]">
               <template is="dom-if" if="[[item.children]]">
                 <template is="dom-if" if="[[item.expanded]]">📖</template>
@@ -165,7 +165,7 @@
               <template is="dom-if" if="[[!item.children]]">📝</template>
             </span>
             <p-u on="click" if="span" to="/myTree{toggledNode:target.node}"></p-u>
-            <span class="toggler" select-node="[[item]]" p-d-if="#searchInput">
+            <span class="toggler" select-node="[[item]]" pass-down-region>
               <mwc-checkbox checked="[[item.isSelected]]" indeterminate="[[item.isIndeterminate]]"></mwc-checkbox>
               <xtal-split search="[[search]]" text-content="[[item.name]]"></xtal-split>
             </span>
