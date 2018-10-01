@@ -5,7 +5,7 @@ import { debounce } from 'xtal-latx/debounce.js';
 
 //const p_d_on = 'p-d-on';
 const p_d_rules = 'p-d-rules';
-const p_d_r = 'pass-down-region';
+const p_d = 'data-pd';
 //const p_d_if = 'p-d-if';
 
 export interface ISetProp {
@@ -35,6 +35,7 @@ const and_to_next = 'and-to-next';
 interface IPDTarget extends HTMLElement {
     [p_d_rules]: { [key: string]: IEventRule };
     __region: string;
+    __topEl: IPDTarget;
 }
 
 interface IPassDownParams {
@@ -60,13 +61,13 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         if (e.animationName === PassDown.is) {
             const region = e.target;
             setTimeout(() => {
-                this.getTargets(region);
+                this.getTargets(region, true);
             }, 0);
         }
     }
     onPropsChange() {
         if (!this._conn) return;
-        this.addCSSListener(PassDown.is, `[${p_d_r}]`, this.insertListener);
+        this.addCSSListener(PassDown.is, `[${p_d}]`, this.insertListener);
     }
     toLHSRHS(s: string) {
         const pos = s.indexOf(':');
@@ -78,15 +79,15 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     parseBr(s: string) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
-    getTargets(region: IPDTarget) {
-        region.__region = region.getAttribute(p_d_r)!;
+    getTargets(region: IPDTarget, init: boolean) {
+        region.__region = region.getAttribute(p_d)!;
         Array.from(region.children).forEach(child => {
             const ds = (<HTMLElement>child).dataset;
             if (ds && ds.on && !(<any>child)[p_d_rules]) {
                 this.parse(child as IPDTarget);
             }
         })
-        setTimeout(() => this.addMutObs(region), 50);
+        if(init) setTimeout(() => this.addMutObs(region), 50);
     }
     parse(target: IPDTarget) {
         const on = (target.dataset.on as string).split(' ');
@@ -162,8 +163,11 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     }
     addMutObs(region: IPDTarget) {
         const obs = new MutationObserver((m: MutationRecord[]) => {
-            console.log('mut');
-            debounce(() => this.getTargets(region), 50);
+            console.log({
+                __topEl: region.__topEl,
+                region: region
+            });
+            debounce(() => this.getTargets(region.__topEl || region, false), 50);
         });
         obs.observe(region, {
             childList: true,
@@ -227,17 +231,16 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                     }
                     if(p.rule.recursive){
                         const fec = nextSib!.firstElementChild as HTMLElement;
-                        const isPDR = nextSib.hasAttribute(p_d_r);
-                        // console.log({
-                        //     fec: fec,
-                        //     pdr: isPDR
-                        // })
-                        if (fec && isPDR) {
-                            //console.log(fec.localName);
-                            const cl = Object.assign({}, p);
-                            cl.start = fec;
-                            this.passDown(cl);
+                        const isPD = nextSib.hasAttribute(p_d);
+                        if(isPD){
+                            (<IPDTarget>nextSib).__topEl = p.topEl; 
+                            if(fec){
+                                const cl = Object.assign({}, p);
+                                cl.start = fec;
+                                this.passDown(cl);
+                            }
                         }
+                        
                     }
 
                 })

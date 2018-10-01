@@ -12,7 +12,7 @@
 
 <body>
   <pass-down></pass-down>
-  <div pass-down-region>
+  <div data-pd>
     
     <xtal-state-watch watch level="local" 
       data-on="history-changed: pass-to:#handleViewableNodesChanged{firstVisibleIndex:target.history.firstVisibleIndex}"
@@ -153,10 +153,10 @@
     </style>
 
     <!-- =================== Configure the flat list generator (iron-list) -->
-    <iron-list style="height:400px" id="nodeList" mutable-data pass-down-region>
+    <iron-list style="height:400px" id="nodeList" mutable-data data-pd>
       <template>
-        <div class="node" style$="[[item.style]]" pass-down-region>
-          <div class="row" pass-down-region>
+        <div class="node" style$="[[item.style]]" data-pd>
+          <div class="row" data-pd>
             <span class="expander" node="[[item]]">
               <template is="dom-if" if="[[item.children]]">
                 <template is="dom-if" if="[[item.expanded]]">📖</template>
@@ -165,7 +165,7 @@
               <template is="dom-if" if="[[!item.children]]">📝</template>
             </span>
             <p-u on="click" if="span" to="/myTree{toggledNode:target.node}"></p-u>
-            <span class="toggler" select-node="[[item]]" pass-down-region>
+            <span class="toggler" select-node="[[item]]" data-pd>
               <mwc-checkbox checked="[[item.isSelected]]" indeterminate="[[item.isIndeterminate]]"></mwc-checkbox>
               <xtal-split search="[[search]]" text-content="[[item.name]]"></xtal-split>
             </span>
