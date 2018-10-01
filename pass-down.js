@@ -15,6 +15,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         this.style.display = 'none';
         this._conn = true;
         this.onPropsChange();
+        this._syncRangedb = debounce((top) => this.syncRange(top), 50);
     }
     insertListener(e) {
         if (e.animationName === PassDown.is) {
@@ -39,6 +40,20 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     parseBr(s) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
+    syncRange(region) {
+        Array.from(region.children).forEach(child => {
+            const ds = child.dataset;
+            if (ds && ds.on) {
+                const rules = child[p_d_rules];
+                for (const rk in rules) {
+                    const rule = rules[rk];
+                    if (rule.lastEvent) {
+                        this._hndEv(rule.lastEvent);
+                    }
+                }
+            }
+        });
+    }
     getTargets(region, init) {
         region.__region = region.getAttribute(p_d);
         Array.from(region.children).forEach(child => {
@@ -47,8 +62,9 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                 this.parse(child);
             }
         });
-        if (init)
+        if (init) {
             setTimeout(() => this.addMutObs(region), 50);
+        }
     }
     parse(target) {
         const on = target.dataset.on.split(' ');
@@ -125,10 +141,19 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     addMutObs(region) {
         const obs = new MutationObserver((m) => {
             console.log({
-                __topEl: region.__topEl,
+                // __topEl: region.__topEl,
                 region: region
             });
-            debounce(() => this.getTargets(region.__topEl || region, false), 50);
+            let top = region;
+            let hasP = false;
+            debounce(() => this.getTargets(region, false), 50);
+            while (top.dataset.pd === '-r') {
+                hasP = true;
+                top = top.parentElement;
+            }
+            //if(hasP) debounce(() => this.syncRange(top), 50);
+            if (hasP)
+                this._syncRangedb(top);
         });
         obs.observe(region, {
             childList: true,
@@ -191,8 +216,9 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                         const fec = nextSib.firstElementChild;
                         const isPD = nextSib.hasAttribute(p_d);
                         if (isPD) {
-                            nextSib.__topEl = p.topEl;
+                            // (<IPDTarget>nextSib).__topEl = p.topEl; 
                             if (fec) {
+                                nextSib.dataset.pd = '-r';
                                 const cl = Object.assign({}, p);
                                 cl.start = fec;
                                 this.passDown(cl);
