@@ -56,7 +56,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         });
     }
     getTargets(region, init) {
-        region.__region = region.getAttribute(p_d);
+        //region.__region = region.getAttribute(p_d)!;
         Array.from(region.children).forEach(child => {
             const ds = child.dataset;
             if (ds && ds.on && !child[p_d_rules]) {

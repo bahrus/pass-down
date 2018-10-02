@@ -33,8 +33,7 @@ const and_to = 'and-to';
 const and_to_next = 'and-to-next';
 interface IPDTarget extends HTMLElement {
     [p_d_rules]: { [key: string]: IEventRule };
-    __region: string;
-    // __topEl: IPDTarget;
+    //__region: string;
 }
 
 interface IPassDownParams {
@@ -100,7 +99,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         })
     }
     getTargets(region: IPDTarget, init: boolean) {
-        region.__region = region.getAttribute(p_d)!;
+        //region.__region = region.getAttribute(p_d)!;
         Array.from(region.children).forEach(child => {
             const ds = (<HTMLElement>child).dataset;
             if (ds && ds.on && !(<any>child)[p_d_rules]) {
