@@ -14,7 +14,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         this.style.display = 'none';
         this._conn = true;
         this.onPropsChange();
-        this._syncRangedb = debounce((top) => this.syncRange(top), 50);
+        this._syncRangedb = debounce((srp) => this.syncRange(srp), 50);
     }
     insertListener(e) {
         if (e.animationName === PassDown.is) {
@@ -39,13 +39,15 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     parseBr(s) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
-    syncRange(region) {
-        Array.from(region.children).forEach(child => {
+    syncRange(srp) {
+        Array.from(srp.region.children).forEach(child => {
             const ds = child.dataset;
             if (ds && ds.on) {
                 const rules = child[p_d_rules];
                 for (const rk in rules) {
                     const rule = rules[rk];
+                    if (srp.r && !rule.recursive)
+                        continue;
                     if (rule.lastEvent) {
                         this._hndEv(rule.lastEvent);
                     }
@@ -139,21 +141,17 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     }
     addMutObs(region) {
         const obs = new MutationObserver((m) => {
-            console.log({
-                // __topEl: region.__topEl,
-                region: region
-            });
             let top = region;
             let hasP = false;
             //debounce(() => this.getTargets(region, false), 50);
-            this._syncRangedb(region);
+            this._syncRangedb({ region: region, r: false });
             while (top.dataset.pd === '-r') {
                 hasP = true;
                 top = top.parentElement;
             }
             //if(hasP) debounce(() => this.syncRange(top), 50);
-            if (hasP)
-                this._syncRangedb(top);
+            if (hasP && (top !== region))
+                this._syncRangedb({ region: top, r: true });
         });
         obs.observe(region, {
             childList: true,

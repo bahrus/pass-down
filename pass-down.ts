@@ -48,6 +48,11 @@ interface IPassDownParams {
     //recursively?: boolean,
 }
 
+interface ISyncRangeParams {
+    region: IPDTarget,
+    r: boolean,
+}
+
 export class PassDown extends observeCssSelector(HTMLElement) {
     static get is() { return 'pass-down'; }
     _conn!: boolean;
@@ -55,7 +60,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         this.style.display = 'none';
         this._conn = true;
         this.onPropsChange();
-        this._syncRangedb =  debounce((top) => this.syncRange(top), 50);
+        this._syncRangedb =  debounce((srp) => this.syncRange(srp), 50);
     }
     insertListener(e: any) {
         if (e.animationName === PassDown.is) {
@@ -79,13 +84,14 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     parseBr(s: string) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
-    syncRange(region: IPDTarget){
-        Array.from(region.children).forEach(child => {
+    syncRange(srp : ISyncRangeParams){
+        Array.from(srp.region.children).forEach(child => {
             const ds = (<HTMLElement>child).dataset;
             if (ds && ds.on){
                 const rules = (<IPDTarget>child)[p_d_rules];
                 for(const rk in rules){
                     const rule = rules[rk];
+                    if(srp.r && !rule.recursive) continue;
                     if(rule.lastEvent){
                         this._hndEv(rule.lastEvent);
                     }
@@ -180,20 +186,16 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     _syncRangedb: any;
     addMutObs(region: IPDTarget) {
         const obs = new MutationObserver((m: MutationRecord[]) => {
-            console.log({
-                // __topEl: region.__topEl,
-                region: region
-            });
             let top : IPDTarget = region;
             let hasP = false;
             //debounce(() => this.getTargets(region, false), 50);
-            this._syncRangedb(region);
+            this._syncRangedb({region: region, r: false});
             while(top.dataset.pd === '-r'){
                 hasP = true;
                 top = top.parentElement as IPDTarget;
             }
             //if(hasP) debounce(() => this.syncRange(top), 50);
-            if(hasP) this._syncRangedb(top);
+            if(hasP && (top !== region)) this._syncRangedb({region: top, r: true});
         });
         obs.observe(region, {
             childList: true,
