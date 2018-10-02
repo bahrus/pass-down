@@ -101,12 +101,11 @@
       clearTimeout(timeout);
       timeout = setTimeout(functionCall, time);
     };
-  }; //import { qsa } from 'xtal-latx/qsa.js';
-  //const p_d_on = 'p-d-on';
+  }; //const p_d_on = 'p-d-on';
 
 
   var p_d_rules = 'p-d-rules';
-  var p_d_r = 'pass-down-region';
+  var p_d = 'data-pd';
   var pass_to = 'pass-to';
   var pass_to_next = 'pass-to-next';
   var and_to = 'and-to';
@@ -125,19 +124,24 @@
     babelHelpers.createClass(PassDown, [{
       key: "connectedCallback",
       value: function connectedCallback() {
+        var _this4 = this;
+
         this.style.display = 'none';
         this._conn = true;
         this.onPropsChange();
+        this._syncRangedb = debounce(function (top) {
+          return _this4.syncRange(top);
+        }, 50);
       }
     }, {
       key: "insertListener",
       value: function insertListener(e) {
-        var _this4 = this;
+        var _this5 = this;
 
         if (e.animationName === PassDown.is) {
           var region = e.target;
           setTimeout(function () {
-            _this4.getTargets(region);
+            _this5.getTargets(region, true);
           }, 0);
         }
       }
@@ -145,7 +149,7 @@
       key: "onPropsChange",
       value: function onPropsChange() {
         if (!this._conn) return;
-        this.addCSSListener(PassDown.is, "[".concat(p_d_r, "]"), this.insertListener);
+        this.addCSSListener(PassDown.is, "[".concat(p_d, "]"), this.insertListener);
       }
     }, {
       key: "toLHSRHS",
@@ -164,26 +168,50 @@
         });
       }
     }, {
-      key: "getTargets",
-      value: function getTargets(region) {
-        var _this5 = this;
+      key: "syncRange",
+      value: function syncRange(region) {
+        var _this6 = this;
 
-        region.__region = region.getAttribute(p_d_r);
+        Array.from(region.children).forEach(function (child) {
+          var ds = child.dataset;
+
+          if (ds && ds.on) {
+            var rules = child[p_d_rules];
+
+            for (var rk in rules) {
+              var rule = rules[rk];
+
+              if (rule.lastEvent) {
+                _this6._hndEv(rule.lastEvent);
+              }
+            }
+          }
+        });
+      }
+    }, {
+      key: "getTargets",
+      value: function getTargets(region, init) {
+        var _this7 = this;
+
+        region.__region = region.getAttribute(p_d);
         Array.from(region.children).forEach(function (child) {
           var ds = child.dataset;
 
           if (ds && ds.on && !child[p_d_rules]) {
-            _this5.parse(child);
+            _this7.parse(child);
           }
         });
-        setTimeout(function () {
-          return _this5.addMutObs(region);
-        }, 50);
+
+        if (init) {
+          setTimeout(function () {
+            return _this7.addMutObs(region);
+          }, 50);
+        }
       }
     }, {
       key: "parse",
       value: function parse(target) {
-        var _this6 = this;
+        var _this8 = this;
 
         var on = target.dataset.on.split(' ');
         var rules = {};
@@ -203,12 +231,13 @@
 
               case 'recursive':
                 rule.recursive = true;
+                break;
 
               default:
                 if (token.startsWith('if(')) {
                   console.log('TODO');
                 } else {
-                  var lhsRHS = _this6.toLHSRHS(token);
+                  var lhsRHS = _this8.toLHSRHS(token);
 
                   var lhs = lhsRHS.lhs;
 
@@ -230,7 +259,7 @@
                       break;
                   }
 
-                  var rhs = _this6.parseBr(lhsRHS.rhs);
+                  var rhs = _this8.parseBr(lhsRHS.rhs);
 
                   var vals;
 
@@ -244,7 +273,7 @@
 
                   cssProp.setProps = [];
                   vals.split(';').forEach(function (val) {
-                    var lR = _this6.toLHSRHS(val);
+                    var lR = _this8.toLHSRHS(val);
 
                     cssProp.setProps.push({
                       propSource: lR.rhs,
@@ -267,12 +296,25 @@
     }, {
       key: "addMutObs",
       value: function addMutObs(region) {
-        var _this7 = this;
+        var _this9 = this;
 
         var obs = new MutationObserver(function (m) {
-          debounce(function () {
-            return _this7.getTargets(region);
-          }, 50);
+          console.log({
+            // __topEl: region.__topEl,
+            region: region
+          });
+          var top = region;
+          var hasP = false; //debounce(() => this.getTargets(region, false), 50);
+
+          _this9._syncRangedb(region);
+
+          while (top.dataset.pd === '-r') {
+            hasP = true;
+            top = top.parentElement;
+          } //if(hasP) debounce(() => this.syncRange(top), 50);
+
+
+          if (hasP) _this9._syncRangedb(top);
         });
         obs.observe(region, {
           childList: true
@@ -334,7 +376,7 @@
     }, {
       key: "passDown",
       value: function passDown(p) {
-        var _this8 = this;
+        var _this10 = this;
 
         var nextSib = p.start;
 
@@ -346,18 +388,22 @@
               if (map.isNext || nextSib.matches && nextSib.matches(map.cssSelector)) {
                 map.count++;
 
-                _this8.setVal(p.e, nextSib, map);
+                _this10.setVal(p.e, nextSib, map);
               }
 
               if (p.rule.recursive) {
                 var fec = nextSib.firstElementChild;
-                var pdr = nextSib.getAttribute(p_d_r);
+                var isPD = nextSib.hasAttribute(p_d);
 
-                if (fec && pdr && pdr.indexOf(p.topEl.__region) === 0) {
-                  var cl = Object.assign({}, p);
-                  cl.start = fec;
+                if (isPD) {
+                  // (<IPDTarget>nextSib).__topEl = p.topEl; 
+                  if (fec) {
+                    nextSib.dataset.pd = '-r';
+                    var cl = Object.assign({}, p);
+                    cl.start = fec;
 
-                  _this8.passDown(cl);
+                    _this10.passDown(cl);
+                  }
                 }
               }
             });
@@ -369,12 +415,12 @@
     }, {
       key: "setVal",
       value: function setVal(e, target, map) {
-        var _this9 = this;
+        var _this11 = this;
 
         map.setProps.forEach(function (setProp) {
-          var propFromEvent = _this9.getPropFromPath(e, setProp.propSource);
+          var propFromEvent = _this11.getPropFromPath(e, setProp.propSource);
 
-          _this9.commit(target, setProp.propTarget, propFromEvent);
+          _this11.commit(target, setProp.propTarget, propFromEvent);
         });
       }
     }, {

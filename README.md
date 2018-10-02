@@ -1,3 +1,9 @@
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/pass-down)
+
+<a href="https://nodei.co/npm/pass-down/"><img src="https://nodei.co/npm/pass-down.png"></a>
+
+<img src="http://img.badgesize.io/https://unpkg.com/pass-down@0.0.2/build/ES6/pass-down.iife.js?compression=gzip">
+
 # pass-down
 
 The pass-down web component is an alternative web component to the [p-d.p-u package](https://www.webcomponents.org/element/p-d.p-u), which itself consists of alternative / complimentary web components to the Polymer helper elements (especially dom-bind).  The goals of pass-down are almost identical to p-d.p-u.  The difference is mostly in the semantics, and may be a matter of taste which is better.
@@ -14,7 +20,7 @@ Place the component only once anywhere in your "page", and identify those region
 <body>
   <pass-down></pass-down>
   ...
-  <div pass-down-region>
+  <div data-pd>
 
     ...
 
@@ -35,16 +41,40 @@ Place the component only once anywhere in your "page", and identify those region
 Notes:
 
 1)  The pass-down element itself only needs to be present once in each Shadow DOM realm.  In the example above, that realm is the top-level "outside any Shadow DOM" one.
-2)  xtal-fetch is just an example -- it could be any element.  xtal-fetch knows nothing about the "data-on" attribute.
-3)  The data-on attribute is space delimited.  The first token is the event name to monitor for.  This is followed by the instruction.  Possible values are:
+2)  The attribute data-pd is used to indicate that that DOM element is a "pass-down region".
+3)  xtal-fetch is just an example -- it could be any element.  xtal-fetch knows nothing about the "data-on" attribute.
+4)  The data-on attribute is space delimited.  The first token is the event name to monitor for.  This is followed by the instruction.  Possible values are:
   a.  pass-to
   b.  pass-to-next
   c.  and-pass-to
   d.  and-pass-to-next
-4)  The instruction is followed by the css selector (unless you use pass-to-next or and-pass-to-next).
-5)  The selector is followed by a series of name value pairs inside braces.  The left hand side of the colon is the property name of the target element to set.  The right hand side is the path .-based accessor path from the event object, pointing to the sub property that needs to be passed to the propery name specified above.
-6)  The optional second set of braces indicates how many matching elements are expected to be found.
-7)  You can then add more tokens for other event names (you need a space after the closing "}").
+5)  The instruction is followed by the css selector (unless you use pass-to-next or and-pass-to-next).
+6)  The selector is followed by a series of name value pairs inside braces.  The left hand side of the colon is the property name of the target element to set.  The right hand side is the path .-based accessor path from the event object, pointing to the sub property that needs to be passed to the propery name specified above.
+7)  The optional second set of braces indicates how many matching elements are expected to be found.
+8)  You can then add more tokens for other event names (you need a space after the closing "}").
 
+## Recusive passdown
 
+Normally, passing is only down down the direct siblings.  To pass things into children of siblings, indicate that the rule is recursive, and decorate the siblings with the data-pd attribute:
+
+```html
+<div data-pd>
+    ...
+    <input type="text" placeholder="Search" data-on="input: pass-to:xtal-split{search:target.value} and-pass-to:xtal-tree{searchString:target.value}{1} recursive" >
+    ...
+    <iron-list style="height:400px" id="nodeList" mutable-data data-pd>
+      <template>
+        <div class="node" style$="[[item.style]]" data-pd>
+          <div class="row" data-pd>
+            ...
+            <span class="toggler" select-node="[[item]]" data-pd>
+                <xtal-split search="[[search]]" text-content="[[item.name]]"></xtal-split>
+            </span>
+            ...
+          </div>
+        </div>
+      </template>
+    </iron-list>
+</div>
+```
 

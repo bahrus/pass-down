@@ -85,10 +85,9 @@ const debounce = (fn, time) => {
         timeout = setTimeout(functionCall, time);
     };
 };
-//import { qsa } from 'xtal-latx/qsa.js';
 //const p_d_on = 'p-d-on';
 const p_d_rules = 'p-d-rules';
-const p_d_r = 'pass-down-region';
+const p_d = 'data-pd';
 const pass_to = 'pass-to';
 const pass_to_next = 'pass-to-next';
 const and_to = 'and-to';
@@ -99,19 +98,20 @@ class PassDown extends observeCssSelector(HTMLElement) {
         this.style.display = 'none';
         this._conn = true;
         this.onPropsChange();
+        this._syncRangedb = debounce((top) => this.syncRange(top), 50);
     }
     insertListener(e) {
         if (e.animationName === PassDown.is) {
             const region = e.target;
             setTimeout(() => {
-                this.getTargets(region);
+                this.getTargets(region, true);
             }, 0);
         }
     }
     onPropsChange() {
         if (!this._conn)
             return;
-        this.addCSSListener(PassDown.is, `[${p_d_r}]`, this.insertListener);
+        this.addCSSListener(PassDown.is, `[${p_d}]`, this.insertListener);
     }
     toLHSRHS(s) {
         const pos = s.indexOf(':');
@@ -123,15 +123,31 @@ class PassDown extends observeCssSelector(HTMLElement) {
     parseBr(s) {
         return s.split('{').map(t => t.endsWith('}') ? t.substr(0, t.length - 1) : t);
     }
-    getTargets(region) {
-        region.__region = region.getAttribute(p_d_r);
+    syncRange(region) {
+        Array.from(region.children).forEach(child => {
+            const ds = child.dataset;
+            if (ds && ds.on) {
+                const rules = child[p_d_rules];
+                for (const rk in rules) {
+                    const rule = rules[rk];
+                    if (rule.lastEvent) {
+                        this._hndEv(rule.lastEvent);
+                    }
+                }
+            }
+        });
+    }
+    getTargets(region, init) {
+        region.__region = region.getAttribute(p_d);
         Array.from(region.children).forEach(child => {
             const ds = child.dataset;
             if (ds && ds.on && !child[p_d_rules]) {
                 this.parse(child);
             }
         });
-        setTimeout(() => this.addMutObs(region), 50);
+        if (init) {
+            setTimeout(() => this.addMutObs(region), 50);
+        }
     }
     parse(target) {
         const on = target.dataset.on.split(' ');
@@ -152,6 +168,7 @@ class PassDown extends observeCssSelector(HTMLElement) {
                         break;
                     case 'recursive':
                         rule.recursive = true;
+                        break;
                     default:
                         if (token.startsWith('if(')) {
                             console.log('TODO');
@@ -206,7 +223,21 @@ class PassDown extends observeCssSelector(HTMLElement) {
     }
     addMutObs(region) {
         const obs = new MutationObserver((m) => {
-            debounce(() => this.getTargets(region), 50);
+            console.log({
+                // __topEl: region.__topEl,
+                region: region
+            });
+            let top = region;
+            let hasP = false;
+            //debounce(() => this.getTargets(region, false), 50);
+            this._syncRangedb(region);
+            while (top.dataset.pd === '-r') {
+                hasP = true;
+                top = top.parentElement;
+            }
+            //if(hasP) debounce(() => this.syncRange(top), 50);
+            if (hasP)
+                this._syncRangedb(top);
         });
         obs.observe(region, {
             childList: true,
@@ -267,11 +298,15 @@ class PassDown extends observeCssSelector(HTMLElement) {
                     }
                     if (p.rule.recursive) {
                         const fec = nextSib.firstElementChild;
-                        const pdr = nextSib.getAttribute(p_d_r);
-                        if (fec && pdr && (pdr.indexOf(p.topEl.__region) === 0)) {
-                            const cl = Object.assign({}, p);
-                            cl.start = fec;
-                            this.passDown(cl);
+                        const isPD = nextSib.hasAttribute(p_d);
+                        if (isPD) {
+                            // (<IPDTarget>nextSib).__topEl = p.topEl; 
+                            if (fec) {
+                                nextSib.dataset.pd = '-r';
+                                const cl = Object.assign({}, p);
+                                cl.start = fec;
+                                this.passDown(cl);
+                            }
                         }
                     }
                 });

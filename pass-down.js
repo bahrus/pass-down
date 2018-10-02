@@ -1,6 +1,5 @@
 import { observeCssSelector } from 'xtal-latx/observeCssSelector.js';
 import { define } from 'xtal-latx/define.js';
-//import { qsa } from 'xtal-latx/qsa.js';
 import { debounce } from 'xtal-latx/debounce.js';
 //const p_d_on = 'p-d-on';
 const p_d_rules = 'p-d-rules';
@@ -146,7 +145,8 @@ export class PassDown extends observeCssSelector(HTMLElement) {
             });
             let top = region;
             let hasP = false;
-            debounce(() => this.getTargets(region, false), 50);
+            //debounce(() => this.getTargets(region, false), 50);
+            this._syncRangedb(region);
             while (top.dataset.pd === '-r') {
                 hasP = true;
                 top = top.parentElement;

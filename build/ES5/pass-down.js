@@ -1,10 +1,9 @@
 import { observeCssSelector } from "./node_modules/xtal-latx/observeCssSelector.js";
-import { define } from "./node_modules/xtal-latx/define.js"; //import { qsa } from 'xtal-latx/qsa.js';
-
+import { define } from "./node_modules/xtal-latx/define.js";
 import { debounce } from "./node_modules/xtal-latx/debounce.js"; //const p_d_on = 'p-d-on';
 
 var p_d_rules = 'p-d-rules';
-var p_d_r = 'pass-down-region';
+var p_d = 'data-pd';
 var pass_to = 'pass-to';
 var pass_to_next = 'pass-to-next';
 var and_to = 'and-to';
@@ -22,19 +21,24 @@ function (_observeCssSelector) {
   babelHelpers.createClass(PassDown, [{
     key: "connectedCallback",
     value: function connectedCallback() {
+      var _this = this;
+
       this.style.display = 'none';
       this._conn = true;
       this.onPropsChange();
+      this._syncRangedb = debounce(function (top) {
+        return _this.syncRange(top);
+      }, 50);
     }
   }, {
     key: "insertListener",
     value: function insertListener(e) {
-      var _this = this;
+      var _this2 = this;
 
       if (e.animationName === PassDown.is) {
         var region = e.target;
         setTimeout(function () {
-          _this.getTargets(region);
+          _this2.getTargets(region, true);
         }, 0);
       }
     }
@@ -42,7 +46,7 @@ function (_observeCssSelector) {
     key: "onPropsChange",
     value: function onPropsChange() {
       if (!this._conn) return;
-      this.addCSSListener(PassDown.is, "[".concat(p_d_r, "]"), this.insertListener);
+      this.addCSSListener(PassDown.is, "[".concat(p_d, "]"), this.insertListener);
     }
   }, {
     key: "toLHSRHS",
@@ -61,26 +65,50 @@ function (_observeCssSelector) {
       });
     }
   }, {
-    key: "getTargets",
-    value: function getTargets(region) {
-      var _this2 = this;
+    key: "syncRange",
+    value: function syncRange(region) {
+      var _this3 = this;
 
-      region.__region = region.getAttribute(p_d_r);
+      Array.from(region.children).forEach(function (child) {
+        var ds = child.dataset;
+
+        if (ds && ds.on) {
+          var rules = child[p_d_rules];
+
+          for (var rk in rules) {
+            var rule = rules[rk];
+
+            if (rule.lastEvent) {
+              _this3._hndEv(rule.lastEvent);
+            }
+          }
+        }
+      });
+    }
+  }, {
+    key: "getTargets",
+    value: function getTargets(region, init) {
+      var _this4 = this;
+
+      region.__region = region.getAttribute(p_d);
       Array.from(region.children).forEach(function (child) {
         var ds = child.dataset;
 
         if (ds && ds.on && !child[p_d_rules]) {
-          _this2.parse(child);
+          _this4.parse(child);
         }
       });
-      setTimeout(function () {
-        return _this2.addMutObs(region);
-      }, 50);
+
+      if (init) {
+        setTimeout(function () {
+          return _this4.addMutObs(region);
+        }, 50);
+      }
     }
   }, {
     key: "parse",
     value: function parse(target) {
-      var _this3 = this;
+      var _this5 = this;
 
       var on = target.dataset.on.split(' ');
       var rules = {};
@@ -100,12 +128,13 @@ function (_observeCssSelector) {
 
             case 'recursive':
               rule.recursive = true;
+              break;
 
             default:
               if (token.startsWith('if(')) {
                 console.log('TODO');
               } else {
-                var lhsRHS = _this3.toLHSRHS(token);
+                var lhsRHS = _this5.toLHSRHS(token);
 
                 var lhs = lhsRHS.lhs;
 
@@ -127,7 +156,7 @@ function (_observeCssSelector) {
                     break;
                 }
 
-                var rhs = _this3.parseBr(lhsRHS.rhs);
+                var rhs = _this5.parseBr(lhsRHS.rhs);
 
                 var vals;
 
@@ -141,7 +170,7 @@ function (_observeCssSelector) {
 
                 cssProp.setProps = [];
                 vals.split(';').forEach(function (val) {
-                  var lR = _this3.toLHSRHS(val);
+                  var lR = _this5.toLHSRHS(val);
 
                   cssProp.setProps.push({
                     propSource: lR.rhs,
@@ -164,12 +193,25 @@ function (_observeCssSelector) {
   }, {
     key: "addMutObs",
     value: function addMutObs(region) {
-      var _this4 = this;
+      var _this6 = this;
 
       var obs = new MutationObserver(function (m) {
-        debounce(function () {
-          return _this4.getTargets(region);
-        }, 50);
+        console.log({
+          // __topEl: region.__topEl,
+          region: region
+        });
+        var top = region;
+        var hasP = false; //debounce(() => this.getTargets(region, false), 50);
+
+        _this6._syncRangedb(region);
+
+        while (top.dataset.pd === '-r') {
+          hasP = true;
+          top = top.parentElement;
+        } //if(hasP) debounce(() => this.syncRange(top), 50);
+
+
+        if (hasP) _this6._syncRangedb(top);
       });
       obs.observe(region, {
         childList: true
@@ -231,7 +273,7 @@ function (_observeCssSelector) {
   }, {
     key: "passDown",
     value: function passDown(p) {
-      var _this5 = this;
+      var _this7 = this;
 
       var nextSib = p.start;
 
@@ -243,18 +285,22 @@ function (_observeCssSelector) {
             if (map.isNext || nextSib.matches && nextSib.matches(map.cssSelector)) {
               map.count++;
 
-              _this5.setVal(p.e, nextSib, map);
+              _this7.setVal(p.e, nextSib, map);
             }
 
             if (p.rule.recursive) {
               var fec = nextSib.firstElementChild;
-              var pdr = nextSib.getAttribute(p_d_r);
+              var isPD = nextSib.hasAttribute(p_d);
 
-              if (fec && pdr && pdr.indexOf(p.topEl.__region) === 0) {
-                var cl = Object.assign({}, p);
-                cl.start = fec;
+              if (isPD) {
+                // (<IPDTarget>nextSib).__topEl = p.topEl; 
+                if (fec) {
+                  nextSib.dataset.pd = '-r';
+                  var cl = Object.assign({}, p);
+                  cl.start = fec;
 
-                _this5.passDown(cl);
+                  _this7.passDown(cl);
+                }
               }
             }
           });
@@ -266,12 +312,12 @@ function (_observeCssSelector) {
   }, {
     key: "setVal",
     value: function setVal(e, target, map) {
-      var _this6 = this;
+      var _this8 = this;
 
       map.setProps.forEach(function (setProp) {
-        var propFromEvent = _this6.getPropFromPath(e, setProp.propSource);
+        var propFromEvent = _this8.getPropFromPath(e, setProp.propSource);
 
-        _this6.commit(target, setProp.propTarget, propFromEvent);
+        _this8.commit(target, setProp.propTarget, propFromEvent);
       });
     }
   }, {
