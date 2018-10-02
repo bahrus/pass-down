@@ -60,7 +60,8 @@ Normally, passing is only down down the direct siblings.  To pass things into ch
 ```html
 <div data-pd>
     ...
-    <input type="text" placeholder="Search" data-on="input: pass-to:xtal-split{search:target.value} and-pass-to:xtal-tree{searchString:target.value}{1} recursive" >
+    <input type="text" placeholder="Search" 
+      data-on="input: pass-to:xtal-split{search:target.value} recursive" >
     ...
     <iron-list style="height:400px" id="nodeList" mutable-data data-pd>
       <template>
