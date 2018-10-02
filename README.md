@@ -69,7 +69,7 @@ Normally, passing is only down down the direct siblings.  To pass things into ch
           <div class="row" data-pd>
             ...
             <span class="toggler" select-node="[[item]]" data-pd>
-                <xtal-split search="[[search]]" text-content="[[item.name]]"></xtal-split>
+                <xtal-split text-content="[[item.name]]"></xtal-split>
             </span>
             ...
           </div>

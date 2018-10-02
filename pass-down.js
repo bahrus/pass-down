@@ -89,7 +89,7 @@ export class PassDown extends observeCssSelector(HTMLElement) {
                         break;
                     default:
                         if (token.startsWith('if(')) {
-                            console.log('TODO');
+                            rule.if = token.substring(3, token.length - 1);
                         }
                         else {
                             const lhsRHS = this.toLHSRHS(token);
