@@ -129,8 +129,8 @@
         this.style.display = 'none';
         this._conn = true;
         this.onPropsChange();
-        this._syncRangedb = debounce(function (top) {
-          return _this4.syncRange(top);
+        this._syncRangedb = debounce(function (srp) {
+          return _this4.syncRange(srp);
         }, 50);
       }
     }, {
@@ -169,21 +169,24 @@
       }
     }, {
       key: "syncRange",
-      value: function syncRange(region) {
+      value: function syncRange(srp) {
         var _this6 = this;
 
-        Array.from(region.children).forEach(function (child) {
+        Array.from(srp.region.children).forEach(function (child) {
           var ds = child.dataset;
 
           if (ds && ds.on) {
-            var rules = child[p_d_rules];
+            var aRules = child[p_d_rules]; //allRules
 
-            for (var rk in rules) {
-              var rule = rules[rk];
+            for (var rk in aRules) {
+              var eRules = aRules[rk];
+              eRules.forEach(function (r) {
+                if (srp.r && !r.recursive) return;
 
-              if (rule.lastEvent) {
-                _this6._hndEv(rule.lastEvent);
-              }
+                if (r.lastEvent) {
+                  _this6._hndEv(r.lastEvent);
+                }
+              });
             }
           }
         });
@@ -193,7 +196,7 @@
       value: function getTargets(region, init) {
         var _this7 = this;
 
-        region.__region = region.getAttribute(p_d);
+        //region.__region = region.getAttribute(p_d)!;
         Array.from(region.children).forEach(function (child) {
           var ds = child.dataset;
 
@@ -221,8 +224,10 @@
           if (token === '') return;
 
           if (token.endsWith(':')) {
+            var evtName = token.substr(0, token.length - 1);
+            if (!rules[evtName]) rules[evtName] = [];
             rule = {};
-            rules[token.substr(0, token.length - 1)] = rule;
+            rules[evtName].push(rule);
           } else {
             switch (token) {
               case 'skip-init':
@@ -235,7 +240,7 @@
 
               default:
                 if (token.startsWith('if(')) {
-                  console.log('TODO');
+                  rule.if = token.substring(3, token.length - 1);
                 } else {
                   var lhsRHS = _this8.toLHSRHS(token);
 
@@ -299,14 +304,13 @@
         var _this9 = this;
 
         var obs = new MutationObserver(function (m) {
-          console.log({
-            // __topEl: region.__topEl,
-            region: region
-          });
           var top = region;
           var hasP = false; //debounce(() => this.getTargets(region, false), 50);
 
-          _this9._syncRangedb(region);
+          _this9._syncRangedb({
+            region: region,
+            r: false
+          });
 
           while (top.dataset.pd === '-r') {
             hasP = true;
@@ -314,7 +318,10 @@
           } //if(hasP) debounce(() => this.syncRange(top), 50);
 
 
-          if (hasP) _this9._syncRangedb(top);
+          if (hasP && top !== region) _this9._syncRangedb({
+            region: top,
+            r: true
+          });
         });
         obs.observe(region, {
           childList: true
@@ -323,27 +330,26 @@
     }, {
       key: "attchEvListnrs",
       value: function attchEvListnrs(target) {
-        var rules = target[p_d_rules];
+        var aRules = target[p_d_rules];
 
-        for (var key in rules) {
-          var rule = rules[key];
+        var b = this._hndEv.bind(this);
 
-          var b = this._hndEv.bind(this);
-
+        for (var key in aRules) {
           target.addEventListener(key, b);
+          var eRules = aRules[key];
+          if (eRules.findIndex(function (rule) {
+            return rule.skipInit;
+          }) > -1) continue;
+          var fakeEvent = {
+            type: key,
+            isFake: true,
+            detail: {
+              value: target.value
+            },
+            target: target
+          };
 
-          if (!rule.skipInit) {
-            var fakeEvent = {
-              type: key,
-              isFake: true,
-              detail: {
-                value: target.value
-              },
-              target: target
-            };
-
-            this._hndEv(fakeEvent);
-          }
+          this._hndEv(fakeEvent);
         }
 
         target.removeAttribute('disabled');
@@ -351,32 +357,33 @@
     }, {
       key: "_hndEv",
       value: function _hndEv(e) {
+        var _this10 = this;
+
         var ct = e.currentTarget || e.target;
-        var rule = ct[p_d_rules][e.type];
-        if (rule.if && !e.target.matches(rule.if)) return;
-        rule.lastEvent = e;
+        var eRules = ct[p_d_rules][e.type];
+        eRules.forEach(function (rule) {
+          if (rule.if && !e.target.matches(rule.if)) return;
+          rule.lastEvent = e; // if(rule.recursive){
+          //     eRules.stack = [];
+          // }
 
-        if (rule.recursive) {
-          rule.stack = [];
-        }
+          rule.map.forEach(function (v) {
+            v.count = 0;
+          }); //this.passDown(ct, e, rule, 0, ct, null);
 
-        rule.map.forEach(function (v) {
-          v.count = 0;
-        }); //this.passDown(ct, e, rule, 0, ct, null);
-
-        this.passDown({
-          start: ct,
-          e: e,
-          rule: rule,
-          //count: 0,
-          topEl: ct
+          _this10.passDown({
+            start: ct,
+            e: e,
+            rule: rule,
+            topEl: ct
+          });
         });
       } // passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, topEl: IPDTarget, mutEl: IPDTarget | null) {
 
     }, {
       key: "passDown",
       value: function passDown(p) {
-        var _this10 = this;
+        var _this11 = this;
 
         var nextSib = p.start;
 
@@ -388,7 +395,7 @@
               if (map.isNext || nextSib.matches && nextSib.matches(map.cssSelector)) {
                 map.count++;
 
-                _this10.setVal(p.e, nextSib, map);
+                _this11.setVal(p.e, nextSib, map);
               }
 
               if (p.rule.recursive) {
@@ -402,7 +409,7 @@
                     var cl = Object.assign({}, p);
                     cl.start = fec;
 
-                    _this10.passDown(cl);
+                    _this11.passDown(cl);
                   }
                 }
               }
@@ -415,12 +422,12 @@
     }, {
       key: "setVal",
       value: function setVal(e, target, map) {
-        var _this11 = this;
+        var _this12 = this;
 
         map.setProps.forEach(function (setProp) {
-          var propFromEvent = _this11.getPropFromPath(e, setProp.propSource);
+          var propFromEvent = _this12.getPropFromPath(e, setProp.propSource);
 
-          _this11.commit(target, setProp.propTarget, propFromEvent);
+          _this12.commit(target, setProp.propTarget, propFromEvent);
         });
       }
     }, {

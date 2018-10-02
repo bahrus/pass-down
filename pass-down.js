@@ -43,14 +43,16 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         Array.from(srp.region.children).forEach(child => {
             const ds = child.dataset;
             if (ds && ds.on) {
-                const rules = child[p_d_rules];
-                for (const rk in rules) {
-                    const rule = rules[rk];
-                    if (srp.r && !rule.recursive)
-                        continue;
-                    if (rule.lastEvent) {
-                        this._hndEv(rule.lastEvent);
-                    }
+                const aRules = child[p_d_rules]; //allRules
+                for (const rk in aRules) {
+                    const eRules = aRules[rk];
+                    eRules.forEach(r => {
+                        if (srp.r && !r.recursive)
+                            return;
+                        if (r.lastEvent) {
+                            this._hndEv(r.lastEvent);
+                        }
+                    });
                 }
             }
         });
@@ -76,8 +78,11 @@ export class PassDown extends observeCssSelector(HTMLElement) {
             if (token === '')
                 return;
             if (token.endsWith(':')) {
+                const evtName = token.substr(0, token.length - 1);
+                if (!rules[evtName])
+                    rules[evtName] = [];
                 rule = {};
-                rules[token.substr(0, token.length - 1)] = rule;
+                rules[evtName].push(rule);
             }
             else {
                 switch (token) {
@@ -158,44 +163,45 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         });
     }
     attchEvListnrs(target) {
-        const rules = target[p_d_rules];
-        for (const key in rules) {
-            const rule = rules[key];
-            const b = this._hndEv.bind(this);
+        const aRules = target[p_d_rules];
+        const b = this._hndEv.bind(this);
+        for (const key in aRules) {
             target.addEventListener(key, b);
-            if (!rule.skipInit) {
-                const fakeEvent = {
-                    type: key,
-                    isFake: true,
-                    detail: {
-                        value: target.value,
-                    },
-                    target: target
-                };
-                this._hndEv(fakeEvent);
-            }
+            const eRules = aRules[key];
+            if (eRules.findIndex(rule => rule.skipInit) > -1)
+                continue;
+            const fakeEvent = {
+                type: key,
+                isFake: true,
+                detail: {
+                    value: target.value,
+                },
+                target: target
+            };
+            this._hndEv(fakeEvent);
         }
         target.removeAttribute('disabled');
     }
     _hndEv(e) {
         const ct = (e.currentTarget || e.target);
-        const rule = ct[p_d_rules][e.type];
-        if (rule.if && !e.target.matches(rule.if))
-            return;
-        rule.lastEvent = e;
-        if (rule.recursive) {
-            rule.stack = [];
-        }
-        rule.map.forEach(v => {
-            v.count = 0;
-        });
-        //this.passDown(ct, e, rule, 0, ct, null);
-        this.passDown({
-            start: ct,
-            e: e,
-            rule: rule,
-            //count: 0,
-            topEl: ct,
+        const eRules = ct[p_d_rules][e.type];
+        eRules.forEach(rule => {
+            if (rule.if && !e.target.matches(rule.if))
+                return;
+            rule.lastEvent = e;
+            // if(rule.recursive){
+            //     eRules.stack = [];
+            // }
+            rule.map.forEach(v => {
+                v.count = 0;
+            });
+            //this.passDown(ct, e, rule, 0, ct, null);
+            this.passDown({
+                start: ct,
+                e: e,
+                rule: rule,
+                topEl: ct,
+            });
         });
     }
     // passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, topEl: IPDTarget, mutEl: IPDTarget | null) {
