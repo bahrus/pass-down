@@ -330,7 +330,42 @@ function (_observeCssSelector) {
   }, {
     key: "commit",
     value: function commit(target, key, val) {
-      target[key] = val;
+      var s = key.split('.');
+
+      if (s.length === 1) {
+        target[key] = val;
+        return;
+      }
+
+      var key2 = s.pop();
+      var target2 = target;
+      var isNew = false;
+
+      switch (key2) {
+        case 'new()':
+          isNew = true;
+          key2 = s.pop();
+          break;
+      }
+
+      var r = s.reverse();
+      var tk = r.pop();
+      var f = tk;
+
+      while (tk !== undefined) {
+        if (!target2[tk]) {
+          target2[tk] = {};
+        }
+
+        target2 = target2[tk];
+        tk = r.pop();
+      }
+
+      target2[key2] = val;
+
+      if (isNew) {
+        target[f] = Object.assign({}, target[f]);
+      }
     }
   }, {
     key: "getPropFromPath",

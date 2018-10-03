@@ -292,7 +292,34 @@ export class PassDown extends observeCssSelector(HTMLElement) {
     }
 
     commit(target: HTMLElement, key: string, val: any) {
-        (<any>target)[key] = val;
+        const s = key.split('.');
+        if(s.length === 1){
+            (<any>target)[key] = val;
+            return;
+        }
+        let key2 = s.pop() as string;
+        let target2 = target as any;
+        let isNew = false;
+        switch(key2){
+            case 'new()':
+                isNew = true;
+                key2 = s.pop() as string;
+                break;
+        }
+        let r = s.reverse();
+        let tk = r.pop();
+        let f = tk as string;
+        while(tk !== undefined){
+            if(!target2[tk]){
+                target2[tk] = {};
+            }
+            target2 = target2[tk];
+            tk = r.pop();
+        }
+        target2[key2] = val;
+        if(isNew){
+            (<any>target)[f] = Object.assign({}, (<any>target)[f]);
+        }
     }
 
     getPropFromPath(val: any, path: string) {
@@ -306,6 +333,8 @@ export class PassDown extends observeCssSelector(HTMLElement) {
         });
         return context;
     }
+
+    
 
 }
 

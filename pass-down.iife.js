@@ -325,7 +325,34 @@ class PassDown extends observeCssSelector(HTMLElement) {
         });
     }
     commit(target, key, val) {
-        target[key] = val;
+        const s = key.split('.');
+        if (s.length === 1) {
+            target[key] = val;
+            return;
+        }
+        let key2 = s.pop();
+        let target2 = target;
+        let isNew = false;
+        switch (key2) {
+            case 'new()':
+                isNew = true;
+                key2 = s.pop();
+                break;
+        }
+        let r = s.reverse();
+        let tk = r.pop();
+        let f = tk;
+        while (tk !== undefined) {
+            if (!target2[tk]) {
+                target2[tk] = {};
+            }
+            target2 = target2[tk];
+            tk = r.pop();
+        }
+        target2[key2] = val;
+        if (isNew) {
+            target[f] = Object.assign({}, target[f]);
+        }
     }
     getPropFromPath(val, path) {
         if (!path || path === '.')

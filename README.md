@@ -2,7 +2,7 @@
 
 <a href="https://nodei.co/npm/pass-down/"><img src="https://nodei.co/npm/pass-down.png"></a>
 
-<img src="http://img.badgesize.io/https://unpkg.com/pass-down@0.0.5/build/ES6/pass-down.iife.js?compression=gzip">
+<img src="http://img.badgesize.io/https://unpkg.com/pass-down@0.0.6/build/ES6/pass-down.iife.js?compression=gzip">
 
 # pass-down
 
@@ -78,4 +78,8 @@ Normally, passing is only down down the direct siblings.  To pass things into ch
     </iron-list>
 </div>
 ```
+
+## Setting Nested Properties
+
+
 
