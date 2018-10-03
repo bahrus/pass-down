@@ -269,7 +269,7 @@ function (_observeCssSelector) {
         }); //this.passDown(ct, e, rule, 0, ct, null);
 
         _this7.passDown({
-          start: ct,
+          start: ct.nextElementSibling,
           e: e,
           rule: rule,
           topEl: ct
@@ -283,14 +283,13 @@ function (_observeCssSelector) {
       var _this8 = this;
 
       var nextSib = p.start;
-      var cnt = 0;
 
       while (nextSib) {
         if (nextSib.tagName !== 'SCRIPT') {
           p.rule.map.forEach(function (map) {
             if (map.max > 0 && map.count >= map.max) return;
 
-            if (map.isNext && cnt > 0 || nextSib.matches && nextSib.matches(map.cssSelector)) {
+            if (map.isNext || nextSib.matches && nextSib.matches(map.cssSelector)) {
               map.count++;
 
               _this8.setVal(p.e, nextSib, map);
@@ -315,7 +314,6 @@ function (_observeCssSelector) {
         }
 
         nextSib = nextSib.nextElementSibling;
-        cnt++;
       }
     }
   }, {

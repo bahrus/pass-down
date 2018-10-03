@@ -17,7 +17,7 @@
     <xtal-state-watch watch level="local" 
       data-on="history-changed: 
                 pass-to:#handleViewableNodesChanged{firstVisibleIndex:target.history.firstVisibleIndex}
-                and-pass-to:myTree{toggledNode:target.history.toggledNode}
+                and-pass-to:xtal-tree{toggledNode:target.history.toggledNode} skip-init
               "
     ></xtal-state-watch>
     
@@ -83,6 +83,10 @@
           })
         },
         toggleNodeFn: node => {
+          if(!node) {
+            console.log('null node');
+            return;
+          }
           node.expanded = !node.expanded;
         },
         testNodeFn: (node, search) => {
@@ -167,7 +171,6 @@
               </template>
               <template is="dom-if" if="[[!item.children]]">📝</template>
             </span>
-            <!-- <p-u on="click" if="span" to="/myTree{toggledNode:target.node}"></p-u> -->
             <xtal-state-commit make level="#cascadeTest" url="/toggle" with-path="toggledNode"></xtal-state-commit>
             <span class="toggler" select-node="[[item]]" data-pd>
               <mwc-checkbox checked="[[item.isSelected]]" indeterminate="[[item.isIndeterminate]]"></mwc-checkbox>

@@ -281,7 +281,7 @@ class PassDown extends observeCssSelector(HTMLElement) {
             });
             //this.passDown(ct, e, rule, 0, ct, null);
             this.passDown({
-                start: ct,
+                start: ct.nextElementSibling,
                 e: e,
                 rule: rule,
                 topEl: ct,
@@ -291,13 +291,12 @@ class PassDown extends observeCssSelector(HTMLElement) {
     // passDown(start: HTMLElement, e: Event, rule: IEventRule, count: number, topEl: IPDTarget, mutEl: IPDTarget | null) {
     passDown(p) {
         let nextSib = p.start;
-        let cnt = 0;
         while (nextSib) {
             if (nextSib.tagName !== 'SCRIPT') {
                 p.rule.map.forEach(map => {
                     if (map.max > 0 && map.count >= map.max)
                         return;
-                    if ((map.isNext && cnt > 0) || (nextSib.matches && nextSib.matches(map.cssSelector))) {
+                    if (map.isNext || (nextSib.matches && nextSib.matches(map.cssSelector))) {
                         map.count++;
                         this.setVal(p.e, nextSib, map);
                     }
@@ -317,7 +316,6 @@ class PassDown extends observeCssSelector(HTMLElement) {
                 });
             }
             nextSib = nextSib.nextElementSibling;
-            cnt++;
         }
     }
     setVal(e, target, map) {
