@@ -2,7 +2,7 @@
 
 <a href="https://nodei.co/npm/pass-down/"><img src="https://nodei.co/npm/pass-down.png"></a>
 
-<img src="http://img.badgesize.io/https://unpkg.com/pass-down@0.0.6/build/ES6/pass-down.iife.js?compression=gzip">
+<img src="http://img.badgesize.io/https://unpkg.com/pass-down@0.0.9/build/ES6/pass-down.iife.js?compression=gzip">
 
 # pass-down
 

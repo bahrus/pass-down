@@ -1,7 +1,7 @@
 {
   "name": "pass-down",
   "version": "0.0.8",
-  "description": "TBD",
+  "description": "Glue DOM and Custom Elements together (take 2)",
   "main": "pass-down.js",
   "dependencies": {
     "xtal-latx": "0.0.42"
