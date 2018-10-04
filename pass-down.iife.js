@@ -92,6 +92,7 @@ const pass_to = 'pass-to';
 const pass_to_next = 'pass-to-next';
 const and_to = 'and-to';
 const and_to_next = 'and-to-next';
+const pass_to_id = 'pass-to-id';
 class PassDown extends observeCssSelector(HTMLElement) {
     static get is() { return 'pass-down'; }
     connectedCallback() {
@@ -173,8 +174,9 @@ class PassDown extends observeCssSelector(HTMLElement) {
                     case 'skip-init':
                         rule.skipInit = true;
                         break;
+                    case 'debug':
                     case 'recursive':
-                        rule.recursive = true;
+                        rule[token] = true;
                         break;
                     default:
                         if (token.startsWith('if(')) {
@@ -186,6 +188,7 @@ class PassDown extends observeCssSelector(HTMLElement) {
                             switch (lhs) {
                                 case pass_to:
                                 case pass_to_next:
+                                case pass_to_id:
                                     rule.map = [];
                                     break;
                             }
@@ -198,13 +201,17 @@ class PassDown extends observeCssSelector(HTMLElement) {
                                     cssProp.max = 1;
                                     cssProp.isNext = true;
                                     break;
+                                case pass_to_id:
+                                    cssProp.isId = true;
+                                    break;
                             }
                             const rhs = this.parseBr(lhsRHS.rhs);
                             let vals;
                             if (!cssProp.isNext) {
-                                cssProp.max = parseInt(rhs[2]);
+                                cssProp.max = cssProp.isId ? 1 : parseInt(rhs[2]);
                                 vals = rhs[1];
-                                cssProp.cssSelector = rhs[0];
+                                const prop = cssProp.isId ? 'idSelector' : 'cssSelector';
+                                cssProp[prop] = rhs[0];
                             }
                             else {
                                 vals = rhs[1];
@@ -270,18 +277,34 @@ class PassDown extends observeCssSelector(HTMLElement) {
         const ct = (e.currentTarget || e.target);
         const eRules = ct[p_d_rules][e.type];
         eRules.forEach(rule => {
+            if (rule.debug)
+                debugger;
             if (rule.if && !e.target.matches(rule.if))
                 return;
             rule.lastEvent = e;
             // if(rule.recursive){
             //     eRules.stack = [];
             // }
-            rule.map.forEach(v => {
+            const map = rule.map;
+            map.forEach(v => {
                 v.count = 0;
             });
-            //this.passDown(ct, e, rule, 0, ct, null);
+            let start;
+            if (map.length === 1 && map[0].idSelector) {
+                const h = getHost(this);
+                const idS = map[0].idSelector;
+                if (h) {
+                    start = h.querySelector('#' + idS);
+                }
+                else {
+                    start = self[idS];
+                }
+            }
+            else {
+                start = ct.nextElementSibling;
+            }
             this.passDown({
-                start: ct.nextElementSibling,
+                start: start,
                 e: e,
                 rule: rule,
                 topEl: ct,
@@ -296,7 +319,7 @@ class PassDown extends observeCssSelector(HTMLElement) {
                 p.rule.map.forEach(map => {
                     if (map.max > 0 && map.count >= map.max)
                         return;
-                    if (map.isNext || (nextSib.matches && nextSib.matches(map.cssSelector))) {
+                    if (map.isNext || map.isId || (nextSib.matches && nextSib.matches(map.cssSelector))) {
                         map.count++;
                         this.setVal(p.e, nextSib, map);
                     }

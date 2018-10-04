@@ -14,12 +14,12 @@
   <pass-down></pass-down>
   <div id="cascadeTest" data-pd>
     
-    <xtal-state-watch watch level="local" 
+    <!-- <xtal-state-watch watch level="local" 
       data-on="history-changed: 
                 pass-to:#handleViewableNodesChanged{firstVisibleIndex:target.history.firstVisibleIndex}
                 and-pass-to:xtal-tree{toggledNode:target.history.toggledNode} skip-init
               "
-    ></xtal-state-watch>
+    ></xtal-state-watch> -->
     
     <h3>Basic xtal-cascade demo</h3>
     
@@ -164,14 +164,14 @@
       <template>
         <div class="node" style$="[[item.style]]" data-pd>
           <div class="row" data-pd>
-            <span class="expander" node="[[item]]" data-on="click: pass-to:xtal-state-commit{history:target.node} skip-init">
+            <span class="expander" node="[[item]]" data-on="click: pass-to-id:myTree{toggledNode:target.node} skip-init">
               <template is="dom-if" if="[[item.children]]">
                 <template is="dom-if" if="[[item.expanded]]">📖</template>
                 <template is="dom-if" if="[[!item.expanded]]">📕</template>
               </template>
               <template is="dom-if" if="[[!item.children]]">📝</template>
             </span>
-            <xtal-state-commit make level="#cascadeTest" url="/toggle" with-path="toggledNode"></xtal-state-commit>
+            <!-- <xtal-state-commit make level="#cascadeTest" url="/toggle" with-path="toggledNode"></xtal-state-commit> -->
             <span class="toggler" select-node="[[item]]" data-pd>
               <mwc-checkbox checked="[[item.isSelected]]" indeterminate="[[item.isIndeterminate]]"></mwc-checkbox>
               <xtal-split search="[[search]]" text-content="[[item.name]]"></xtal-split>
@@ -207,7 +207,7 @@
     <script type="module" src="https://unpkg.com/xtal-cascade@0.0.2/xtal-cascade.js?module"></script>
     <script type="module" src="https://unpkg.com/@material/mwc-checkbox@0.1.2/mwc-checkbox.js?module"></script>
     <script type="module" src="https://unpkg.com/aggregator-fn@0.0.10/aggregator-fn.iife.js"></script>
-    <script type="module" src="https://unpkg.com/xtal-state@0.0.18/xtal-state.js"></script>
+    <script type="module" src="https://unpkg.com/xtal-state@0.0.20/xtal-state.js"></script>
     <script type="module" src="../pass-down.js"></script>
   </div>
 

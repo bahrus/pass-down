@@ -1,3 +1,4 @@
+import { getHost } from "./node_modules/xtal-latx/getHost.js";
 import { observeCssSelector } from "./node_modules/xtal-latx/observeCssSelector.js";
 import { define } from "./node_modules/xtal-latx/define.js";
 import { debounce } from "./node_modules/xtal-latx/debounce.js"; //const p_d_on = 'p-d-on';
@@ -8,6 +9,7 @@ var pass_to = 'pass-to';
 var pass_to_next = 'pass-to-next';
 var and_to = 'and-to';
 var and_to_next = 'and-to-next';
+var pass_to_id = 'pass-to-id';
 export var PassDown =
 /*#__PURE__*/
 function (_observeCssSelector) {
@@ -131,8 +133,9 @@ function (_observeCssSelector) {
               rule.skipInit = true;
               break;
 
+            case 'debug':
             case 'recursive':
-              rule.recursive = true;
+              rule[token] = true;
               break;
 
             default:
@@ -146,6 +149,7 @@ function (_observeCssSelector) {
                 switch (lhs) {
                   case pass_to:
                   case pass_to_next:
+                  case pass_to_id:
                     rule.map = [];
                     break;
                 }
@@ -159,6 +163,10 @@ function (_observeCssSelector) {
                     cssProp.max = 1;
                     cssProp.isNext = true;
                     break;
+
+                  case pass_to_id:
+                    cssProp.isId = true;
+                    break;
                 }
 
                 var rhs = _this5.parseBr(lhsRHS.rhs);
@@ -166,9 +174,10 @@ function (_observeCssSelector) {
                 var vals;
 
                 if (!cssProp.isNext) {
-                  cssProp.max = parseInt(rhs[2]);
+                  cssProp.max = cssProp.isId ? 1 : parseInt(rhs[2]);
                   vals = rhs[1];
-                  cssProp.cssSelector = rhs[0];
+                  var prop = cssProp.isId ? 'idSelector' : 'cssSelector';
+                  cssProp[prop] = rhs[0];
                 } else {
                   vals = rhs[1];
                 }
@@ -259,17 +268,33 @@ function (_observeCssSelector) {
       var ct = e.currentTarget || e.target;
       var eRules = ct[p_d_rules][e.type];
       eRules.forEach(function (rule) {
+        if (rule.debug) debugger;
         if (rule.if && !e.target.matches(rule.if)) return;
         rule.lastEvent = e; // if(rule.recursive){
         //     eRules.stack = [];
         // }
 
-        rule.map.forEach(function (v) {
+        var map = rule.map;
+        map.forEach(function (v) {
           v.count = 0;
-        }); //this.passDown(ct, e, rule, 0, ct, null);
+        });
+        var start;
+
+        if (map.length === 1 && map[0].idSelector) {
+          var h = getHost(_this7);
+          var idS = map[0].idSelector;
+
+          if (h) {
+            start = h.querySelector('#' + idS);
+          } else {
+            start = self[idS];
+          }
+        } else {
+          start = ct.nextElementSibling;
+        }
 
         _this7.passDown({
-          start: ct.nextElementSibling,
+          start: start,
           e: e,
           rule: rule,
           topEl: ct
@@ -289,7 +314,7 @@ function (_observeCssSelector) {
           p.rule.map.forEach(function (map) {
             if (map.max > 0 && map.count >= map.max) return;
 
-            if (map.isNext || nextSib.matches && nextSib.matches(map.cssSelector)) {
+            if (map.isNext || map.isId || nextSib.matches && nextSib.matches(map.cssSelector)) {
               map.count++;
 
               _this8.setVal(p.e, nextSib, map);

@@ -4,7 +4,6 @@
   "description": "TBD",
   "main": "pass-down.js",
   "dependencies": {
-    "npm": "^6.4.1",
     "xtal-latx": "0.0.42"
   },
   "devDependencies": {
