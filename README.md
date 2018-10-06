@@ -10,7 +10,7 @@ The pass-down web component is an alternative web component to the [p-d.p-u pack
 
 The goal of pass-down and p-d.p-u, in a nutshell, is to be able to progressively glue DOM and custom elements together, regardless of how those elements got onto the page.  Perhaps the strongest use-case would be in a server-side generated environment, where the server creates the fundamental layout / markup, and we just need some "connectors" to allow one DOM element / custom element to talk to others.  These components should have absolutely zero impact on initial load time. OK, perhaps that's a stretch -- the browser does need to parse the components, and the components do execute some JavaScript.  But the point is, as these components get activated (asynchronously), they can remove any "disabled" attributes, so users can know when a component is ready for interaction.  
 
-pass-down imposes a strict downward unidirectional flow direction amongst sibling components (hence the name).  Like p-d.p-u it is a "peer-to-peer" binding framework, with no expectation of a unifying state manager.  In the declarative spirit of these components, [xtal-state](https://www.webcomponents.org/element/xtal-state) could provide local state management if needed, without having to define a formal custom element, in those (relatively rare?) cases where data doesn't cleanly flow in a single direction.  Just a suggestion.  I'm a big fan of custom elements / web components, but I also think there's a good use case for a web composition that can evolve in complexity, to the point where it is beneficial to encapsulate the logic in a web component.  But only after the benefits outweigh the (non-zero) costs.
+pass-down strongly encourages adhering to a downward unidirectional flow direction amongst sibling components (hence the name).  Like p-d.p-u it is a "peer-to-peer" binding framework, with no expectation of a unifying state manager.  In the declarative spirit of these components, [xtal-state](https://www.webcomponents.org/element/xtal-state) could provide local state management if needed, without having to define a formal custom element, in those (relatively rare?) cases where data doesn't cleanly flow in a single direction.  Just a suggestion.  I'm a big fan of custom elements / web components, but I also think there's a good use case for a web composition that can evolve in complexity, to the point where it is beneficial to encapsulate the logic in a web component.  But only after the benefits outweigh the (non-zero) costs.
 
 
 ## Syntax
@@ -53,7 +53,7 @@ Notes:
 7)  The optional second set of braces indicates how many matching elements are expected to be found.
 8)  You can then add more tokens for other event names (you need a space after the closing "}").
 
-## Recusive passdown
+## Recursive passdown
 
 Normally, passing is only down down the direct siblings.  To pass things into children of siblings, indicate that the rule is recursive, and decorate the siblings with the data-pd attribute:
 
@@ -115,9 +115,24 @@ But in the case of this package this feature doesn't get its own web component, 
 </span>
 ```
 
-## Rambling special:  Is this needed?
+## Rambling word salad:  Is this needed?
 
 This web component began with the premise that passing things strictly downward, combined with a generic state management system for data that is applicable throughout the DOM tree, would be sufficient.  That premise proved wrong, at least if using xtal-state for that state management.  I would venture to say that there are some high performance scenarios, where passing data up the sibling list to a precise target out-performs any kind of generic powerful state management / binding system.  I could be wrong, who knows?  A sign that this may be right is the fact that generic state management component systems have methods called "componentshouldupdate", for example.  The ability to pass up the DOM tree to a precise target would appear to obviate the need for this kind of programmatic check, perhaps.  At least that's been my experience in one scenario.
+
+## Viewing Your Element
+
+```
+$ polymer serve
+```
+
+## Running Tests
+
+```
+$ npm tests
+```
+
+
+
 
 
 
