@@ -1,6 +1,6 @@
 {
   "name": "pass-down",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Glue DOM and Custom Elements together (take 2)",
   "main": "pass-down.js",
   "dependencies": {
