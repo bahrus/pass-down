@@ -18,4 +18,3 @@ async function customTests(page) {
         path: 'demo/dev.iife.html'
     }, customTests);
 })();
-//# sourceMappingURL=pass-down-tests.js.map

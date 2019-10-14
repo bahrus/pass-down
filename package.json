@@ -2,19 +2,20 @@
   "name": "pass-down",
   "version": "0.0.11",
   "description": "Glue DOM and Custom Elements together (take 2)",
-  "main": "pass-down.js",
+  "main": "index.js",
+  "module": "index.js",
   "dependencies": {
-    "xtal-latx": "0.0.88"
+    "p-et-alia": "0.0.47"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "2.2.10",
-    "jiife": "0.0.12",
-    "tape": "4.10.2",
+    "@webcomponents/webcomponentsjs": "2.3.0",
+    "jiife": "0.0.14",
+    "tape": "4.11.0",
     "@types/tape": "4.2.33",
-    "xtal-test": "0.0.19"
+    "xtal-test": "0.0.20"
   },
   "scripts": {
-    "test": "node createIIFE.js && tape test/*.js"
+    "test": "tape test/*.js"
   },
   "repository": {
     "type": "git",
