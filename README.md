@@ -4,7 +4,7 @@
 
 <img src="https://badgen.net/bundlephobia/minzip/pass-down">
 
-Just a pass-through of p-d
+pass-down (or p-d for short) is one of the key components that makes up the [p-et-alia](https://github.com/bahrus/p-et-alia) "framework".  It builds on [on-to-me](https://github.com/bahrus/on-to-me).
 
 
 
