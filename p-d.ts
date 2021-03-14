@@ -8,6 +8,10 @@ import { getSlicedPropDefs } from './node_modules/xtal-element/lib/getSlicedProp
  */
 export class PD extends P implements ReactiveSurface{
     static is = 'p-d';
+    static observedAttributes = ['debug', 'log'];
+    attributeChangedCallback(n:string, ov: string, nv: string){
+        (<any>this)[n] = (nv !== null);
+    }
     self = this;
     propActions = propActions;
     reactor = new xc.Rx(this);
@@ -47,6 +51,12 @@ const handleEvent = ({val, lastEvent, parseValAs, to, careOf, m, from, self}: PD
     if(parseValAs !== undefined){
         valToPass = convert(valToPass, parseValAs);
     }
+    if(self.debug){
+        debugger;
+    }else if(self.log){
+        console.log('passVal', {valToPass, self, to, careOf, m, from})
+    }
+
     passVal(valToPass, self, to, careOf, m, from);
 }
 

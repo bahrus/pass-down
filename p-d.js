@@ -12,6 +12,9 @@ export class PD extends P {
         this.propActions = propActions;
         this.reactor = new xc.Rx(this);
     }
+    attributeChangedCallback(n, ov, nv) {
+        this[n] = (nv !== null);
+    }
     connectedCallback() {
         this.style.display = 'none';
         xc.hydrate(this, slicedPropDefs);
@@ -24,6 +27,7 @@ export class PD extends P {
     }
 }
 PD.is = 'p-d';
+PD.observedAttributes = ['debug', 'log'];
 const attachEventHandler = ({ on, self }) => {
     const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
     if (elementToObserve === null)
@@ -46,6 +50,12 @@ const handleEvent = ({ val, lastEvent, parseValAs, to, careOf, m, from, self }) 
     let valToPass = getProp(lastEvent, val.split('.'), self);
     if (parseValAs !== undefined) {
         valToPass = convert(valToPass, parseValAs);
+    }
+    if (self.debug) {
+        debugger;
+    }
+    else if (self.log) {
+        console.log('passVal', { valToPass, self, to, careOf, m, from });
     }
     passVal(valToPass, self, to, careOf, m, from);
 };
