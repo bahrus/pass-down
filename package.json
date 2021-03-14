@@ -5,8 +5,16 @@
   "main": "index.js",
   "module": "index.js",
   "dependencies": {
-    "on-to-me": "0.0.11",
+    "on-to-me": "0.0.12",
+    "trans-render": "0.0.278",
     "xtal-element": "0.0.365"
+  },
+  "devDependencies": {
+    "xtal-test": "0.0.50"
+  },
+  "scripts": {
+    "test": "node test/test-all.js",
+    "serve": "node node_modules/xtal-test/serve.js"
   },
   "repository": {
     "type": "git",

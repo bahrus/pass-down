@@ -18,6 +18,7 @@ export class PD extends P implements ReactiveSurface{
     onPropChange(n: string, propDef: PropDef, nv: any){
         this.reactor.addToQueue(propDef, nv);
     }
+    boundHandleEvent: any;
     handleEvent(e: Event){
         this.lastEvent = e;
     }
@@ -26,14 +27,17 @@ export class PD extends P implements ReactiveSurface{
 }
 
 const attachEventHandler = ({on, self}: PD) => {
-    const elementToObserve = getPreviousSib(self, self.observe) as Element;
+    const elementToObserve = getPreviousSib(self.previousElementSibling as HTMLElement, self.observe ?? null) as Element;
     if(elementToObserve === null) throw "Could not locate element to observe.";
+    if(!self.boundHandleEvent){
+        self.boundHandleEvent = self.handleEvent.bind(self);
+    }
     if(self.previousOn !== undefined){
-        elementToObserve.removeEventListener(self.previousOn, self.handleEvent);
+        elementToObserve.removeEventListener(self.previousOn, self.boundHandleEvent);
     }else{
         nudge(elementToObserve)
     }
-    elementToObserve.addEventListener(on!, self.handleEvent);
+    elementToObserve.addEventListener(on!, self.boundHandleEvent);
     self.previousOn = on;
 };
 
@@ -79,7 +83,7 @@ const propDefMap: PropDefMap<PD> = {
     on: str1, to: str2, careOf: str2, ifTargetMatches: str2,
     noblock: bool1, prop: str2, propFromEvent: str2, val: str2,
     fireEvent: str2, skipInit: bool1, debug: bool1, log: bool1,
-    async: bool1, parseValAs: str1, capture: bool1,
+    async: bool1, parseValAs: str2, capture: bool1,
     lastEvent: obj1, m: num, from: str2,
 };
 const slicedPropDefs = getSlicedPropDefs(propDefMap);
@@ -94,3 +98,9 @@ declare global {
         'p-d': PD;
     }
 }
+
+export class PassDown extends PD{
+    static is = 'pass-down';
+}
+
+xc.define(PassDown);
