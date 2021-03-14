@@ -54,10 +54,10 @@ const handleEvent = ({val, lastEvent, parseValAs, to, careOf, m, from, self}: PD
     if(self.debug){
         debugger;
     }else if(self.log){
-        console.log('passVal', {valToPass, self, to, careOf, m, from})
+        console.log('passVal', {valToPass, self, to, careOf, m, from});
     }
-
-    passVal(valToPass, self, to, careOf, m, from);
+    const matches = passVal(valToPass, self, to, careOf, m, from);
+    self.setAttribute('matches', '' + matches.length);
 }
 
 const propActions = [attachEventHandler, handleEvent] as PropAction[];
