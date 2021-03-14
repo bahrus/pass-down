@@ -11,6 +11,10 @@ export class PD extends P {
         this.self = this;
         this.propActions = propActions;
         this.reactor = new xc.Rx(this);
+        //https://web.dev/javascript-this/
+        this.handleEvent = (e) => {
+            this.lastEvent = e;
+        };
     }
     attributeChangedCallback(n, ov, nv) {
         this[n] = (nv !== null);
@@ -22,9 +26,6 @@ export class PD extends P {
     onPropChange(n, propDef, nv) {
         this.reactor.addToQueue(propDef, nv);
     }
-    handleEvent(e) {
-        this.lastEvent = e;
-    }
 }
 PD.is = 'p-d';
 PD.observedAttributes = ['debug', 'log'];
@@ -32,16 +33,13 @@ const attachEventHandler = ({ on, self }) => {
     const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
     if (elementToObserve === null)
         throw "Could not locate element to observe.";
-    if (!self.boundHandleEvent) {
-        self.boundHandleEvent = self.handleEvent.bind(self);
-    }
     if (self.previousOn !== undefined) {
-        elementToObserve.removeEventListener(self.previousOn, self.boundHandleEvent);
+        elementToObserve.removeEventListener(self.previousOn, self.handleEvent);
     }
     else {
         nudge(elementToObserve);
     }
-    elementToObserve.addEventListener(on, self.boundHandleEvent);
+    elementToObserve.addEventListener(on, self.handleEvent);
     self.setAttribute('status', '👂');
     self.previousOn = on;
 };

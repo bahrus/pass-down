@@ -22,10 +22,11 @@ export class PD extends P implements ReactiveSurface{
     onPropChange(n: string, propDef: PropDef, nv: any){
         this.reactor.addToQueue(propDef, nv);
     }
-    boundHandleEvent: any;
-    handleEvent(e: Event){
+    //https://web.dev/javascript-this/
+    handleEvent = (e: Event) => {
         this.lastEvent = e;
     }
+
     m: number | undefined;
     from: string | undefined;
 }
@@ -33,15 +34,13 @@ export class PD extends P implements ReactiveSurface{
 const attachEventHandler = ({on, self}: PD) => {
     const elementToObserve = getPreviousSib(self.previousElementSibling as HTMLElement, self.observe ?? null) as Element;
     if(elementToObserve === null) throw "Could not locate element to observe.";
-    if(!self.boundHandleEvent){
-        self.boundHandleEvent = self.handleEvent.bind(self);
-    }
+
     if(self.previousOn !== undefined){
-        elementToObserve.removeEventListener(self.previousOn, self.boundHandleEvent);
+        elementToObserve.removeEventListener(self.previousOn, self.handleEvent);
     }else{
         nudge(elementToObserve)
     }
-    elementToObserve.addEventListener(on!, self.boundHandleEvent);
+    elementToObserve.addEventListener(on!, self.handleEvent);
     self.setAttribute('status', '👂');
     self.previousOn = on;
 };
