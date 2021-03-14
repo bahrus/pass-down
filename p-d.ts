@@ -46,7 +46,7 @@ const handleEvent = ({val, lastEvent, parseValAs, to, careOf, m, from, self}: PD
     passVal(valToPass, self, to, careOf, m, from);
 }
 
-const propActions = [attachEventHandler] as PropAction[];
+const propActions = [attachEventHandler, handleEvent] as PropAction[];
 
 const str1: PropDef = {
     type: String,
