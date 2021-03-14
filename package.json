@@ -5,7 +5,7 @@
   "main": "index.js",
   "module": "index.js",
   "dependencies": {
-    "on-to-me": "0.0.10",
+    "on-to-me": "0.0.11",
     "xtal-element": "0.0.365"
   },
   "repository": {
