@@ -42,9 +42,11 @@ const attachEventHandler = ({ on, self }) => {
         nudge(elementToObserve);
     }
     elementToObserve.addEventListener(on, self.boundHandleEvent);
+    self.setAttribute('status', '👂');
     self.previousOn = on;
 };
 const handleEvent = ({ val, lastEvent, parseValAs, to, careOf, m, from, self }) => {
+    self.setAttribute('status', '🌩️');
     if (!self.noblock)
         lastEvent.stopPropagation();
     let valToPass = getProp(lastEvent, val.split('.'), self);
@@ -59,6 +61,7 @@ const handleEvent = ({ val, lastEvent, parseValAs, to, careOf, m, from, self }) 
     }
     const matches = passVal(valToPass, self, to, careOf, m, from);
     self.setAttribute('matches', '' + matches.length);
+    self.setAttribute('status', '👂');
 };
 const propActions = [attachEventHandler, handleEvent];
 const str1 = {
