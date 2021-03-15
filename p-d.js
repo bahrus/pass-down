@@ -26,6 +26,13 @@ export class PD extends P {
     onPropChange(n, propDef, nv) {
         this.reactor.addToQueue(propDef, nv);
     }
+    valFromEvent(e) {
+        let valToPass = getProp(e, this.val.split('.'), this);
+        if (this.parseValAs !== undefined) {
+            valToPass = convert(valToPass, this.parseValAs);
+        }
+        return valToPass;
+    }
 }
 PD.is = 'p-d';
 PD.observedAttributes = ['debug', 'log'];
@@ -47,10 +54,7 @@ const handleEvent = ({ val, lastEvent, parseValAs, to, careOf, m, from, self }) 
     self.setAttribute('status', '🌩️');
     if (!self.noblock)
         lastEvent.stopPropagation();
-    let valToPass = getProp(lastEvent, val.split('.'), self);
-    if (parseValAs !== undefined) {
-        valToPass = convert(valToPass, parseValAs);
-    }
+    let valToPass = self.valFromEvent(lastEvent);
     if (self.debug) {
         debugger;
     }

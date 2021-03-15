@@ -27,6 +27,14 @@ export class PD extends P implements ReactiveSurface{
         this.lastEvent = e;
     }
 
+    valFromEvent(e: Event){
+        let valToPass = getProp(e, this.val!.split('.'), this);
+        if(this.parseValAs !== undefined){
+            valToPass = convert(valToPass, this.parseValAs);
+        }
+        return valToPass;
+    }
+
     m: number | undefined;
     from: string | undefined;
 }
@@ -48,10 +56,8 @@ const attachEventHandler = ({on, self}: PD) => {
 const handleEvent = ({val, lastEvent, parseValAs, to, careOf, m, from, self}: PD) => {
     self.setAttribute('status', '🌩️');
     if(!self.noblock) lastEvent!.stopPropagation();
-    let valToPass = getProp(lastEvent, val!.split('.'), self);
-    if(parseValAs !== undefined){
-        valToPass = convert(valToPass, parseValAs);
-    }
+    let valToPass = self.valFromEvent(lastEvent!);
+    
     if(self.debug){
         debugger;
     }else if(self.log){
