@@ -24,6 +24,7 @@ export class PD extends P implements ReactiveSurface{
     }
     //https://web.dev/javascript-this/
     handleEvent = (e: Event) => {
+        if(!this.filterEvent(e)) return;
         this.lastEvent = e;
     }
 
@@ -33,6 +34,10 @@ export class PD extends P implements ReactiveSurface{
             valToPass = convert(valToPass, this.parseValAs);
         }
         return valToPass;
+    }
+
+    filterEvent(e: Event) : boolean{
+        return true;
     }
 
     m: number | undefined;

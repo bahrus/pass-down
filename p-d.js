@@ -13,6 +13,8 @@ export class PD extends P {
         this.reactor = new xc.Rx(this);
         //https://web.dev/javascript-this/
         this.handleEvent = (e) => {
+            if (!this.filterEvent(e))
+                return;
             this.lastEvent = e;
         };
     }
@@ -32,6 +34,9 @@ export class PD extends P {
             valToPass = convert(valToPass, this.parseValAs);
         }
         return valToPass;
+    }
+    filterEvent(e) {
+        return true;
     }
 }
 PD.is = 'p-d';
