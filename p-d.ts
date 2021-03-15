@@ -42,21 +42,28 @@ export class PD extends P implements ReactiveSurface{
 
     m: number | undefined;
     from: string | undefined;
+    mutateEvents: string[] | undefined;
 }
 
 const attachEventHandler = ({on, self}: PD) => {
     const elementToObserve = getPreviousSib(self.previousElementSibling as HTMLElement, self.observe ?? null) as Element;
     if(elementToObserve === null) throw "Could not locate element to observe.";
-
+    let doNudge = false;
     if(self.previousOn !== undefined){
         elementToObserve.removeEventListener(self.previousOn, self.handleEvent);
     }else{
-        nudge(elementToObserve)
+        doNudge = true;
     }
     elementToObserve.addEventListener(on!, self.handleEvent);
+    if(doNudge){
+        nudge(elementToObserve);
+    }
     self.setAttribute('status', '👂');
     self.previousOn = on;
+
 };
+
+
 
 const handleEvent = ({val, lastEvent, parseValAs, to, careOf, m, from, self}: PD) => {
     self.setAttribute('status', '🌩️');
@@ -73,7 +80,19 @@ const handleEvent = ({val, lastEvent, parseValAs, to, careOf, m, from, self}: PD
     self.setAttribute('status', '👂');
 }
 
-const propActions = [attachEventHandler, handleEvent] as PropAction[];
+const attachMutationEventHandler = ({mutateEvents, self}: PD) => {
+    const parentElement = self.parentElement;
+    if(parentElement === null) return;
+    for(const event of mutateEvents!){
+        parentElement.addEventListener(event, e => {
+            if(self.lastEvent !== undefined){
+                handleEvent(self);
+            }
+        })
+    }
+};
+
+const propActions = [attachEventHandler, handleEvent, attachMutationEventHandler] as PropAction[];
 
 const str1: PropDef = {
     type: String,
@@ -97,6 +116,13 @@ const obj1: PropDef = {
     stopReactionsIfFalsy: true,
 };
 
+const obj2: PropDef = {
+    type: Object,
+    dry: true,
+    parse: true,
+    stopReactionsIfFalsy: true,
+}
+
 const num: PropDef = {
     type: Number,
     dry: true,
@@ -107,7 +133,7 @@ const propDefMap: PropDefMap<PD> = {
     noblock: bool1, prop: str2, propFromEvent: str2, val: str2,
     fireEvent: str2, skipInit: bool1, debug: bool1, log: bool1,
     async: bool1, parseValAs: str2, capture: bool1,
-    lastEvent: obj1, m: num, from: str2,
+    lastEvent: obj1, m: num, from: str2, mutateEvents: obj2,
 };
 const slicedPropDefs = getSlicedPropDefs(propDefMap);
 
