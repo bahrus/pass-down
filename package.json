@@ -1,6 +1,6 @@
 {
   "name": "pass-down",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Glue DOM and Custom Elements together (take 2)",
   "main": "index.js",
   "module": "index.js",
