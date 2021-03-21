@@ -54,9 +54,16 @@ const attachEventHandler = ({on, self}: PD) => {
     }else{
         doNudge = true;
     }
-    elementToObserve.addEventListener(on!, self.handleEvent);
+    elementToObserve.addEventListener(on!, self.handleEvent, {capture: self.capture});
     if(doNudge){
-        nudge(elementToObserve);
+        if(elementToObserve === self.parentElement && self.ifTargetMatches){
+            elementToObserve.querySelectorAll(self.ifTargetMatches).forEach(publisher =>{
+                nudge(publisher);
+            });
+        }else{
+            nudge(elementToObserve);
+        }
+        
     }
     self.setAttribute('status', '👂');
     self.previousOn = on;
