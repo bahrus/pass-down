@@ -90,14 +90,17 @@ const attachEventHandler = ({on, self}: PD) => {
             handleValChange(self);
         })
     }
-    const initVal = self.initVal;
-    if(initVal !== undefined){
-        let val = getProp(elementToObserve, initVal.split('.'), self);
-        if(self.parseValAs !== undefined) val = convert(val, self.parseValAs);
-        self.lastVal = val;
-        passVal(val, self, self.to, self.careOf, self.m, self.from);
-    } 
+ 
 };
+
+const onInitVal = ({initVal, self}: PD) => {
+    //TODO: how can we avoid calling getPriousSib twice, without storing?
+    const elementToObserve = getPreviousSib(self.previousElementSibling as HTMLElement, self.observe ?? null) as Element;
+    let val = getProp(elementToObserve, initVal!.split('.'), self);
+    if(self.parseValAs !== undefined) val = convert(val, self.parseValAs);
+    self.lastVal = val;
+    passVal(val, self, self.to, self.careOf, self.m, self.from);
+}
 
 
 
@@ -133,7 +136,7 @@ const attachMutationEventHandler = ({mutateEvents, self}: PD) => {
     }
 };
 
-const propActions = [attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler] as PropAction[];
+const propActions = [onInitVal, attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler] as PropAction[];
 
 const str0: PropDef = {
     type: String,
@@ -172,7 +175,7 @@ const num: PropDef = {
 
 const propDefMap: PropDefMap<PD> = {
     on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
-    noblock: bool1, prop: str0, propFromEvent: str0, val: str0,
+    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1,
     fireEvent: str0, debug: bool1, log: bool1,
     async: bool1, parseValAs: str0, capture: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
