@@ -72,17 +72,22 @@ const attachEventHandler = ({on, self}: PD) => {
 
 
 
-const handleEvent = ({val, lastEvent, parseValAs, to, careOf, m, from, self}: PD) => {
+const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
     self.setAttribute('status', '🌩️');
     if(!self.noblock) lastEvent!.stopPropagation();
     let valToPass = self.valFromEvent(lastEvent!);
-    
+    self.lastVal = valToPass;
+    //holding on to lastEvent could introduce memory leak
+    delete self.lastEvent;
+}
+
+const handleValChange = ({lastVal, self, to, careOf, m, from}: PD) => {
     if(self.debug){
         debugger;
     }else if(self.log){
-        console.log('passVal', {valToPass, self, to, careOf, m, from});
+        console.log('passVal', {lastVal, self, });
     }
-    const matches = passVal(valToPass, self, to, careOf, m, from);
+    const matches = passVal(lastVal, self, to, careOf, m, from);
     self.setAttribute('matches', '' + matches.length);
     self.setAttribute('status', '👂');
 }
@@ -101,16 +106,17 @@ const attachMutationEventHandler = ({mutateEvents, self}: PD) => {
 
 const propActions = [attachEventHandler, handleEvent, attachMutationEventHandler] as PropAction[];
 
-const str1: PropDef = {
-    type: String,
-    dry: true,
-    stopReactionsIfFalsy: true,
-};
-
-const str2: PropDef = {
+const str0: PropDef = {
     type: String,
     dry: true
 }
+
+const str1: PropDef = {
+    ...str0,
+    stopReactionsIfFalsy: true,
+};
+
+
 
 const bool1: PropDef = {
     type: Boolean,
@@ -136,11 +142,12 @@ const num: PropDef = {
 }
 
 const propDefMap: PropDefMap<PD> = {
-    on: str1, to: str2, careOf: str2, ifTargetMatches: str2,
-    noblock: bool1, prop: str2, propFromEvent: str2, val: str2,
-    fireEvent: str2, skipInit: bool1, debug: bool1, log: bool1,
-    async: bool1, parseValAs: str2, capture: bool1,
-    lastEvent: obj1, m: num, from: str2, mutateEvents: obj2,
+    on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
+    noblock: bool1, prop: str0, propFromEvent: str0, val: str0,
+    fireEvent: str0, skipInit: bool1, debug: bool1, log: bool1,
+    async: bool1, parseValAs: str0, capture: bool1,
+    lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
+    lastVal: obj1,
 };
 const slicedPropDefs = getSlicedPropDefs(propDefMap);
 

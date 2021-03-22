@@ -10,6 +10,7 @@
     "xtal-element": "0.0.367"
   },
   "devDependencies": {
+    "iff-diff": "0.0.4",
     "xtal-test": "0.0.50"
   },
   "scripts": {

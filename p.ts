@@ -85,4 +85,6 @@ export class P extends HTMLElement {
     previousOn: string | undefined;
 
     lastEvent: Event | undefined;
+
+    lastVal: any;
 }
