@@ -62,12 +62,14 @@ export class P extends HTMLElement {
      * @attr fire-event
      */
     fireEvent: string | undefined;
+
+    initVal: string | undefined;
     
-    /**
-     * Don't raise a "fake" event when attaching to element.
-     * @attr skip-init
-     */
-    skipInit: boolean | undefined;
+    // /**
+    //  * Don't raise a "fake" event when attaching to element.
+    //  * @attr skip-init
+    //  */
+    // skipInit: boolean | undefined;
     
     debug!: boolean;
 

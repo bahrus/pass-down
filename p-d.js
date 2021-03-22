@@ -86,6 +86,14 @@ const attachEventHandler = ({ on, self }) => {
             handleValChange(self);
         });
     }
+    const initVal = self.initVal;
+    if (initVal !== undefined) {
+        let val = getProp(elementToObserve, initVal.split('.'), self);
+        if (self.parseValAs !== undefined)
+            val = convert(val, self.parseValAs);
+        self.lastVal = val;
+        passVal(val, self, self.to, self.careOf, self.m, self.from);
+    }
 };
 const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
     self.setAttribute('status', '🌩️');
@@ -150,7 +158,7 @@ const num = {
 const propDefMap = {
     on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0,
-    fireEvent: str0, skipInit: bool1, debug: bool1, log: bool1,
+    fireEvent: str0, debug: bool1, log: bool1,
     async: bool1, parseValAs: str0, capture: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
     lastVal: obj1,
