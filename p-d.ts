@@ -97,14 +97,14 @@ const attachMutationEventHandler = ({mutateEvents, self}: PD) => {
     if(parentElement === null) return;
     for(const event of mutateEvents!){
         parentElement.addEventListener(event, e => {
-            if(self.lastEvent !== undefined){
-                handleEvent(self);
+            if(self.lastVal !== undefined){
+                handleValChange(self);
             }
         })
     }
 };
 
-const propActions = [attachEventHandler, handleEvent, attachMutationEventHandler] as PropAction[];
+const propActions = [attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler] as PropAction[];
 
 const str0: PropDef = {
     type: String,

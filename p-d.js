@@ -92,13 +92,13 @@ const attachMutationEventHandler = ({ mutateEvents, self }) => {
         return;
     for (const event of mutateEvents) {
         parentElement.addEventListener(event, e => {
-            if (self.lastEvent !== undefined) {
-                handleEvent(self);
+            if (self.lastVal !== undefined) {
+                handleValChange(self);
             }
         });
     }
 };
-const propActions = [attachEventHandler, handleEvent, attachMutationEventHandler];
+const propActions = [attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler];
 const str0 = {
     type: String,
     dry: true
