@@ -78,6 +78,7 @@ const attachEventHandler = ({ on, self }) => {
             s('dispatch', p_d_std);
             s('child-list', '');
             s('observe', 'parentElement');
+            s('on', '*');
             parent.appendChild(mutObs);
         }
         parent.addEventListener(p_d_std, e => {

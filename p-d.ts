@@ -3,6 +3,7 @@ import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-m
 import {P} from './p.js';
 import { getSlicedPropDefs } from './node_modules/xtal-element/lib/getSlicedPropDefs.js';
 import  'mut-obs/mut-obs.js';
+import {MutObs} from 'mut-obs/mut-obs.js';
 
 const p_d_std = 'p_d_std';
 const attachedParents = new WeakSet<Element>();
@@ -81,6 +82,7 @@ const attachEventHandler = ({on, self}: PD) => {
             s('dispatch', p_d_std);
             s('child-list', '');
             s('observe', 'parentElement');
+            s('on', '*');
             parent.appendChild(mutObs);
         }
         parent.addEventListener(p_d_std, e => {
