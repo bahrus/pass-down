@@ -2,7 +2,7 @@ import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {P} from './p.js';
 import { getSlicedPropDefs } from './node_modules/xtal-element/lib/getSlicedPropDefs.js';
-import { MutObs } from 'mut-obs/mut-obs.js';
+import  'mut-obs/mut-obs.js';
 
 const p_d_std = 'p_d_std';
 const attachedParents = new WeakSet<Element>();
@@ -75,14 +75,16 @@ const attachEventHandler = ({on, self}: PD) => {
     if(parent !== null){
         if(!attachedParents.has(parent)){
             attachedParents.add(parent);
-            const mutObj = document.createElement('mut-obj') as MutObs;
-            const s = mutObj.setAttribute.bind(mutObj);
+            const mutObs = document.createElement('mut-obs') as MutObs;
+            const s = mutObs.setAttribute.bind(mutObs);
             s('bubbles', '');
             s('dispatch', p_d_std);
             s('child-list', '');
-            parent.appendChild(mutObj);
+            s('observe', 'parentElement');
+            parent.appendChild(mutObs);
         }
         parent.addEventListener(p_d_std, e => {
+            e.stopPropagation();
             handleValChange(self);
         })
     } 
