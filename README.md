@@ -8,7 +8,7 @@ pass-down (or p-d for short) is one of the key components that make up the [p-et
 
 "p-d" agrees with the [ancient](https://youtu.be/9knX6YGPtL0?t=927) wisdom "all streams flow to the sea because it is lower than they are. Humility gives it its power."
 
-Both p-d has an attribute/property, "on" that specifies an event to monitor for.  It attaches an event listener for the specified event to the first previous element sibling without attribute "on".  You can alternatively specify the criteria for which previous element to observe, as will be discussed later.
+"p-d" has an attribute/property, "on" that specifies an event to monitor for.  It attaches an event listener for the specified event to the first previous element sibling without attribute "on".  You can alternatively specify the criteria for which previous element to observe, as will be discussed later.
 
 When this event monitoring is enabled, if the previous element is disabled, the disabled attribute is removed (more on that later).
 
