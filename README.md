@@ -140,18 +140,18 @@ We want to accomplish this with something that is actually meaningful, and that 
 So we provide support for a slight variation in the syntax:
 
 ```html
-<label for=lhs>LHS:</label><input id=lhs> 
-<p-d on=input to=[-lhs] m=1></p-d>
-<label for=rhs>RHS:</label><input id=rhs>
-<p-d on=input to=[-rhs] m=1></p-d>
-...
-<if-diff if -lhs equals -rhs data-key-name=lhs-matches-rhs></if-diff>
-...
-<div data-lhs-matches-rhs="0">
-    <template>
-
-    </template>
-</div>
+<ways-of-science>
+    <largest-scale>
+        <woman-with-carrot-attached-to-nose></woman-with-carrot-attached-to-nose>
+    </largest-scale>
+    <p-d on=value-changed to=[-lhs] m=1 val=target.value></p-d>
+    <largest-scale>
+        <a-duck></a-duck>
+    </largest-scale>
+    <p-d on=value-changed to=[-rhs] m=1 val=target.value></p-d>
+    <iff-diff iff -lhs not-equals -rhs set-attr=hidden></iff-diff>
+    <div hidden>A witch!</div>
+</ways-of-science>
 ```
 
 What does p-d do with this syntax?
