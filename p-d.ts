@@ -2,6 +2,10 @@ import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {P} from './p.js';
 import { getSlicedPropDefs } from './node_modules/xtal-element/lib/getSlicedPropDefs.js';
+import { MutObs } from 'mut-obs/mut-obs.js';
+
+const p_d_std = 'p_d_std';
+const attachedParents = new WeakSet<Element>();
 
 /**
  * @element p-d
@@ -67,7 +71,21 @@ const attachEventHandler = ({on, self}: PD) => {
     }
     self.setAttribute('status', '👂');
     self.previousOn = on;
-
+    const parent = self.parentElement;
+    if(parent !== null){
+        if(!attachedParents.has(parent)){
+            attachedParents.add(parent);
+            const mutObj = document.createElement('mut-obj') as MutObs;
+            const s = mutObj.setAttribute.bind(mutObj);
+            s('bubbles', '');
+            s('dispatch', p_d_std);
+            s('child-list', '');
+            parent.appendChild(mutObj);
+        }
+        parent.addEventListener(p_d_std, e => {
+            handleValChange(self);
+        })
+    } 
 };
 
 
