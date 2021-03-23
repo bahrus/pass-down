@@ -1,9 +1,9 @@
 {
   "name": "pass-down",
   "version": "0.0.13",
-  "description": "Glue DOM and Custom Elements together (take 2)",
-  "main": "index.js",
-  "module": "index.js",
+  "description": "Glue DOM and Custom Elements together.",
+  "main": "p-d.js",
+  "module": "p-d.js",
   "dependencies": {
     "mut-obs": "0.0.3",
     "on-to-me": "0.0.13",
