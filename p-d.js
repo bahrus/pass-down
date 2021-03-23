@@ -1,7 +1,6 @@
 import { xc } from 'xtal-element/lib/XtalCore.js';
 import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import { P } from './p.js';
-import { getSlicedPropDefs } from './node_modules/xtal-element/lib/getSlicedPropDefs.js';
 import 'mut-obs/mut-obs.js';
 const p_d_std = 'p_d_std';
 const attachedParents = new WeakSet();
@@ -164,7 +163,7 @@ const propDefMap = {
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
     lastVal: obj1,
 };
-const slicedPropDefs = getSlicedPropDefs(propDefMap);
+const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PD, slicedPropDefs, 'onPropChange');
 xc.define(PD);
 export class PassDown extends PD {
