@@ -1,102 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
-      <style>
-        [mark][err="true"]::after{
-          content: 'She died'
-        }
-        [mark]{
-          display:none;
-        }
-        [err="true"]{
-          color:red;
-          display:  block;
-        }
-        [mark][err="true"]{
-          display:block;
-          
-        }
-
-      </style>
-      <div data-fly>There was an old lady who swallowed a fly;</div>
-      <div></div>
-      <p-d observe=[data-fly] on=init to=[-lhs] val=target.textContent m=1 init-val=textContent></p-d>
-      <iff-diff if -lhs equals rhs="There was an old lady who swallowed a fly;" disabled  data-key-name=swallowedFly></iff -diff>
-      <p-d on=value-changed to=[-why] val=target.value as-attr></p-d>
-      <div data-swallowed-fly=0>
-        <template>
-          <button id=button1 disabled -why>I don't know why she swallowed a fly - Perhaps she'll die!</button>
-          <p-d on=click to=[-err] val=why as-attr skip-init m=1></p-d>
-          <div -err mark></div>
-        </template>
-      </div>
-      
-      <button id=button2 disabled data-err=false>There was an old lady who swallowed a spider;</button>
-      <p-d on=click to=[-err] val=target.dataset.err as-attr skip-init m=1></p-d>
-      <div -err mark err=true></div>
-      <script type=module-shim>
-        import {waitForAttributeChange} from 'trans-render/waitForAttributeChange.js';
-        waitForAttributeChange(button2, 'disabled').then(() =>{
-          button2.click();
-        })
-      </script>
-
-      <div disabled id=wriggle1></div>
-      <p-d on=wriggle-event to=[-text-content] val=target.myProp.subProp fire-event="why-spider" m=1 skip-init></p-d>
-      <script  type=module-shim>
-        import {waitForAttributeChange} from 'trans-render/waitForAttributeChange.js';
-        waitForAttributeChange(wriggle1, 'disabled').then(() =>{
-          wriggle1.myProp ={
-            subProp: 'That wriggled and jiggled and tickled inside her!'
-          };
-          wriggle1.dispatchEvent(new CustomEvent('wriggle-event'));
-        })
-      </script>
-      <div -text-content data-spider-reason="She swallowed the spider to catch the fly;"></div>
-      <p-d on=why-spider to=[-text-content] val=target.dataset.spiderReason m=1 skip-init fire-event=spider-explained></p-d>
-      <div -text-content></div>
-      <p-d on=spider-explained to=[-lhs] val=target.textContent m=1></p-d>
-      <if-diff if -lhs equals rhs="She swallowed the spider to catch the fly;" data-key-name=flyWhy m=1></if-diff>
-      <div data-fly-why=0>
-        <template>
-            <div>I don't know why she swallowed a fly - Perhaps she'll die!</div>
-            <div mark></div>
-        </template>
-          
-      </div>
-      <div>
-        <span style=display:none;>There was an old lady who swallowed a bird;</span>
-        <p-d on=init from=div to=fieldset care-of=legend[-text-content] val=target.textContent m=1 fire-event=bird-swallow></p-d>
-      </div>
-      <fieldset>
-        <legend -text-content></legend>
-        <p-d on=bird-swallow to=[-lhs] val=target.textContent m=1></p-d>
-        <if-diff if -lhs equals rhs="There was an old lady who swallowed a bird;" data-key-name="birdSwallowed"></if-diff>
-        <div data-bird-swallowed=0>
-          <template>
-            <div>How absurd to swallow a bird!</div>
-            <div mark></div>
-          </template>
-        </div>
-      </fieldset>
-      <script type="importmap">
-      {
+    <script type="importmap">
+    {
         "imports": {
-          "xtal-element/": "../node_modules/xtal-element/",
-          "trans-render/": "../node_modules/trans-render/",
-          "p-d": "../p-d.js"
+        "xtal-element/": "../node_modules/xtal-element/",
+        "trans-render/": "../node_modules/trans-render/",
+        "mut-obs/": "../node_modules/mut-obs/",
+        "on-to-me/": "../node_modules/on-to-me/"
         }
-      }
-      </script>
-      <script  type="module-shim">
-          import '../p-d.js';
-          import '../node_modules/if-diff/if-diff.js';
-      </script>
+    }
+    </script>
+    <script  type="module-shim">
+        import '../p-d.js';
+    </script>
 </body>
 </html>
