@@ -94,7 +94,7 @@ const onInitVal = ({ initVal, self }) => {
     if (self.parseValAs !== undefined)
         val = convert(val, self.parseValAs);
     self.lastVal = val;
-    passVal(val, self, self.to, self.careOf, self.m, self.from);
+    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop);
 };
 const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
     self.setAttribute('status', '🌩️');
@@ -105,14 +105,14 @@ const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
     //holding on to lastEvent could introduce memory leak
     delete self.lastEvent;
 };
-const handleValChange = ({ lastVal, self, to, careOf, m, from }) => {
+const handleValChange = ({ lastVal, self, to, careOf, m, from, prop }) => {
     if (self.debug) {
         debugger;
     }
     else if (self.log) {
         console.log('passVal', { lastVal, self, });
     }
-    const matches = passVal(lastVal, self, to, careOf, m, from);
+    const matches = passVal(lastVal, self, to, careOf, m, from, prop);
     self.setAttribute('matches', '' + matches.length);
     self.setAttribute('status', '👂');
 };

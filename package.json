@@ -6,7 +6,7 @@
   "module": "p-d.js",
   "dependencies": {
     "mut-obs": "0.0.3",
-    "on-to-me": "0.0.13",
+    "on-to-me": "0.0.15",
     "trans-render": "0.0.280",
     "xtal-element": "0.0.367"
   },
