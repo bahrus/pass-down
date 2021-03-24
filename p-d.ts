@@ -34,7 +34,7 @@ export class PD extends P implements ReactiveSurface{
 
     valFromEvent(e: Event){
         const val = this.val || 'target.value';
-        let valToPass = getProp(e, this.val!.split('.'), this);
+        let valToPass = getProp(e, val.split('.'), this);
         if(this.parseValAs !== undefined){
             valToPass = convert(valToPass, this.parseValAs);
         }
