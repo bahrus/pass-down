@@ -31,6 +31,7 @@ export class PD extends P {
         this.reactor.addToQueue(propDef, nv);
     }
     valFromEvent(e) {
+        const val = this.val || 'target.value';
         let valToPass = getProp(e, this.val.split('.'), this);
         if (this.parseValAs !== undefined) {
             valToPass = convert(valToPass, this.parseValAs);
