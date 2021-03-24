@@ -137,20 +137,21 @@ const str1 = {
     ...str0,
     stopReactionsIfFalsy: true,
 };
+const baseObj = {
+    type: Object,
+    dry: true,
+};
 const bool1 = {
     type: Boolean,
     dry: true,
 };
 const obj1 = {
-    type: Object,
-    dry: true,
+    ...baseObj,
     stopReactionsIfFalsy: true,
 };
 const obj2 = {
-    type: Object,
-    dry: true,
+    ...obj1,
     parse: true,
-    stopReactionsIfFalsy: true,
 };
 const num = {
     type: Number,
@@ -162,7 +163,7 @@ const propDefMap = {
     fireEvent: str0, debug: bool1, log: bool1,
     async: bool1, parseValAs: str0, capture: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
-    lastVal: obj1,
+    lastVal: baseObj,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PD, slicedPropDefs, 'onPropChange');
