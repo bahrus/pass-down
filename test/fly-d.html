@@ -34,6 +34,11 @@
             <div -err mark></div>
         </template>
     </if-diff>
+
+    <button id=button2 disabled data-err=false>There was an old lady who swallowed a spider;</button>
+    <p-d on=click to=[-err] val=target.dataset.err as-str-attr m=1></p-d>
+    <div -err mark err=true></div>
+
     
     <script type=importmap>
     {
@@ -51,5 +56,17 @@
         import '../p-d.js';
         import 'if-diff/if-diff.js';
     </script>
+
+  <script type=module>
+    import {waitForAttributeChange} from 'trans-render/lib/waitForAttributeChange.js';
+    if(button2.hasAttribute('disabled')){
+        waitForAttributeChange(button2, 'disabled').then(() =>{
+            button2.click();
+        });
+    }else{
+        button2.click();
+    }
+
+  </script>
 </body>
 </html>

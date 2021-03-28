@@ -7,7 +7,7 @@
   "dependencies": {
     "mut-obs": "0.0.3",
     "on-to-me": "0.0.17",
-    "trans-render": "0.0.282",
+    "trans-render": "0.0.283",
     "xtal-element": "0.0.370"
   },
   "devDependencies": {

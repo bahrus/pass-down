@@ -183,7 +183,7 @@ Furthermore, no match will be found if if-diff does not contain the -lhs (or -rh
 </details>
 
 <details>
-    <summary>Passing down attributes [TODO]</summary>
+    <summary>Passing down attributes</summary>
     The value can come from an attribute:
 
 ```html
