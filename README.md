@@ -2,6 +2,8 @@
 
 <a href="https://nodei.co/npm/pass-down/"><img src="https://nodei.co/npm/pass-down.png"></a>
 
+[![Actions Status](https://github.com/bahrus/pass-down/workflows/CI/badge.svg)](https://github.com/bahrus/pass-down/actions?query=workflow%3ACI)
+
 <img src="https://badgen.net/bundlephobia/minzip/pass-down">
 
 pass-down (or p-d for short) is one of the key components that make up the [p-et-alia](https://github.com/bahrus/p-et-alia) "framework".  It builds on [on-to-me](https://github.com/bahrus/on-to-me).
