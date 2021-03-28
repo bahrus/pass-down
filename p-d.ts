@@ -178,7 +178,7 @@ const num: PropDef = {
 }
 
 const propDefMap: PropDefMap<PD> = {
-    on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
+    on: str1, to: str0, careOf: str0, ifTargetMatches: str0, observe: str0,
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1,
     fireEvent: str0, debug: bool1, log: bool1,
     async: bool1, parseValAs: str0, capture: bool1,

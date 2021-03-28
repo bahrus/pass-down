@@ -7,18 +7,47 @@
     <title>Document</title>
 </head>
 <body>
-    <script type="importmap">
+    <style>
+        [mark][err="true"]::after{
+            content: 'She died'
+        }
+        [mark]{
+            display:none;
+        }
+        [err="true"]{
+            color:red;
+            display:  block;
+        }
+        [mark][err="true"]{
+            display:block;
+            
+        }
+    </style>
+    <div data-fly>There was an old lady who swallowed a fly;</div>
+    <div></div>
+    <p-d observe=[data-fly] on=init to=[-lhs] val=target.textContent m=1 init-val=textContent></p-d>
+    <if-diff iff -lhs equals rhs='"There was an old lady who swallowed a fly;"'>
+        <template>
+            <button id=button1 disabled -why>I don't know why she swallowed a fly - Perhaps she'll die!</button>
+            <p-d on=click to=[-err] val=why as-attr skip-init m=1></p-d>
+            <div -err mark></div>
+        </template>
+    </if-diff>
+    <script type=importmap>
     {
         "imports": {
-        "xtal-element/": "../node_modules/xtal-element/",
-        "trans-render/": "../node_modules/trans-render/",
-        "mut-obs/": "../node_modules/mut-obs/",
-        "on-to-me/": "../node_modules/on-to-me/"
+            "xtal-element/": "../node_modules/xtal-element/",
+            "trans-render/": "../node_modules/trans-render/",
+            "mut-obs/": "../node_modules/mut-obs/",
+            "on-to-me/": "../node_modules/on-to-me/",
+            "if-diff/": "../node_modules/if-diff/",
+            "lazy-mt/": "../node_modules/lazy-mt/"
         }
     }
     </script>
-    <script  type="module-shim">
+    <script  type=module>
         import '../p-d.js';
+        import 'if-diff/if-diff.js';
     </script>
 </body>
 </html>
