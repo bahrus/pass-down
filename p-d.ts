@@ -35,6 +35,14 @@ export class PD extends P implements ReactiveSurface{
     valFromEvent(e: Event){
         const val = this.val || 'target.value';
         let valToPass = getProp(e, val.split('.'), this);
+        
+        if(valToPass === undefined){
+            const target = e.target as HTMLElement;
+            const attribVal = target.getAttribute(val);
+            if(attribVal !== null){
+                valToPass = attribVal;
+            }
+        }
         if(this.parseValAs !== undefined){
             valToPass = convert(valToPass, this.parseValAs);
         }
@@ -87,7 +95,9 @@ const attachEventHandler = ({on, self}: PD) => {
         }
         parent.addEventListener(p_d_std, e => {
             e.stopPropagation();
-            handleValChange(self);
+            if(self.lastVal !== undefined){
+                handleValChange(self);
+            }
         })
     }
  
@@ -99,29 +109,33 @@ const onInitVal = ({initVal, self}: PD) => {
     let val = getProp(elementToObserve, initVal!.split('.'), self);
     if(self.parseValAs !== undefined) val = convert(val, self.parseValAs);
     self.lastVal = val;
-    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop);
+    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.asStrAttr === true);
 }
 
 
 
 const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
+    if(!lastEvent){
+        debugger;
+    }
     self.setAttribute('status', '🌩️');
     if(!self.noblock) lastEvent!.stopPropagation();
     let valToPass = self.valFromEvent(lastEvent!);
     self.lastVal = valToPass;
     //holding on to lastEvent could introduce memory leak
     delete self.lastEvent;
+    self.setAttribute('status', '👂');
 }
 
 const handleValChange = ({lastVal, self, to, careOf, m, from, prop}: PD) => {
     if(self.debug){
         debugger;
     }else if(self.log){
-        console.log('passVal', {lastVal, self, });
+        console.log('passVal', {lastVal, self});
     }
-    const matches = passVal(lastVal, self, to, careOf, m, from, prop);
+    const matches = passVal(lastVal, self, to, careOf, m, from, prop, self.asStrAttr === true);
     self.setAttribute('matches', '' + matches.length);
-    self.setAttribute('status', '👂');
+    
 }
 
 const attachMutationEventHandler = ({mutateEvents, self}: PD) => {
@@ -180,10 +194,10 @@ const num: PropDef = {
 const propDefMap: PropDefMap<PD> = {
     on: str1, to: str0, careOf: str0, ifTargetMatches: str0, observe: str0,
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1,
-    fireEvent: str0, debug: bool1, log: bool1,
+    fireEvent: str0, debug: bool1, log: bool1, asStrAttr: bool1,
     async: bool1, parseValAs: str0, capture: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
-    lastVal: baseObj,
+    lastVal: obj1,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 

@@ -33,6 +33,13 @@ export class PD extends P {
     valFromEvent(e) {
         const val = this.val || 'target.value';
         let valToPass = getProp(e, val.split('.'), this);
+        if (valToPass === undefined) {
+            const target = e.target;
+            const attribVal = target.getAttribute(val);
+            if (attribVal !== null) {
+                valToPass = attribVal;
+            }
+        }
         if (this.parseValAs !== undefined) {
             valToPass = convert(valToPass, this.parseValAs);
         }
@@ -83,7 +90,9 @@ const attachEventHandler = ({ on, self }) => {
         }
         parent.addEventListener(p_d_std, e => {
             e.stopPropagation();
-            handleValChange(self);
+            if (self.lastVal !== undefined) {
+                handleValChange(self);
+            }
         });
     }
 };
@@ -94,9 +103,12 @@ const onInitVal = ({ initVal, self }) => {
     if (self.parseValAs !== undefined)
         val = convert(val, self.parseValAs);
     self.lastVal = val;
-    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop);
+    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.asStrAttr === true);
 };
 const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
+    if (!lastEvent) {
+        debugger;
+    }
     self.setAttribute('status', '🌩️');
     if (!self.noblock)
         lastEvent.stopPropagation();
@@ -104,17 +116,17 @@ const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
     self.lastVal = valToPass;
     //holding on to lastEvent could introduce memory leak
     delete self.lastEvent;
+    self.setAttribute('status', '👂');
 };
 const handleValChange = ({ lastVal, self, to, careOf, m, from, prop }) => {
     if (self.debug) {
         debugger;
     }
     else if (self.log) {
-        console.log('passVal', { lastVal, self, });
+        console.log('passVal', { lastVal, self });
     }
-    const matches = passVal(lastVal, self, to, careOf, m, from, prop);
+    const matches = passVal(lastVal, self, to, careOf, m, from, prop, self.asStrAttr === true);
     self.setAttribute('matches', '' + matches.length);
-    self.setAttribute('status', '👂');
 };
 const attachMutationEventHandler = ({ mutateEvents, self }) => {
     const parentElement = self.parentElement;
@@ -160,10 +172,10 @@ const num = {
 const propDefMap = {
     on: str1, to: str0, careOf: str0, ifTargetMatches: str0, observe: str0,
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1,
-    fireEvent: str0, debug: bool1, log: bool1,
+    fireEvent: str0, debug: bool1, log: bool1, asStrAttr: bool1,
     async: bool1, parseValAs: str0, capture: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
-    lastVal: baseObj,
+    lastVal: obj1,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PD, slicedPropDefs, 'onPropChange');

@@ -28,11 +28,13 @@
     <p-d observe=[data-fly] on=init to=[-lhs] val=target.textContent m=1 init-val=textContent></p-d>
     <if-diff iff -lhs equals rhs='"There was an old lady who swallowed a fly;"'>
         <template>
-            <button id=button1 disabled -why>I don't know why she swallowed a fly - Perhaps she'll die!</button>
-            <p-d on=click to=[-err] val=why as-attr skip-init m=1></p-d>
+            <p-d observe=if-diff on=value-changed to=[-why] m=1 val=target.value as-str-attr init-val=value></p-d>
+            <button id=button1 disabled -why data-init=true>I don't know why she swallowed a fly - Perhaps she'll die!</button>
+            <p-d on=click to=[-err] val=why as-str-attr m=1></p-d>
             <div -err mark></div>
         </template>
     </if-diff>
+    
     <script type=importmap>
     {
         "imports": {

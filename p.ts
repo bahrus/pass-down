@@ -89,4 +89,6 @@ export class P extends HTMLElement {
     lastEvent: Event | undefined;
 
     lastVal: any;
+
+    asStrAttr: boolean | undefined;
 }
