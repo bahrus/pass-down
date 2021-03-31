@@ -100,6 +100,8 @@ const onInitVal = ({ initVal, self }) => {
     //TODO: how can we avoid calling getPriousSib twice, without storing?
     const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
     let val = getProp(elementToObserve, initVal.split('.'), self);
+    if (val === undefined)
+        return;
     if (self.parseValAs !== undefined)
         val = convert(val, self.parseValAs);
     self.lastVal = val;
@@ -175,7 +177,7 @@ const propDefMap = {
     fireEvent: str0, debug: bool1, log: bool1, asStrAttr: bool1,
     async: bool1, parseValAs: str0, capture: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
-    lastVal: obj1,
+    lastVal: baseObj,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PD, slicedPropDefs, 'onPropChange');
