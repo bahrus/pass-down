@@ -1,6 +1,6 @@
 {
   "name": "pass-down",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Glue DOM and Custom Elements together.",
   "main": "p-d.js",
   "module": "p-d.js",
