@@ -129,6 +129,7 @@ const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
 }
 
 const handleValChange = ({lastVal, self, to, careOf, m, from, prop}: PD) => {
+    if(lastVal === undefined) return;
     if(self.debug){
         debugger;
     }else if(self.log){

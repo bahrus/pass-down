@@ -121,6 +121,8 @@ const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
     self.setAttribute('status', '👂');
 };
 const handleValChange = ({ lastVal, self, to, careOf, m, from, prop }) => {
+    if (lastVal === undefined)
+        return;
     if (self.debug) {
         debugger;
     }
