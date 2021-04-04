@@ -1,3 +1,5 @@
+import {asAttr} from 'on-to-me/types.d.js';
+
 export class P extends HTMLElement {
 
     /**
@@ -90,5 +92,9 @@ export class P extends HTMLElement {
 
     lastVal: any;
 
-    asStrAttr: boolean | undefined;
+    as: asAttr;
+
+    
+
+
 }

@@ -110,7 +110,7 @@ const onInitVal = ({initVal, self}: PD) => {
     if(val === undefined) return;
     if(self.parseValAs !== undefined) val = convert(val, self.parseValAs);
     self.lastVal = val;
-    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.asStrAttr === true);
+    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
 }
 
 
@@ -196,7 +196,7 @@ const num: PropDef = {
 const propDefMap: PropDefMap<PD> = {
     on: str1, to: str0, careOf: str0, ifTargetMatches: str0, observe: str0,
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1,
-    fireEvent: str0, debug: bool1, log: bool1, asStrAttr: bool1,
+    fireEvent: str0, debug: bool1, log: bool1, as: str0,
     async: bool1, parseValAs: str0, capture: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
     lastVal: baseObj,

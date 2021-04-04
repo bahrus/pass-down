@@ -176,9 +176,13 @@ Furthermore, no match will be found if if-diff does not contain the -lhs (or -rh
 
 ```html
         <button data-test="hello">Click me</button>
-        <p-d on=click to=[-my-attrib] val=target.dataset.test skip-init as-str-attr></p-d>
+        <p-d on=click to=[-my-attrib] val=target.dataset.test skip-init as=str-attr></p-d>
         <div -my-attrib>test</div>
 ```
+
+The attribute as can be "str-attr", "bool-attr", "obj-attr".
+
+In the case of obj-attr, the attribute value is first JSON.stringified.
 
 </details>
 

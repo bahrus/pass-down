@@ -6,12 +6,12 @@
   "module": "p-d.js",
   "dependencies": {
     "mut-obs": "0.0.3",
-    "on-to-me": "0.0.17",
+    "on-to-me": "0.0.18",
     "trans-render": "0.0.283",
     "xtal-element": "0.0.373"
   },
   "devDependencies": {
-    "if-diff": "0.0.62",
+    "if-diff": "0.0.66",
     "xtal-test": "0.0.50"
   },
   "scripts": {
