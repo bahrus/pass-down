@@ -28,15 +28,15 @@
     <p-d observe=[data-fly] on=init to=[-lhs] val=target.textContent m=1 init-val=textContent></p-d>
     <if-diff iff -lhs equals rhs='"There was an old lady who swallowed a fly;"'>
         <template>
-            <p-d observe=if-diff on=value-changed to=[-why] m=1 val=target.value as-str-attr init-val=value></p-d>
+            <p-d observe=if-diff on=value-changed to=[-why] m=1 val=target.value as=str-attr init-val=value></p-d>
             <button id=button1 disabled -why data-init=true>I don't know why she swallowed a fly - Perhaps she'll die!</button>
-            <p-d on=click to=[-err] val=why as-str-attr m=1></p-d>
+            <p-d on=click to=[-err] val=why as=str-attr m=1></p-d>
             <div -err mark></div>
         </template>
     </if-diff>
 
     <button id=button2 disabled data-err=false>There was an old lady who swallowed a spider;</button>
-    <p-d on=click to=[-err] val=target.dataset.err as-str-attr m=1></p-d>
+    <p-d on=click to=[-err] val=target.dataset.err as=str-attr m=1></p-d>
     <div -err mark err=true></div>
 
     

@@ -198,6 +198,13 @@ In the case of obj-attr, the attribute value is first JSON.stringified.
 
 </details>
 
+<details>
+    <summary>Cloning objects</summary>
+
+If p-d, or pass-down, is passing down an object from a source element to a target element, there is a danger that the target element will manipulate that object, with unexpected side effects on the source element. To prevent this from happening, use the cloneVal/clone-val property/attribute.
+
+</details>
+
 ## Viewing Your Element
 
 To view this element locally:

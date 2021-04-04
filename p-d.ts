@@ -3,6 +3,7 @@ import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-m
 import {P} from './p.js';
 import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js';
+import {structuralClone} from 'xtal-element/lib/structuralClone.js';
 
 const p_d_std = 'p_d_std';
 const attachedParents = new WeakSet<Element>();
@@ -46,7 +47,7 @@ export class PD extends P implements ReactiveSurface{
         if(this.parseValAs !== undefined){
             valToPass = convert(valToPass, this.parseValAs);
         }
-        return valToPass;
+        return this.cloneVal ? structuralClone(valToPass) :  valToPass;
     }
 
     filterEvent(e: Event) : boolean{
@@ -109,6 +110,7 @@ const onInitVal = ({initVal, self}: PD) => {
     let val = getProp(elementToObserve, initVal!.split('.'), self);
     if(val === undefined) return;
     if(self.parseValAs !== undefined) val = convert(val, self.parseValAs);
+    if(self.cloneVal) val = structuralClone(val);
     self.lastVal = val;
     passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
 }
@@ -135,7 +137,7 @@ const handleValChange = ({lastVal, self, to, careOf, m, from, prop}: PD) => {
     }else if(self.log){
         console.log('passVal', {lastVal, self});
     }
-    const matches = passVal(lastVal, self, to, careOf, m, from, prop, self.asStrAttr === true);
+    const matches = passVal(lastVal, self, to, careOf, m, from, prop, self.as);
     self.setAttribute('matches', '' + matches.length);
     
 }
@@ -197,7 +199,7 @@ const propDefMap: PropDefMap<PD> = {
     on: str1, to: str0, careOf: str0, ifTargetMatches: str0, observe: str0,
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1,
     fireEvent: str0, debug: bool1, log: bool1, as: str0,
-    async: bool1, parseValAs: str0, capture: bool1,
+    async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
     lastVal: baseObj,
 };

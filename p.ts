@@ -94,7 +94,7 @@ export class P extends HTMLElement {
 
     as: asAttr;
 
-    
+    cloneVal: boolean | undefined;
 
 
 }
