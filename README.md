@@ -180,7 +180,7 @@ Furthermore, no match will be found if if-diff does not contain the -lhs (or -rh
         <div -my-attrib>test</div>
 ```
 
-The attribute as can be "str-attr", "bool-attr", "obj-attr".
+The attribute "as" can be "str-attr", "bool-attr", "obj-attr".
 
 In the case of obj-attr, the attribute value is first JSON.stringified.
 
