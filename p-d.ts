@@ -29,6 +29,9 @@ export class PD extends P implements ReactiveSurface{
     }
     //https://web.dev/javascript-this/
     handleEvent = (e: Event) => {
+        if(this.ifTargetMatches !== undefined){
+            if(!(e.target as HTMLElement).matches(this.ifTargetMatches)) return;
+        }
         if(!this.filterEvent(e)) return;
         this.lastEvent = e;
     }
@@ -104,7 +107,7 @@ const attachEventHandler = ({on, self}: PD) => {
  
 };
 
-const onInitVal = ({initVal, self}: PD) => {
+export const onInitVal = ({initVal, self}: PD) => {
     //TODO: how can we avoid calling getPriousSib twice, without storing?
     const elementToObserve = getPreviousSib(self.previousElementSibling as HTMLElement, self.observe ?? null) as Element;
     let val = getProp(elementToObserve, initVal!.split('.'), self);
@@ -112,12 +115,12 @@ const onInitVal = ({initVal, self}: PD) => {
     if(self.parseValAs !== undefined) val = convert(val, self.parseValAs);
     if(self.cloneVal) val = structuralClone(val);
     self.lastVal = val;
-    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
+    //passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
 }
 
 
 
-const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
+export const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
     if(!lastEvent){
         debugger;
     }
@@ -156,12 +159,12 @@ const attachMutationEventHandler = ({mutateEvents, self}: PD) => {
 
 const propActions = [onInitVal, attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler] as PropAction[];
 
-const str0: PropDef = {
+export const str0: PropDef = {
     type: String,
     dry: true
 }
 
-const str1: PropDef = {
+export const str1: PropDef = {
     ...str0,
     stopReactionsIfFalsy: true,
 };
@@ -172,7 +175,7 @@ const baseObj: PropDef = {
     dry: true,
 }
 
-const bool1: PropDef = {
+export const bool1: PropDef = {
     type: Boolean,
     dry: true,
 };
@@ -186,9 +189,6 @@ const obj2: PropDef = {
     ...obj1,
     parse: true,
 }
-
-
-
 
 const num: PropDef = {
     type: Number,
@@ -216,8 +216,17 @@ declare global {
     }
 }
 
+/**
+ * @element pass-down
+ */
 export class PassDown extends PD{
     static is = 'pass-down';
 }
 
 xc.define(PassDown);
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'pass-down': PassDown;
+    }
+}

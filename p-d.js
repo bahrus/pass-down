@@ -16,6 +16,10 @@ export class PD extends P {
         this.reactor = new xc.Rx(this);
         //https://web.dev/javascript-this/
         this.handleEvent = (e) => {
+            if (this.ifTargetMatches !== undefined) {
+                if (!e.target.matches(this.ifTargetMatches))
+                    return;
+            }
             if (!this.filterEvent(e))
                 return;
             this.lastEvent = e;
@@ -97,7 +101,7 @@ const attachEventHandler = ({ on, self }) => {
         });
     }
 };
-const onInitVal = ({ initVal, self }) => {
+export const onInitVal = ({ initVal, self }) => {
     //TODO: how can we avoid calling getPriousSib twice, without storing?
     const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
     let val = getProp(elementToObserve, initVal.split('.'), self);
@@ -108,9 +112,9 @@ const onInitVal = ({ initVal, self }) => {
     if (self.cloneVal)
         val = structuralClone(val);
     self.lastVal = val;
-    passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
+    //passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
 };
-const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
+export const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
     if (!lastEvent) {
         debugger;
     }
@@ -148,11 +152,11 @@ const attachMutationEventHandler = ({ mutateEvents, self }) => {
     }
 };
 const propActions = [onInitVal, attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler];
-const str0 = {
+export const str0 = {
     type: String,
     dry: true
 };
-const str1 = {
+export const str1 = {
     ...str0,
     stopReactionsIfFalsy: true,
 };
@@ -160,7 +164,7 @@ const baseObj = {
     type: Object,
     dry: true,
 };
-const bool1 = {
+export const bool1 = {
     type: Boolean,
     dry: true,
 };
@@ -187,6 +191,9 @@ const propDefMap = {
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PD, slicedPropDefs, 'onPropChange');
 xc.define(PD);
+/**
+ * @element pass-down
+ */
 export class PassDown extends PD {
 }
 PassDown.is = 'pass-down';
