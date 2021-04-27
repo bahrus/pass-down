@@ -1,6 +1,6 @@
 import {asAttr} from 'on-to-me/types.d.ts';
 
-export interface PassDownProps{
+export interface PassDownProps extends Partial<HTMLElement>{
     /**
     * The event name to monitor for, from previous non-petalian element.
     * @attr
@@ -94,4 +94,8 @@ export interface PassDownProps{
     as: asAttr | undefined;
 
     cloneVal: boolean | undefined;
+
+    m: number | undefined;
+    from: string | undefined;
+    mutateEvents: string[] | undefined;
 }

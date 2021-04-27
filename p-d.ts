@@ -5,6 +5,7 @@ import {MutObs} from 'mut-obs/mut-obs.js';
 import {structuralClone} from 'xtal-element/lib/structuralClone.js';
 import {asAttr} from 'on-to-me/types.d.js';
 import {PassDownProps} from './types.d.js';
+import {getFrom, isMatchAfterFrom} from './p.js';
 
 const p_d_std = 'p_d_std';
 //const attachedParents = new WeakSet<Element>();
@@ -154,20 +155,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     mutateEvents: string[] | undefined;
 }
 
-function getFrom(self: PD){
-    return self.from !== undefined ? self.closest(self.from) : self
-}
 
-function isMatchAfterFrom(match: Element, self: PD){
-    const from = getFrom(self);
-    if(!from) return false;
-    let prev = match.previousElementSibling;
-    while(prev != null){
-        if(prev === from) return true;
-        prev = prev.previousElementSibling;
-    }
-    return false;
-}
 
 const attachEventHandler = ({on, self}: PD) => {
     const elementToObserve = getPreviousSib(self.previousElementSibling as HTMLElement, self.observe ?? null) as Element;

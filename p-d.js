@@ -2,6 +2,7 @@ import { xc } from 'xtal-element/lib/XtalCore.js';
 import { getPreviousSib, passVal, nudge, getProp, convert, passValToMatches } from 'on-to-me/on-to-me.js';
 import 'mut-obs/mut-obs.js';
 import { structuralClone } from 'xtal-element/lib/structuralClone.js';
+import { getFrom, isMatchAfterFrom } from './p.js';
 const p_d_std = 'p_d_std';
 //const attachedParents = new WeakSet<Element>();
 /**
@@ -57,21 +58,6 @@ export class PD extends HTMLElement {
 }
 PD.is = 'p-d';
 PD.observedAttributes = ['debug', 'log'];
-function getFrom(self) {
-    return self.from !== undefined ? self.closest(self.from) : self;
-}
-function isMatchAfterFrom(match, self) {
-    const from = getFrom(self);
-    if (!from)
-        return false;
-    let prev = match.previousElementSibling;
-    while (prev != null) {
-        if (prev === from)
-            return true;
-        prev = prev.previousElementSibling;
-    }
-    return false;
-}
 const attachEventHandler = ({ on, self }) => {
     const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
     if (elementToObserve === null)
