@@ -70,7 +70,7 @@ It appears that the CSS flex/grid doesn't count elements with display:none as co
 </style>
 ```
 
-Since p-d is a non visual components, it is given display:none style by default.
+Since p-d is a non visual component, display:none is set by default.
 
 Another benefit of making this explicit:  There is likely less overhead from components with display:none, as they may not get added to the [rendering tree](https://www.html5rocks.com/en/tutorials/internals/howbrowserswork/#Render_tree_construction).
 

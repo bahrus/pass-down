@@ -1,19 +1,20 @@
 import { xc } from 'xtal-element/lib/XtalCore.js';
-import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
-import { P } from './p.js';
+import { getPreviousSib, passVal, nudge, getProp, convert, passValToMatches } from 'on-to-me/on-to-me.js';
 import 'mut-obs/mut-obs.js';
 import { structuralClone } from 'xtal-element/lib/structuralClone.js';
 const p_d_std = 'p_d_std';
-const attachedParents = new WeakSet();
+//const attachedParents = new WeakSet<Element>();
 /**
  * @element p-d
  */
-export class PD extends P {
+export class PD extends HTMLElement {
     constructor() {
         super(...arguments);
         this.self = this;
         this.propActions = propActions;
         this.reactor = new xc.Rx(this);
+        //_attachedMutObs: boolean | undefined;
+        this._sym = Symbol();
         //https://web.dev/javascript-this/
         this.handleEvent = (e) => {
             if (this.ifTargetMatches !== undefined) {
@@ -56,6 +57,21 @@ export class PD extends P {
 }
 PD.is = 'p-d';
 PD.observedAttributes = ['debug', 'log'];
+function getFrom(self) {
+    return self.from !== undefined ? self.closest(self.from) : self;
+}
+function isMatchAfterFrom(match, self) {
+    const from = getFrom(self);
+    if (!from)
+        return false;
+    let prev = match.previousElementSibling;
+    while (prev != null) {
+        if (prev === from)
+            return true;
+        prev = prev.previousElementSibling;
+    }
+    return false;
+}
 const attachEventHandler = ({ on, self }) => {
     const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
     if (elementToObserve === null)
@@ -80,25 +96,31 @@ const attachEventHandler = ({ on, self }) => {
     }
     self.setAttribute('status', '👂');
     self.previousOn = on;
-    const parent = self.parentElement;
-    if (parent !== null) {
-        if (!attachedParents.has(parent)) {
-            attachedParents.add(parent);
-            const mutObs = document.createElement('mut-obs');
-            const s = mutObs.setAttribute.bind(mutObs);
-            s('bubbles', '');
-            s('dispatch', p_d_std);
-            s('child-list', '');
-            s('observe', 'parentElement');
-            s('on', '*');
-            parent.appendChild(mutObs);
-        }
-        parent.addEventListener(p_d_std, e => {
+    const parent = getFrom(self)?.parentElement;
+    if (parent) {
+        //if(!self._attachedMutObs){
+        const mutObs = document.createElement('mut-obs');
+        //mutObs._ownerSym = self._sym;
+        const s = mutObs.setAttribute.bind(mutObs);
+        s('bubbles', '');
+        s('dispatch', p_d_std);
+        s('child-list', '');
+        s('observe', 'parentElement');
+        s('on', self.to);
+        parent.appendChild(mutObs);
+        mutObs.addEventListener(p_d_std, e => {
             e.stopPropagation();
+            const mutObj = e.target;
             if (self.lastVal !== undefined) {
-                handleValChange(self);
+                const ae = e;
+                const match = ae.detail.match;
+                if (isMatchAfterFrom(match, self)) {
+                    passValToMatches([match], self.lastVal, self.to, self.careOf, self.prop, self.as);
+                }
             }
         });
+        //self._attachedMutObs = true;
+        //}
     }
 };
 export const onInitVal = ({ initVal, self }) => {

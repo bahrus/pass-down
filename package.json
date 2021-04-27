@@ -23,14 +23,14 @@
   ],
   "types": "./types.d.ts",
   "dependencies": {
-    "mut-obs": "0.0.3",
-    "on-to-me": "0.0.18",
-    "trans-render": "0.0.283",
-    "xtal-element": "0.0.375"
+    "mut-obs": "0.0.7",
+    "on-to-me": "0.0.20",
+    "trans-render": "0.0.286",
+    "xtal-element": "0.0.389"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
-    "if-diff": "0.0.66",
+    "if-diff": "0.0.68",
     "xtal-test": "0.0.50"
   },
   "scripts": {
