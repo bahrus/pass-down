@@ -1,11 +1,10 @@
-import {asAttr} from 'on-to-me/types.d.js';
+import {asAttr} from 'on-to-me/types.d.ts';
 
-export class P extends HTMLElement {
-
+export interface PassDownProps{
     /**
-     * The event name to monitor for, from previous non-petalian element.
-     * @attr
-     */
+    * The event name to monitor for, from previous non-petalian element.
+    * @attr
+    */
     on: string | undefined;
 
     /**
@@ -73,18 +72,18 @@ export class P extends HTMLElement {
     //  */
     // skipInit: boolean | undefined;
     
-    debug!: boolean;
+    debug: boolean | undefined;
 
-    log!: boolean;
+    log: boolean | undefined;
 
-    async!: boolean;
+    async: boolean | undefined;
 
     parseValAs: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
     
     /**
      * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
     */
-    capture!: boolean;
+    capture: boolean | undefined;
 
     previousOn: string | undefined;
 
@@ -92,9 +91,7 @@ export class P extends HTMLElement {
 
     lastVal: any;
 
-    as: asAttr;
+    as: asAttr | undefined;
 
     cloneVal: boolean | undefined;
-
-
 }

@@ -2,8 +2,26 @@
   "name": "pass-down",
   "version": "0.0.28",
   "description": "Glue DOM and Custom Elements together.",
+  "keywords": [
+    "webcomponents",
+    "webcomponent",
+    "customelements",
+    "customelement",
+    "bind",
+    "dom-bind"
+  ],
   "main": "p-d.js",
   "module": "p-d.js",
+  "exports": {
+    ".": "./p-d.js",
+    "./p-d.js": "./p-d.js"
+  },
+  "files": [
+    "p-d.js",
+    "p-d.ts",
+    "types.d.ts"
+  ],
+  "types": "./types.d.ts",
   "dependencies": {
     "mut-obs": "0.0.3",
     "on-to-me": "0.0.18",
@@ -11,18 +29,20 @@
     "xtal-element": "0.0.375"
   },
   "devDependencies": {
+    "@skypack/package-check": "0.2.2",
     "if-diff": "0.0.66",
     "xtal-test": "0.0.50"
   },
   "scripts": {
     "test": "node test/test.js",
+    "package-check": "package-check",
     "serve": "node node_modules/xtal-test/serve.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bahrus/pass-down.git"
   },
-  "author": "",
+  "author": "anderson.bruce.b@gmail.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bahrus/pass-down/issues"
