@@ -14,6 +14,7 @@
   "module": "p-d.js",
   "exports": {
     ".": "./p-d.js",
+    "./p.js": "./p.js",
     "./p-d.js": "./p-d.js"
   },
   "files": [

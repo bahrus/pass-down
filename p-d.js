@@ -84,9 +84,7 @@ const attachEventHandler = ({ on, self }) => {
     self.previousOn = on;
     const parent = getFrom(self)?.parentElement;
     if (parent) {
-        //if(!self._attachedMutObs){
         const mutObs = document.createElement('mut-obs');
-        //mutObs._ownerSym = self._sym;
         const s = mutObs.setAttribute.bind(mutObs);
         s('bubbles', '');
         s('dispatch', p_d_std);
@@ -105,8 +103,6 @@ const attachEventHandler = ({ on, self }) => {
                 }
             }
         });
-        //self._attachedMutObs = true;
-        //}
     }
 };
 export const onInitVal = ({ initVal, self }) => {

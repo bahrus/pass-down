@@ -182,29 +182,25 @@ const attachEventHandler = ({on, self}: PD) => {
     
     const parent = getFrom(self)?.parentElement;
     if(parent){
-        //if(!self._attachedMutObs){
-            const mutObs = document.createElement('mut-obs') as MutObs;
-            //mutObs._ownerSym = self._sym;
-            const s = mutObs.setAttribute.bind(mutObs);
-            s('bubbles', '');
-            s('dispatch', p_d_std);
-            s('child-list', '');
-            s('observe', 'parentElement');
-            s('on', self.to!);
-            parent.appendChild(mutObs);
-            mutObs.addEventListener(p_d_std, e => {
-                e.stopPropagation();
-                const mutObj = e.target as MutObs;
-                if(self.lastVal !== undefined){
-                    const ae = e as any;
-                    const match = ae.detail.match;
-                    if(isMatchAfterFrom(match, self)){
-                        passValToMatches([match], self.lastVal, self.to, self.careOf, self.prop, self.as);
-                    }
+        const mutObs = document.createElement('mut-obs') as MutObs;
+        const s = mutObs.setAttribute.bind(mutObs);
+        s('bubbles', '');
+        s('dispatch', p_d_std);
+        s('child-list', '');
+        s('observe', 'parentElement');
+        s('on', self.to!);
+        parent.appendChild(mutObs);
+        mutObs.addEventListener(p_d_std, e => {
+            e.stopPropagation();
+            const mutObj = e.target as MutObs;
+            if(self.lastVal !== undefined){
+                const ae = e as any;
+                const match = ae.detail.match;
+                if(isMatchAfterFrom(match, self)){
+                    passValToMatches([match], self.lastVal, self.to, self.careOf, self.prop, self.as);
                 }
-            })
-            //self._attachedMutObs = true;
-        //}
+            }
+        });
         
     }
  

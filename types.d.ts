@@ -1,17 +1,15 @@
 import {asAttr} from 'on-to-me/types.d.ts';
 
-export interface PassDownProps extends Partial<HTMLElement>{
-    /**
-    * The event name to monitor for, from previous non-petalian element.
-    * @attr
-    */
-    on: string | undefined;
-
+export interface PDToFrom extends Partial<HTMLElement>{
     /**
      * css pattern to match for from downstream siblings.
      * @attr
      */
     to: string | undefined;
+
+    from: string | undefined;
+
+    lastVal: any;
 
     /**
      * CSS Selector to use to select single child within the destination element.
@@ -19,6 +17,24 @@ export interface PassDownProps extends Partial<HTMLElement>{
      * 
      */
     careOf: string | undefined;
+
+    /**
+     * Name of property to set on matching (downstream) siblings.
+     * @attr
+     */
+    prop: string | undefined;
+
+    as: asAttr | undefined;
+}
+
+export interface PassDownProps extends PDToFrom{
+    /**
+    * The event name to monitor for, from previous non-petalian element.
+    * @attr
+    */
+    on: string | undefined;
+
+
 
     /**
      * Don't block event propagation.
@@ -32,11 +48,7 @@ export interface PassDownProps extends Partial<HTMLElement>{
      */
     ifTargetMatches: string | undefined;
 
-    /**
-     * Name of property to set on matching (downstream) siblings.
-     * @attr
-     */
-    prop: string | undefined;
+
 
     /**
      * Dynamically determined name of property to set on matching (downstream) siblings from event object.
@@ -89,13 +101,13 @@ export interface PassDownProps extends Partial<HTMLElement>{
 
     lastEvent: Event | undefined;
 
-    lastVal: any;
+    
 
-    as: asAttr | undefined;
+    
 
     cloneVal: boolean | undefined;
 
     m: number | undefined;
-    from: string | undefined;
+
     mutateEvents: string[] | undefined;
 }
