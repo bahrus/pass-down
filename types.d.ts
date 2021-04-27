@@ -25,6 +25,16 @@ export interface PDToFrom extends Partial<HTMLElement>{
     prop: string | undefined;
 
     as: asAttr | undefined;
+
+    mutateEvents: string[] | undefined;
+
+    self: PDToFrom;
+
+    debug: boolean | undefined;
+
+    log: boolean | undefined;
+
+    m: number | undefined;
 }
 
 export interface PassDownProps extends PDToFrom{
@@ -33,8 +43,6 @@ export interface PassDownProps extends PDToFrom{
     * @attr
     */
     on: string | undefined;
-
-
 
     /**
      * Don't block event propagation.
@@ -78,15 +86,8 @@ export interface PassDownProps extends PDToFrom{
 
     initVal: string | undefined;
     
-    // /**
-    //  * Don't raise a "fake" event when attaching to element.
-    //  * @attr skip-init
-    //  */
-    // skipInit: boolean | undefined;
     
-    debug: boolean | undefined;
 
-    log: boolean | undefined;
 
     async: boolean | undefined;
 
@@ -107,7 +108,7 @@ export interface PassDownProps extends PDToFrom{
 
     cloneVal: boolean | undefined;
 
-    m: number | undefined;
+
 
     mutateEvents: string[] | undefined;
 }

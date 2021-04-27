@@ -1,11 +1,11 @@
 import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface, IReactor} from 'xtal-element/lib/XtalCore.js';
-import {getPreviousSib, passVal, nudge, getProp, convert, passValToMatches} from 'on-to-me/on-to-me.js';
+import {getPreviousSib, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js';
 import {structuralClone} from 'xtal-element/lib/structuralClone.js';
 import {asAttr} from 'on-to-me/types.d.js';
 import {PassDownProps} from './types.d.js';
-import {addDefaultMutObs} from './p.js';
+import {addDefaultMutObs, handleValChange, attachMutationEventHandler} from './pdUtils.js';
 
 
 /**
@@ -208,29 +208,7 @@ export const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
     self.setAttribute('status', '👂');
 }
 
-const handleValChange = ({lastVal, self, to, careOf, m, from, prop}: PD) => {
-    if(lastVal === undefined) return;
-    if(self.debug){
-        debugger;
-    }else if(self.log){
-        console.log('passVal', {lastVal, self});
-    }
-    const matches = passVal(lastVal, self, to, careOf, m, from, prop, self.as);
-    self.setAttribute('matches', '' + matches.length);
-    
-}
 
-const attachMutationEventHandler = ({mutateEvents, self}: PD) => {
-    const parentElement = self.parentElement;
-    if(parentElement === null) return;
-    for(const event of mutateEvents!){
-        parentElement.addEventListener(event, e => {
-            if(self.lastVal !== undefined){
-                handleValChange(self);
-            }
-        })
-    }
-};
 
 const propActions = [onInitVal, attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler] as PropAction[];
 

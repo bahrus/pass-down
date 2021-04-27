@@ -9,7 +9,8 @@
 		"watch": true
 	},
 	"files": [
-		"p-d.ts"
+		"p-d.ts",
+		"pdUtils.ts",
 	],
 	"exclude":[
 		"build",
