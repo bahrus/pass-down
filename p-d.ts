@@ -5,10 +5,8 @@ import {MutObs} from 'mut-obs/mut-obs.js';
 import {structuralClone} from 'xtal-element/lib/structuralClone.js';
 import {asAttr} from 'on-to-me/types.d.js';
 import {PassDownProps} from './types.d.js';
-import {getFrom, isMatchAfterFrom} from './p.js';
+import {addDefaultMutObs} from './p.js';
 
-const p_d_std = 'p_d_std';
-//const attachedParents = new WeakSet<Element>();
 
 /**
  * @element p-d
@@ -24,10 +22,10 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     reactor: IReactor = new xc.Rx(this);
     //_attachedMutObs: boolean | undefined;
     _sym = Symbol();
-/**
- * The event name to monitor for, from previous non-petalian element.
- * @attr
- */
+    /**
+     * The event name to monitor for, from previous non-petalian element.
+     * @attr
+     */
     on: string | undefined;
 
     /**
@@ -179,30 +177,8 @@ const attachEventHandler = ({on, self}: PD) => {
     }
     self.setAttribute('status', '👂');
     self.previousOn = on;
+    addDefaultMutObs(self);
     
-    const parent = getFrom(self)?.parentElement;
-    if(parent){
-        const mutObs = document.createElement('mut-obs') as MutObs;
-        const s = mutObs.setAttribute.bind(mutObs);
-        s('bubbles', '');
-        s('dispatch', p_d_std);
-        s('child-list', '');
-        s('observe', 'parentElement');
-        s('on', self.to!);
-        parent.appendChild(mutObs);
-        mutObs.addEventListener(p_d_std, e => {
-            e.stopPropagation();
-            const mutObj = e.target as MutObs;
-            if(self.lastVal !== undefined){
-                const ae = e as any;
-                const match = ae.detail.match;
-                if(isMatchAfterFrom(match, self)){
-                    passValToMatches([match], self.lastVal, self.to, self.careOf, self.prop, self.as);
-                }
-            }
-        });
-        
-    }
  
 };
 

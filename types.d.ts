@@ -1,4 +1,4 @@
-import {asAttr} from 'on-to-me/types.d.ts';
+import {asAttr} from 'on-to-me/types.js';
 
 export interface PDToFrom extends Partial<HTMLElement>{
     /**

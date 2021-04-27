@@ -1,10 +1,8 @@
 import { xc } from 'xtal-element/lib/XtalCore.js';
-import { getPreviousSib, passVal, nudge, getProp, convert, passValToMatches } from 'on-to-me/on-to-me.js';
+import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import 'mut-obs/mut-obs.js';
 import { structuralClone } from 'xtal-element/lib/structuralClone.js';
-import { getFrom, isMatchAfterFrom } from './p.js';
-const p_d_std = 'p_d_std';
-//const attachedParents = new WeakSet<Element>();
+import { addDefaultMutObs } from './p.js';
 /**
  * @element p-d
  */
@@ -82,28 +80,7 @@ const attachEventHandler = ({ on, self }) => {
     }
     self.setAttribute('status', '👂');
     self.previousOn = on;
-    const parent = getFrom(self)?.parentElement;
-    if (parent) {
-        const mutObs = document.createElement('mut-obs');
-        const s = mutObs.setAttribute.bind(mutObs);
-        s('bubbles', '');
-        s('dispatch', p_d_std);
-        s('child-list', '');
-        s('observe', 'parentElement');
-        s('on', self.to);
-        parent.appendChild(mutObs);
-        mutObs.addEventListener(p_d_std, e => {
-            e.stopPropagation();
-            const mutObj = e.target;
-            if (self.lastVal !== undefined) {
-                const ae = e;
-                const match = ae.detail.match;
-                if (isMatchAfterFrom(match, self)) {
-                    passValToMatches([match], self.lastVal, self.to, self.careOf, self.prop, self.as);
-                }
-            }
-        });
-    }
+    addDefaultMutObs(self);
 };
 export const onInitVal = ({ initVal, self }) => {
     //TODO: how can we avoid calling getPriousSib twice, without storing?
