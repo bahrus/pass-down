@@ -20,6 +20,8 @@
   "files": [
     "p-d.js",
     "p-d.ts",
+    "pdUtils.ts",
+    "pdUtils.js",
     "types.d.ts"
   ],
   "types": "./types.d.ts",
