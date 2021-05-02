@@ -84,17 +84,26 @@ const attachEventHandler = ({ on, self }) => {
 };
 export const onInitVal = ({ initVal, self }) => {
     //TODO: how can we avoid calling getPriousSib twice, without storing?
+    //passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
     const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
-    let val = getProp(elementToObserve, initVal.split('.'), self);
+    const foundInitVal = setInitVal(self, elementToObserve);
+    if (!foundInitVal && self.initEvent !== undefined) {
+        elementToObserve.addEventListener(self.initEvent, e => {
+            setInitVal(self, elementToObserve);
+        }, { once: true });
+    }
+};
+function setInitVal(self, elementToObserve) {
+    let val = getProp(elementToObserve, self.initVal.split('.'), self);
     if (val === undefined)
-        return;
+        return false;
     if (self.parseValAs !== undefined)
         val = convert(val, self.parseValAs);
     if (self.cloneVal)
         val = structuralClone(val);
     self.lastVal = val;
-    //passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
-};
+    return true;
+}
 export const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
     if (!lastEvent) {
         debugger;
@@ -139,7 +148,7 @@ const num = {
 };
 const propDefMap = {
     on: str1, to: str0, careOf: str0, ifTargetMatches: str0, observe: str0,
-    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1,
+    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1,
     fireEvent: str0, debug: bool1, log: bool1, as: str0,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,

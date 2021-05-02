@@ -86,7 +86,10 @@ export interface PassDownProps extends PDToFrom{
 
     initVal: string | undefined;
     
-    
+    /**
+     * In some cases, the initVal can only be obtained after initEvent fires
+     */
+    initEvent: string | undefined;
 
 
     async: boolean | undefined;
