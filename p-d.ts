@@ -118,7 +118,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
      
     connectedCallback(){
         this.style.display = 'none';
-        xc.hydrate(this, slicedPropDefs);
+        xc.mergeProps(this, slicedPropDefs);
     }
     onPropChange(n: string, propDef: PropDef, nv: any){
         this.reactor.addToQueue(propDef, nv);

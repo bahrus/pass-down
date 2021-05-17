@@ -30,7 +30,7 @@ export class PD extends HTMLElement {
     }
     connectedCallback() {
         this.style.display = 'none';
-        xc.hydrate(this, slicedPropDefs);
+        xc.mergeProps(this, slicedPropDefs);
     }
     onPropChange(n, propDef, nv) {
         this.reactor.addToQueue(propDef, nv);
