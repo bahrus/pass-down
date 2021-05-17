@@ -171,7 +171,7 @@ then the "prop" attribute defaults to the attribute following the first dash i.e
 Furthermore, no match will be found if if-diff does not contain the -lhs (or -rhs) "pseudo" attribute.
 
 <details>
-    <summary>Use of both prop and to expression together (for proxies)
+    <summary>Use of both prop and to expression together (for proxies)</summary>
     [TODO] Discuss this option when more examples have been tested
 </details>
 
