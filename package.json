@@ -27,9 +27,9 @@
   "types": "./types.d.ts",
   "dependencies": {
     "mut-obs": "0.0.7",
-    "on-to-me": "0.0.22",
+    "on-to-me": "0.0.23",
     "trans-render": "0.0.289",
-    "xtal-element": "0.0.394"
+    "xtal-element": "0.0.399"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
