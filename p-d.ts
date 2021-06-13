@@ -106,10 +106,16 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     */
     capture!: boolean;
 
+    /**
+     * @private
+     */
     previousOn: string | undefined;
 
     lastEvent: Event | undefined;
 
+    /**
+     * @private
+     */
     lastVal: any;
 
     as: asAttr;
@@ -176,7 +182,7 @@ const attachEventHandler = ({on, observe, self}: PD) => {
     self._wr = undefined;
     const elementToObserve = self.observedElement;
     if(!elementToObserve) throw "Could not locate element to observe.";
-    let doNudge = false;
+    let doNudge = previousElementToObserve !== elementToObserve;
     if((previousElementToObserve !== undefined) && (self.previousOn !== undefined || (previousElementToObserve !== elementToObserve))){
         previousElementToObserve.removeEventListener(self.previousOn || on!, self.handleEvent);
     }else{

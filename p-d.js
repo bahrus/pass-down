@@ -71,7 +71,7 @@ const attachEventHandler = ({ on, observe, self }) => {
     const elementToObserve = self.observedElement;
     if (!elementToObserve)
         throw "Could not locate element to observe.";
-    let doNudge = false;
+    let doNudge = previousElementToObserve !== elementToObserve;
     if ((previousElementToObserve !== undefined) && (self.previousOn !== undefined || (previousElementToObserve !== elementToObserve))) {
         previousElementToObserve.removeEventListener(self.previousOn || on, self.handleEvent);
     }
