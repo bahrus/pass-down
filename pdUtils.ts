@@ -30,7 +30,7 @@ export function addDefaultMutObs(self: PDToFrom){
         s('observe', 'parentElement');
         s('on', self.to!);
         parent.appendChild(mutObs);
-        mutObs.addEventListener(p_std, e => {
+        mutObs.addEventListener(p_std, (e: Event) => {
             e.stopPropagation();
             const mutObj = e.target as MutObs;
             if(self.lastVal !== undefined){

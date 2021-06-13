@@ -53,16 +53,27 @@ export class PD extends HTMLElement {
     filterEvent(e) {
         return true;
     }
+    get observedElement() {
+        const element = this._wr?.deref();
+        if (element !== undefined) {
+            return element;
+        }
+        const elementToObserve = getPreviousSib(this.previousElementSibling, this.observe ?? null);
+        this._wr = new WeakRef(elementToObserve);
+        return elementToObserve;
+    }
 }
 PD.is = 'p-d';
 PD.observedAttributes = ['debug', 'log'];
-const attachEventHandler = ({ on, self }) => {
-    const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
-    if (elementToObserve === null)
+const attachEventHandler = ({ on, observe, self }) => {
+    const previousElementToObserve = self._wr?.deref();
+    self._wr = undefined;
+    const elementToObserve = self.observedElement;
+    if (!elementToObserve)
         throw "Could not locate element to observe.";
     let doNudge = false;
-    if (self.previousOn !== undefined) {
-        elementToObserve.removeEventListener(self.previousOn, self.handleEvent);
+    if ((previousElementToObserve !== undefined) && (self.previousOn !== undefined || (previousElementToObserve !== elementToObserve))) {
+        previousElementToObserve.removeEventListener(self.previousOn || on, self.handleEvent);
     }
     else {
         doNudge = true;
@@ -83,9 +94,7 @@ const attachEventHandler = ({ on, self }) => {
     addDefaultMutObs(self);
 };
 export const onInitVal = ({ initVal, self }) => {
-    //TODO: how can we avoid calling getPriousSib twice, without storing?
-    //passVal(val, self, self.to, self.careOf, self.m, self.from, self.prop, self.as);
-    const elementToObserve = getPreviousSib(self.previousElementSibling, self.observe ?? null);
+    const elementToObserve = self.observedElement;
     const foundInitVal = setInitVal(self, elementToObserve);
     if (!foundInitVal && self.initEvent !== undefined) {
         elementToObserve.addEventListener(self.initEvent, e => {
@@ -129,6 +138,7 @@ export const str1 = {
 const baseObj = {
     type: Object,
     dry: true,
+    async: true,
 };
 export const bool1 = {
     type: Boolean,
@@ -147,7 +157,7 @@ const num = {
     dry: true,
 };
 const propDefMap = {
-    on: str1, to: str0, careOf: str0, ifTargetMatches: str0, observe: str0,
+    observe: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1,
     fireEvent: str0, debug: bool1, log: bool1, as: str0,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,

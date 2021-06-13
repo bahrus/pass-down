@@ -26,7 +26,7 @@ export function addDefaultMutObs(self) {
         s('observe', 'parentElement');
         s('on', self.to);
         parent.appendChild(mutObs);
-        mutObs.addEventListener(p_std, e => {
+        mutObs.addEventListener(p_std, (e) => {
             e.stopPropagation();
             const mutObj = e.target;
             if (self.lastVal !== undefined) {
