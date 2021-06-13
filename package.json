@@ -34,7 +34,7 @@
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
     "if-diff": "0.0.70",
-    "xtal-test": "0.0.50"
+    "xtal-test": "0.0.51"
   },
   "scripts": {
     "test": "node test/test.js",
