@@ -111,6 +111,9 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
      */
     previousOn: string | undefined;
 
+    /**
+     * @private
+     */
     lastEvent: Event | undefined;
 
     /**
@@ -121,6 +124,9 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     as: asAttr;
 
     cloneVal: boolean | undefined;
+
+    m: number | undefined;
+    from: string | undefined;
      
     connectedCallback(){
         this.style.display = 'none';
@@ -159,8 +165,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
         return true;
     }
 
-    m: number | undefined;
-    from: string | undefined;
+
     mutateEvents: string[] | undefined;
 
     _wr: WeakRef<Element> | undefined;
