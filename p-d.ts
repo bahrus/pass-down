@@ -87,6 +87,8 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 
     initVal: string | undefined;
 
+    valFromTarget: string | undefined;
+
     /**
      * In some cases, the initVal can only be obtained after initEvent fires
      */
@@ -149,7 +151,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
         let valToPass = getProp(e, val.split('.'), this);
         
         if(valToPass === undefined){
-            const target = e.target as HTMLElement;
+            const target = e.target as HTMLElement || this.observedElement;
             const attribVal = target.getAttribute(val);
             if(attribVal !== null){
                 valToPass = attribVal;
@@ -219,7 +221,12 @@ export const onInitVal = ({initVal, self}: PD) => {
             setInitVal(self, elementToObserve);
         }, {once: true});
     }
-}
+};
+
+export const onValFromTarget = ({valFromTarget, self}: PD) => {
+    self.initVal = valFromTarget;
+    self.val = 'target.' + valFromTarget;
+};
 
 function setInitVal(self: PD, elementToObserve: Element){
     
@@ -248,7 +255,7 @@ export const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
 
 
 
-const propActions = [onInitVal, attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler] as PropAction[];
+const propActions = [onInitVal, attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler, onValFromTarget] as PropAction[];
 
 export const str0: PropDef = {
     type: String,
@@ -264,7 +271,6 @@ export const str1: PropDef = {
 const baseObj: PropDef = {
     type: Object,
     dry: true,
-    async: true,
 }
 
 export const bool1: PropDef = {
@@ -289,7 +295,7 @@ const num: PropDef = {
 
 const propDefMap: PropDefMap<PD> = {
     observe: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0, 
-    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1,
+    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str1,
     fireEvent: str0, debug: bool1, log: bool1, as: str0,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,

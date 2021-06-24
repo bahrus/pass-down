@@ -181,7 +181,7 @@ Furthermore, no match will be found if if-diff does not contain the -lhs (or -rh
 
 ```html
         <button data-test="hello">Click me</button>
-        <p-d on=click to=[-my-attrib] val=target.dataset.test skip-init as=str-attr></p-d>
+        <p-d on=click to=[-my-attrib] val=target.dataset.test as=str-attr></p-d>
         <div -my-attrib>test</div>
 ```
 
@@ -197,7 +197,7 @@ In the case of obj-attr, the attribute value is first JSON.stringified.
 
 ```html
 <button aria-role="hello">Hello</button>
-<p-w on="click" to=[-text-content] val=aria-role skip-init m=1></p-w>
+<p-w on="click" to=[-text-content] val=aria-role m=1></p-w>
 <div -text-content></div>
 ```
 

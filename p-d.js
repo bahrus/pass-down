@@ -7,27 +7,99 @@ import { addDefaultMutObs, handleValChange, attachMutationEventHandler } from '.
  * @element p-d
  */
 export class PD extends HTMLElement {
-    constructor() {
-        super(...arguments);
-        this.self = this;
-        this.propActions = propActions;
-        this.reactor = new xc.Rx(this);
-        //_attachedMutObs: boolean | undefined;
-        this._sym = Symbol();
-        //https://web.dev/javascript-this/
-        this.handleEvent = (e) => {
-            if (this.ifTargetMatches !== undefined) {
-                if (!e.target.matches(this.ifTargetMatches))
-                    return;
-            }
-            if (!this.filterEvent(e))
-                return;
-            this.lastEvent = e;
-        };
-    }
+    static is = 'p-d';
+    static observedAttributes = ['debug', 'log'];
     attributeChangedCallback(n, ov, nv) {
         this[n] = (nv !== null);
     }
+    self = this;
+    propActions = propActions;
+    reactor = new xc.Rx(this);
+    //_attachedMutObs: boolean | undefined;
+    _sym = Symbol();
+    /**
+     * The event name to monitor for, from previous non-petalian element.
+     * @attr
+     */
+    on;
+    /**
+     * css pattern to match for from downstream siblings.
+     * @attr
+     */
+    to;
+    /**
+     * CSS Selector to use to select single child within the destination element.
+     * @attr care-of
+     *
+     */
+    careOf;
+    /**
+     * Don't block event propagation.
+     * @attr
+     */
+    noblock;
+    /**
+     * Only act on event if target element css-matches the expression specified by this attribute.
+     * @attr
+     */
+    ifTargetMatches;
+    /**
+     * Name of property to set on matching (downstream) siblings.
+     * @attr
+     */
+    prop;
+    /**
+     * Dynamically determined name of property to set on matching (downstream) siblings from event object.
+     * @attr prop-from-event
+     */
+    propFromEvent;
+    /**
+     * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.
+     * @attr
+     */
+    val;
+    /**
+     * Specifies element to latch on to, and listen for events.
+     * Searches previous siblings, parent, previous siblings of parent, etc.
+     * Stops at Shadow DOM boundary.
+     * @attr
+     */
+    observe;
+    /**
+     * Artificially fire event on target element whose name is specified by this attribute.
+     * @attr fire-event
+     */
+    fireEvent;
+    initVal;
+    valFromTarget;
+    /**
+     * In some cases, the initVal can only be obtained after initEvent fires
+     */
+    initEvent;
+    debug;
+    log;
+    async;
+    parseValAs;
+    /**
+     * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
+    */
+    capture;
+    /**
+     * @private
+     */
+    previousOn;
+    /**
+     * @private
+     */
+    lastEvent;
+    /**
+     * @private
+     */
+    lastVal;
+    as;
+    cloneVal;
+    m;
+    from;
     connectedCallback() {
         this.style.display = 'none';
         xc.mergeProps(this, slicedPropDefs);
@@ -35,11 +107,21 @@ export class PD extends HTMLElement {
     onPropChange(n, propDef, nv) {
         this.reactor.addToQueue(propDef, nv);
     }
+    //https://web.dev/javascript-this/
+    handleEvent = (e) => {
+        if (this.ifTargetMatches !== undefined) {
+            if (!e.target.matches(this.ifTargetMatches))
+                return;
+        }
+        if (!this.filterEvent(e))
+            return;
+        this.lastEvent = e;
+    };
     valFromEvent(e) {
         const val = this.val || 'target.value';
         let valToPass = getProp(e, val.split('.'), this);
         if (valToPass === undefined) {
-            const target = e.target;
+            const target = e.target || this.observedElement;
             const attribVal = target.getAttribute(val);
             if (attribVal !== null) {
                 valToPass = attribVal;
@@ -53,6 +135,8 @@ export class PD extends HTMLElement {
     filterEvent(e) {
         return true;
     }
+    mutateEvents;
+    _wr;
     get observedElement() {
         const element = this._wr?.deref();
         if (element !== undefined) {
@@ -63,8 +147,6 @@ export class PD extends HTMLElement {
         return elementToObserve;
     }
 }
-PD.is = 'p-d';
-PD.observedAttributes = ['debug', 'log'];
 const attachEventHandler = ({ on, observe, self }) => {
     const previousElementToObserve = self._wr?.deref();
     self._wr = undefined;
@@ -102,6 +184,10 @@ export const onInitVal = ({ initVal, self }) => {
         }, { once: true });
     }
 };
+export const onValFromTarget = ({ valFromTarget, self }) => {
+    self.initVal = valFromTarget;
+    self.val = 'target.' + valFromTarget;
+};
 function setInitVal(self, elementToObserve) {
     let val = getProp(elementToObserve, self.initVal.split('.'), self);
     if (val === undefined)
@@ -126,7 +212,7 @@ export const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
     delete self.lastEvent;
     self.setAttribute('status', '👂');
 };
-const propActions = [onInitVal, attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler];
+const propActions = [onInitVal, attachEventHandler, handleEvent, handleValChange, attachMutationEventHandler, onValFromTarget];
 export const str0 = {
     type: String,
     dry: true
@@ -138,7 +224,6 @@ export const str1 = {
 const baseObj = {
     type: Object,
     dry: true,
-    async: true,
 };
 export const bool1 = {
     type: Boolean,
@@ -158,7 +243,7 @@ const num = {
 };
 const propDefMap = {
     observe: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
-    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1,
+    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str1,
     fireEvent: str0, debug: bool1, log: bool1, as: str0,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
@@ -171,6 +256,6 @@ xc.define(PD);
  * @element pass-down
  */
 export class PassDown extends PD {
+    static is = 'pass-down';
 }
-PassDown.is = 'pass-down';
 xc.define(PassDown);
