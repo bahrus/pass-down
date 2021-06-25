@@ -29,14 +29,14 @@
   "dependencies": {
     "mut-obs": "0.0.8",
     "on-to-me": "0.0.23",
-    "trans-render": "0.0.289",
-    "xtal-element": "0.0.400"
+    "trans-render": "0.0.290",
+    "xtal-element": "0.0.402"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
     "if-diff": "0.0.70",
     "xtal-test": "0.0.51",
-    "@custom-elements-manifest/analyzer": "0.2.1"
+    "@custom-elements-manifest/analyzer": "0.3.5"
   },
   "scripts": {
     "test": "node test/test.js",
