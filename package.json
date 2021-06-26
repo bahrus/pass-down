@@ -15,7 +15,8 @@
   "exports": {
     ".": "./p-d.js",
     "./pdUtils.js": "./pdUtils.js",
-    "./p-d.js": "./p-d.js"
+    "./p-d.js": "./p-d.js",
+    "customElements": "./custom-elements.json"
   },
   "files": [
     "p-d.js",
