@@ -1,40 +1,64 @@
 import {asAttr} from 'on-to-me/types.js';
 
-export interface PDToFrom extends Partial<HTMLElement>{
+export interface PDToFrom extends HTMLElement{
     /**
      * css pattern to match for from downstream siblings.
      * @attr
      */
-    to: string | undefined;
+    to?: string | undefined;
 
-    from: string | undefined;
+    /**
+     * Find the closest ancestor matching this css pattern.
+     * Use that as the base element to pass down the value from.
+     * @attr
+     */
+    from?: string | undefined;
 
-    lastVal: any;
+    /**
+     * @private
+     */
+    lastVal?: any;
 
     /**
      * CSS Selector to use to select single child within the destination element.
      * @attr care-of
      * 
      */
-    careOf: string | undefined;
+    careOf?: string | undefined;
 
     /**
      * Name of property to set on matching (downstream) siblings.
      * @attr
      */
-    prop: string | undefined;
+    prop?: string | undefined;
 
-    as: asAttr | undefined;
+    /**
+     * Pass value to an attribute
+     * @attr as-attr
+     */
+    as?: asAttr | undefined;
 
-    mutateEvents: string[] | undefined;
+    mutateEvents?: string[] | undefined;
 
     self: PDToFrom;
 
-    debug: boolean | undefined;
+    /**
+     * Add runtime breakpoints at critical points
+     * @attr
+     */
+    debug?: boolean | undefined;
 
-    log: boolean | undefined;
+    /**
+     * Add console.logs at critical points
+     * @attr
+     */
+    log?: boolean | undefined;
 
-    m: number | undefined;
+    /**
+     * Maximum number of elements to search for
+     * @attr
+     */
+    m?: number | undefined;
 }
 
 export interface PassDownProps extends PDToFrom{
