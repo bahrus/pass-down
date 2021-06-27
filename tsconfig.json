@@ -11,11 +11,7 @@
 	"files": [
 		"p-d.ts",
 		"pdUtils.ts",
-	],
-	"exclude":[
-		"build",
-		"bower_components",
-		"node_modules"
+		"p-d-x.ts",
 	]
 
 }
