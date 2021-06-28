@@ -21,24 +21,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     _sym = Symbol();
 
 
-    /**
-     * css pattern to match for from downstream siblings.
-     * @attr
-     */
-    to: string | undefined;
 
-    /**
-     * CSS Selector to use to select single child within the destination element.
-     * @attr care-of
-     * 
-     */
-    careOf: string | undefined;
-
-    /**
-     * Don't block event propagation.
-     * @attr
-     */
-    noblock: boolean | undefined;
 
     /**
      * Only act on event if target element css-matches the expression specified by this attribute.
@@ -239,12 +222,12 @@ function setInitVal(self: PD, elementToObserve: Element){
 
 
 
-export const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
+export const handleEvent = ({val, lastEvent, parseValAs, self}: PassDownProps) => {
     if(!lastEvent){
         debugger;
     }
     self.setAttribute('status', '🌩️');
-    if(!self.noblock) lastEvent!.stopPropagation();
+    if(!(self as unknown as PassDownProps).noblock) lastEvent!.stopPropagation();
     let valToPass = self.valFromEvent(lastEvent!);
     self.lastVal = valToPass;
     //holding on to lastEvent could introduce memory leak

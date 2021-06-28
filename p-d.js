@@ -14,22 +14,6 @@ export class PD extends HTMLElement {
     reactor = new xc.Rx(this);
     _sym = Symbol();
     /**
-     * css pattern to match for from downstream siblings.
-     * @attr
-     */
-    to;
-    /**
-     * CSS Selector to use to select single child within the destination element.
-     * @attr care-of
-     *
-     */
-    careOf;
-    /**
-     * Don't block event propagation.
-     * @attr
-     */
-    noblock;
-    /**
      * Only act on event if target element css-matches the expression specified by this attribute.
      * @attr
      */

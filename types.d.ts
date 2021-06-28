@@ -74,7 +74,7 @@ export interface PassDownProps extends PDToFrom{
      * Don't block event propagation.
      * @attr
      */
-    noblock: boolean | undefined;
+    noblock?: boolean | undefined;
 
     /**
      * Only act on event if target element css-matches the expression specified by this attribute.
