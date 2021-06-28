@@ -146,9 +146,15 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
         this.lastEvent = e;
     }
 
+    parseValFromEvent(e: Event){
+        const val = this.val || 'target.value';
+        const valToPass = getProp(e, val.split('.'), this);
+        return valToPass;        
+    }
+
     valFromEvent(e: Event){
         const val = this.val || 'target.value';
-        let valToPass = getProp(e, val.split('.'), this);
+        let valToPass = this.parseValFromEvent(e);
         
         if(valToPass === undefined){
             const target = e.target as HTMLElement || this.observedElement;

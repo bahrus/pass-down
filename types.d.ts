@@ -139,3 +139,7 @@ export interface PassDownProps extends PDToFrom{
 
     mutateEvents: string[] | undefined;
 }
+
+export interface PassDownExtProps extends PassDownProps{
+    valFilter: string;
+}

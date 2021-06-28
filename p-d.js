@@ -117,9 +117,14 @@ export class PD extends HTMLElement {
             return;
         this.lastEvent = e;
     };
+    parseValFromEvent(e) {
+        const val = this.val || 'target.value';
+        const valToPass = getProp(e, val.split('.'), this);
+        return valToPass;
+    }
     valFromEvent(e) {
         const val = this.val || 'target.value';
-        let valToPass = getProp(e, val.split('.'), this);
+        let valToPass = this.parseValFromEvent(e);
         if (valToPass === undefined) {
             const target = e.target || this.observedElement;
             const attribVal = target.getAttribute(val);

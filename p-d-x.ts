@@ -1,19 +1,30 @@
 import {PD} from './p-d.js';
 import {jsonPath} from 'jsonpathesm/JSONPath.js';
-import {convert} from 'on-to-me/on-to-me.js';
-import {structuralClone} from 'xtal-element/lib/structuralClone.js';
-import {define} from 'xtal-element/lib/define.js';
+import {xc, PropDef, PropDefMap} from 'xtal-element/lib/XtalCore.js';
+import {PassDownExtProps} from './types.d.js';
 
 export class PDX extends PD {
     static is = 'p-d-x';
-    override valFromEvent(e: Event){
-        if(!this.val || !this.val.startsWith('$')) return super.valFromEvent(e);
-        let valToPass = jsonPath(e, this.val);
-
-        if(this.parseValAs !== undefined){
-            valToPass = convert(valToPass, this.parseValAs);
+    override parseValFromEvent(e: Event){
+        const cThis = this as unknown as PassDownExtProps;
+        const superVal = super.parseValFromEvent(e);
+        if(cThis.valFilter === undefined){
+            return superVal;
         }
-        return this.cloneVal ? structuralClone(valToPass) :  valToPass;
+        return jsonPath(superVal, cThis.valFilter);
+    }
+    connectedCallback(){
+        super.connectedCallback();
+        xc.mergeProps(this, slicedPropDefs);
     }
 }
-define(PDX);
+const strProp: PropDef = {
+    dry: true,
+    type: String,
+};
+const propDefMap: PropDefMap<PassDownExtProps> = {
+    valFilter: strProp
+};
+const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+xc.letThereBeProps(PDX, slicedPropDefs, 'onPropChange');
+xc.define(PDX);
