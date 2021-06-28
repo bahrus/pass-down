@@ -8,9 +8,7 @@ import {PassDownProps} from './types.d.js';
 import {addDefaultMutObs, handleValChange, attachMutationEventHandler} from './pdUtils.js';
 
 
-/**
- * @element p-d
- */
+
 export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     static is = 'p-d';
     static observedAttributes = ['debug', 'log'];
@@ -20,13 +18,8 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     self = this;
     propActions = propActions;
     reactor: IReactor = new xc.Rx(this);
-    //_attachedMutObs: boolean | undefined;
     _sym = Symbol();
-    /**
-     * The event name to monitor for, from previous non-petalian element.
-     * @attr
-     */
-    on: string | undefined;
+
 
     /**
      * css pattern to match for from downstream siblings.
@@ -190,7 +183,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 
 
 
-const attachEventHandler = ({on, observe, self}: PD) => {
+const attachEventHandler = ({on, observe, self}: PassDownProps) => {
     const previousElementToObserve = self._wr?.deref();
     self._wr = undefined;
     const elementToObserve = self.observedElement;
@@ -299,7 +292,7 @@ const num: PropDef = {
     dry: true,
 }
 
-const propDefMap: PropDefMap<PD> = {
+const propDefMap: PropDefMap<PassDownProps> = {
     observe: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0, 
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str1,
     fireEvent: str0, debug: bool1, log: bool1, as: str0,

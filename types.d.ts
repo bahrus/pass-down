@@ -1,4 +1,5 @@
 import {asAttr} from 'on-to-me/types.js';
+import {PD} from './p-d.js';
 
 export interface PDToFrom extends HTMLElement{
     /**
@@ -62,11 +63,12 @@ export interface PDToFrom extends HTMLElement{
 }
 
 export interface PassDownProps extends PDToFrom{
+    self: PD;
     /**
     * The event name to monitor for, from previous non-petalian element.
     * @attr
     */
-    on: string | undefined;
+    on?: string | undefined;
 
     /**
      * Don't block event propagation.
@@ -138,6 +140,8 @@ export interface PassDownProps extends PDToFrom{
 
 
     mutateEvents: string[] | undefined;
+
+    valFromTarget: string | undefined;
 }
 
 export interface PassDownExtProps extends PassDownProps{

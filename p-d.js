@@ -3,9 +3,6 @@ import { getPreviousSib, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import 'mut-obs/mut-obs.js';
 import { structuralClone } from 'xtal-element/lib/structuralClone.js';
 import { addDefaultMutObs, handleValChange, attachMutationEventHandler } from './pdUtils.js';
-/**
- * @element p-d
- */
 export class PD extends HTMLElement {
     static is = 'p-d';
     static observedAttributes = ['debug', 'log'];
@@ -15,13 +12,7 @@ export class PD extends HTMLElement {
     self = this;
     propActions = propActions;
     reactor = new xc.Rx(this);
-    //_attachedMutObs: boolean | undefined;
     _sym = Symbol();
-    /**
-     * The event name to monitor for, from previous non-petalian element.
-     * @attr
-     */
-    on;
     /**
      * css pattern to match for from downstream siblings.
      * @attr
