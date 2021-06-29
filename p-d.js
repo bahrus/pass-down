@@ -14,18 +14,6 @@ export class PD extends HTMLElement {
     reactor = new xc.Rx(this);
     _sym = Symbol();
     /**
-     * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.
-     * @attr
-     */
-    val;
-    /**
-     * Specifies element to latch on to, and listen for events.
-     * Searches previous siblings, parent, previous siblings of parent, etc.
-     * Stops at Shadow DOM boundary.
-     * @attr
-     */
-    observe;
-    /**
      * Artificially fire event on target element whose name is specified by this attribute.
      * @attr fire-event
      */

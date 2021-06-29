@@ -21,22 +21,6 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     _sym = Symbol();
 
 
-
-
-    
-    /**
-     * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.
-     * @attr
-     */
-    val: string | undefined;
-    
-    /**
-     * Specifies element to latch on to, and listen for events.
-     * Searches previous siblings, parent, previous siblings of parent, etc.
-     * Stops at Shadow DOM boundary.
-     * @attr
-     */
-    observe: string | undefined;
     
     /**
      * Artificially fire event on target element whose name is specified by this attribute.
@@ -106,13 +90,13 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     }
 
     parseValFromEvent(e: Event){
-        const val = this.val || 'target.value';
+        const val = (this as unknown as PassDownProps).val || 'target.value';
         const valToPass = getProp(e, val.split('.'), this);
         return valToPass;        
     }
 
     valFromEvent(e: Event){
-        const val = this.val || 'target.value';
+        const val = (this as unknown as PassDownProps).val || 'target.value';
         let valToPass = this.parseValFromEvent(e);
         
         if(valToPass === undefined){
@@ -141,7 +125,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
         if(element !== undefined){
             return element;
         }
-        const elementToObserve = getPreviousSib(this.previousElementSibling as HTMLElement, this.observe ?? null) as Element;
+        const elementToObserve = getPreviousSib(this.previousElementSibling as HTMLElement, (this as unknown as PassDownProps).observe ?? null) as Element;
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
@@ -190,7 +174,7 @@ export const onInitVal = ({initVal, self}: PD) => {
 
 export const onValFromTarget = ({valFromTarget, self}: PD) => {
     self.initVal = valFromTarget;
-    self.val = 'target.' + valFromTarget;
+    (self as unknown as PassDownProps).val = 'target.' + valFromTarget;
 };
 
 function setInitVal(self: PD, elementToObserve: Element){

@@ -46,4 +46,20 @@ export class PDDoc extends PD{
      * @attr prop-from-event
      */
      propFromEvent: string | undefined;
+
+
+    
+    /**
+     * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.
+     * @attr
+     */
+    val: string | undefined;
+    
+    /**
+     * Specifies element to latch on to, and listen for events.
+     * Searches previous siblings, parent, previous siblings of parent, etc.
+     * Stops at Shadow DOM boundary.
+     * @attr
+     */
+    observe: string | undefined;
 }

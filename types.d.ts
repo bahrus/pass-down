@@ -94,7 +94,7 @@ export interface PassDownProps extends PDToFrom{
      * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.
      * @attr
      */
-    val: string | undefined;
+    val?: string | undefined;
     
     /**
      * Specifies element to latch on to, and listen for events.
@@ -102,7 +102,7 @@ export interface PassDownProps extends PDToFrom{
      * Stops at Shadow DOM boundary.
      * @attr
      */
-    observe: string | undefined;
+    observe?: string | undefined;
     
     /**
      * Artificially fire event on target element whose name is specified by this attribute.
