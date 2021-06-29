@@ -35,6 +35,9 @@ export class PD extends HTMLElement {
         const valToPass = getProp(e, val.split('.'), this);
         return valToPass;
     }
+    parseInitVal(elementToObserve) {
+        return getProp(elementToObserve, self.initVal.split('.'), this);
+    }
     valFromEvent(e) {
         const val = this.val || 'target.value';
         let valToPass = this.parseValFromEvent(e);
@@ -107,7 +110,7 @@ export const onValFromTarget = ({ valFromTarget, self }) => {
     self.val = 'target.' + valFromTarget;
 };
 function setInitVal(self, elementToObserve) {
-    let val = getProp(elementToObserve, self.initVal.split('.'), self);
+    let val = self.parseInitVal(elementToObserve);
     if (val === undefined)
         return false;
     if (self.parseValAs !== undefined)

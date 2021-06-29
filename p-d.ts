@@ -21,9 +21,6 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     _sym = Symbol();
 
 
-
-
-     
     connectedCallback(){
         this.style.display = 'none';
         xc.mergeProps(this, slicedPropDefs);
@@ -44,6 +41,10 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
         const val = (this as unknown as PassDownProps).val || 'target.value';
         const valToPass = getProp(e, val.split('.'), this);
         return valToPass;        
+    }
+
+    parseInitVal(elementToObserve: Element){
+        return  getProp(elementToObserve, (self as unknown as PassDownProps).initVal!.split('.'), this);
     }
 
     valFromEvent(e: Event){
@@ -129,8 +130,7 @@ export const onValFromTarget = ({valFromTarget, self}: PassDownProps) => {
 };
 
 function setInitVal(self: PD, elementToObserve: Element){
-    
-    let val = getProp(elementToObserve, (self as unknown as PassDownProps).initVal!.split('.'), self);
+    let val = self.parseInitVal(elementToObserve);
     if(val === undefined) return false;
     if((self as unknown as PassDownProps).parseValAs !== undefined) val = convert(val, (self as unknown as PassDownProps).parseValAs!);
     if((self as unknown as PassDownProps).cloneVal) val = structuralClone(val);
