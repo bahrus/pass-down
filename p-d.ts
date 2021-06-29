@@ -3,7 +3,7 @@ import {getPreviousSib, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js';
 import {structuralClone} from 'xtal-element/lib/structuralClone.js';
-import {asAttr} from 'on-to-me/types.d.js';
+
 import {PassDownProps} from './types.d.js';
 import {addDefaultMutObs, handleValChange, attachMutationEventHandler} from './pdUtils.js';
 
@@ -22,17 +22,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 
 
 
-    /**
-     * @private
-     */
-    lastVal: any;
 
-    as: asAttr;
-
-    cloneVal: boolean | undefined;
-
-    m: number | undefined;
-    from: string | undefined;
      
     connectedCallback(){
         this.style.display = 'none';
@@ -70,7 +60,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
         if((this as unknown as PassDownProps).parseValAs !== undefined){
             valToPass = convert(valToPass, (this as unknown as PassDownProps).parseValAs!);
         }
-        return this.cloneVal ? structuralClone(valToPass) :  valToPass;
+        return (this as unknown as PassDownProps).cloneVal ? structuralClone(valToPass) :  valToPass;
     }
 
     filterEvent(e: Event) : boolean{
@@ -143,8 +133,8 @@ function setInitVal(self: PD, elementToObserve: Element){
     let val = getProp(elementToObserve, (self as unknown as PassDownProps).initVal!.split('.'), self);
     if(val === undefined) return false;
     if((self as unknown as PassDownProps).parseValAs !== undefined) val = convert(val, (self as unknown as PassDownProps).parseValAs!);
-    if(self.cloneVal) val = structuralClone(val);
-    self.lastVal = val;
+    if((self as unknown as PassDownProps).cloneVal) val = structuralClone(val);
+    (self as unknown as PassDownProps).lastVal = val;
     return true;
 }
 
@@ -157,7 +147,7 @@ export const handleEvent = ({val, lastEvent, parseValAs, self}: PassDownProps) =
     self.setAttribute('status', '🌩️');
     if(!(self as unknown as PassDownProps).noblock) lastEvent!.stopPropagation();
     let valToPass = self.valFromEvent(lastEvent!);
-    self.lastVal = valToPass;
+    (self as unknown as PassDownProps).lastVal = valToPass;
     //holding on to lastEvent could introduce memory leak
     delete (self as unknown as PassDownProps).lastEvent;
     self.setAttribute('status', '👂');

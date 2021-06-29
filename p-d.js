@@ -13,14 +13,6 @@ export class PD extends HTMLElement {
     propActions = propActions;
     reactor = new xc.Rx(this);
     _sym = Symbol();
-    /**
-     * @private
-     */
-    lastVal;
-    as;
-    cloneVal;
-    m;
-    from;
     connectedCallback() {
         this.style.display = 'none';
         xc.mergeProps(this, slicedPropDefs);

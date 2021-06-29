@@ -135,7 +135,7 @@ export interface PassDownProps extends PDToFrom{
 
     
 
-    cloneVal: boolean | undefined;
+    cloneVal?: boolean | undefined;
 
 
 

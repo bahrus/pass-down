@@ -1,4 +1,5 @@
 import {PD} from './p-d.js';
+import {asAttr} from 'on-to-me/types.d.js';
 
 /**
  * @element p-d
@@ -107,4 +108,16 @@ export class PDDoc extends PD{
       * @private
       */
      lastEvent: Event | undefined;
+    
+    /**
+     * @private
+     */
+     lastVal: any;
+
+     as: asAttr;
+ 
+     cloneVal: boolean | undefined;
+ 
+     m: number | undefined;
+     from: string | undefined;
 }
