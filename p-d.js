@@ -14,11 +14,6 @@ export class PD extends HTMLElement {
     reactor = new xc.Rx(this);
     _sym = Symbol();
     /**
-     * Only act on event if target element css-matches the expression specified by this attribute.
-     * @attr
-     */
-    ifTargetMatches;
-    /**
      * Name of property to set on matching (downstream) siblings.
      * @attr
      */

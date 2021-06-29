@@ -28,4 +28,10 @@ export class PDDoc extends PD{
      * @attr
      */
     noblock: boolean | undefined;
+
+    /**
+     * Only act on event if target element css-matches the expression specified by this attribute.
+     * @attr
+     */
+    ifTargetMatches: string | undefined;
 }

@@ -23,11 +23,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 
 
 
-    /**
-     * Only act on event if target element css-matches the expression specified by this attribute.
-     * @attr
-     */
-    ifTargetMatches: string | undefined;
+
 
     /**
      * Name of property to set on matching (downstream) siblings.
@@ -115,8 +111,8 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     }
     //https://web.dev/javascript-this/
     handleEvent = (e: Event) => {
-        if(this.ifTargetMatches !== undefined){
-            if(!(e.target as HTMLElement).matches(this.ifTargetMatches)) return;
+        if((this as unknown as PassDownProps).ifTargetMatches !== undefined){
+            if(!(e.target as HTMLElement).matches((this as unknown as PassDownProps).ifTargetMatches!)) return;
         }
         if(!this.filterEvent(e)) return;
         this.lastEvent = e;
@@ -179,8 +175,8 @@ const attachEventHandler = ({on, observe, self}: PassDownProps) => {
     }
     elementToObserve.addEventListener(on!, self.handleEvent, {capture: self.capture});
     if(doNudge){
-        if(elementToObserve === self.parentElement && self.ifTargetMatches){
-            elementToObserve.querySelectorAll(self.ifTargetMatches).forEach(publisher =>{
+        if(elementToObserve === self.parentElement && (self as unknown as PassDownProps).ifTargetMatches){
+            elementToObserve.querySelectorAll((self as unknown as PassDownProps).ifTargetMatches!).forEach(publisher =>{
                 nudge(publisher);
             });
         }else{

@@ -80,7 +80,7 @@ export interface PassDownProps extends PDToFrom{
      * Only act on event if target element css-matches the expression specified by this attribute.
      * @attr
      */
-    ifTargetMatches: string | undefined;
+    ifTargetMatches?: string | undefined;
 
 
 
