@@ -1,10 +1,21 @@
 import {PD} from './p-d.js';
 import {jsonPath} from 'jsonpathesm/JSONPath.js';
 import {xc, PropDef, PropDefMap} from 'xtal-element/lib/XtalCore.js';
-import {PassDownExtProps} from './types.d.js';
+import {PassDownExtProps, PassDownProps} from './types.d.js';
+import {getProp} from 'on-to-me/on-to-me.js';
+
 
 export class PDX extends PD {
     static is = 'p-d-x';
+
+    override parseInitVal(elementToObserve: Element){
+        if((this as unknown as PassDownProps).valFromTarget === undefined){
+            return super.parseInitVal(elementToObserve);
+        }
+        const val = getProp(elementToObserve, (this as unknown as PassDownExtProps).initVal!.split('.'), this);
+        if(val === undefined) return undefined;
+        return jsonPath(val, (this as unknown as PassDownExtProps).valFilter);
+    }
     override parseValFromEvent(e: Event){
         const cThis = this as unknown as PassDownExtProps;
         const superVal = super.parseValFromEvent(e);
@@ -13,6 +24,7 @@ export class PDX extends PD {
         }
         return jsonPath(superVal, cThis.valFilter);
     }
+
     connectedCallback(){
         super.connectedCallback();
         xc.mergeProps(this, slicedPropDefs);
