@@ -86,4 +86,25 @@ export class PDDoc extends PD{
      log!: boolean;
  
      async!: boolean;
+
+
+
+
+
+     parseValAs: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
+    
+     /**
+      * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
+     */
+     capture!: boolean;
+ 
+     /**
+      * @private
+      */
+     previousOn: string | undefined;
+ 
+     /**
+      * @private
+      */
+     lastEvent: Event | undefined;
 }

@@ -22,25 +22,6 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 
 
 
-
-
-    parseValAs: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
-    
-    /**
-     * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
-    */
-    capture!: boolean;
-
-    /**
-     * @private
-     */
-    previousOn: string | undefined;
-
-    /**
-     * @private
-     */
-    lastEvent: Event | undefined;
-
     /**
      * @private
      */
@@ -66,7 +47,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
             if(!(e.target as HTMLElement).matches((this as unknown as PassDownProps).ifTargetMatches!)) return;
         }
         if(!this.filterEvent(e)) return;
-        this.lastEvent = e;
+        (this as unknown as PassDownProps).lastEvent = e;
     }
 
     parseValFromEvent(e: Event){
@@ -86,8 +67,8 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
                 valToPass = attribVal;
             }
         }
-        if(this.parseValAs !== undefined){
-            valToPass = convert(valToPass, this.parseValAs);
+        if((this as unknown as PassDownProps).parseValAs !== undefined){
+            valToPass = convert(valToPass, (this as unknown as PassDownProps).parseValAs!);
         }
         return this.cloneVal ? structuralClone(valToPass) :  valToPass;
     }
@@ -119,12 +100,12 @@ const attachEventHandler = ({on, observe, self}: PassDownProps) => {
     const elementToObserve = self.observedElement;
     if(!elementToObserve) throw "Could not locate element to observe.";
     let doNudge = previousElementToObserve !== elementToObserve;
-    if((previousElementToObserve !== undefined) && (self.previousOn !== undefined || (previousElementToObserve !== elementToObserve))){
-        previousElementToObserve.removeEventListener(self.previousOn || on!, self.handleEvent);
+    if((previousElementToObserve !== undefined) && ((self as unknown as PassDownProps).previousOn !== undefined || (previousElementToObserve !== elementToObserve))){
+        previousElementToObserve.removeEventListener((self as unknown as PassDownProps).previousOn || on!, self.handleEvent);
     }else{
         doNudge = true;
     }
-    elementToObserve.addEventListener(on!, self.handleEvent, {capture: self.capture});
+    elementToObserve.addEventListener(on!, self.handleEvent, {capture: (self as unknown as PassDownProps).capture});
     if(doNudge){
         if(elementToObserve === self.parentElement && (self as unknown as PassDownProps).ifTargetMatches){
             elementToObserve.querySelectorAll((self as unknown as PassDownProps).ifTargetMatches!).forEach(publisher =>{
@@ -136,7 +117,7 @@ const attachEventHandler = ({on, observe, self}: PassDownProps) => {
         
     }
     self.setAttribute('status', '👂');
-    self.previousOn = on;
+    (self as unknown as PassDownProps).previousOn = on;
     addDefaultMutObs(self);
     
  
@@ -161,7 +142,7 @@ function setInitVal(self: PD, elementToObserve: Element){
     
     let val = getProp(elementToObserve, (self as unknown as PassDownProps).initVal!.split('.'), self);
     if(val === undefined) return false;
-    if(self.parseValAs !== undefined) val = convert(val, self.parseValAs);
+    if((self as unknown as PassDownProps).parseValAs !== undefined) val = convert(val, (self as unknown as PassDownProps).parseValAs!);
     if(self.cloneVal) val = structuralClone(val);
     self.lastVal = val;
     return true;
@@ -178,7 +159,7 @@ export const handleEvent = ({val, lastEvent, parseValAs, self}: PassDownProps) =
     let valToPass = self.valFromEvent(lastEvent!);
     self.lastVal = valToPass;
     //holding on to lastEvent could introduce memory leak
-    delete self.lastEvent;
+    delete (self as unknown as PassDownProps).lastEvent;
     self.setAttribute('status', '👂');
 }
 

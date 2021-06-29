@@ -13,19 +13,6 @@ export class PD extends HTMLElement {
     propActions = propActions;
     reactor = new xc.Rx(this);
     _sym = Symbol();
-    parseValAs;
-    /**
-     * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
-    */
-    capture;
-    /**
-     * @private
-     */
-    previousOn;
-    /**
-     * @private
-     */
-    lastEvent;
     /**
      * @private
      */

@@ -120,16 +120,16 @@ export interface PassDownProps extends PDToFrom{
 
     async?: boolean | undefined;
 
-    parseValAs: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
+    parseValAs?: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
     
     /**
      * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
     */
-    capture: boolean | undefined;
+    capture?: boolean | undefined;
 
-    previousOn: string | undefined;
+    previousOn?: string | undefined;
 
-    lastEvent: Event | undefined;
+    lastEvent?: Event | undefined;
 
     
 
