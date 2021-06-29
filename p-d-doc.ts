@@ -74,4 +74,16 @@ export class PDDoc extends PD{
      initVal: string | undefined;
  
      valFromTarget: string | undefined;
+
+    /**
+     * In some cases, the initVal can only be obtained after initEvent fires
+     */
+     initEvent: string | undefined;
+    
+    
+     debug!: boolean;
+ 
+     log!: boolean;
+ 
+     async!: boolean;
 }

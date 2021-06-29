@@ -13,13 +13,6 @@ export class PD extends HTMLElement {
     propActions = propActions;
     reactor = new xc.Rx(this);
     _sym = Symbol();
-    /**
-     * In some cases, the initVal can only be obtained after initEvent fires
-     */
-    initEvent;
-    debug;
-    log;
-    async;
     parseValAs;
     /**
      * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.

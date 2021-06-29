@@ -22,17 +22,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 
 
 
-    /**
-     * In some cases, the initVal can only be obtained after initEvent fires
-     */
-    initEvent: string | undefined;
-    
-    
-    debug!: boolean;
 
-    log!: boolean;
-
-    async!: boolean;
 
     parseValAs: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
     
@@ -155,8 +145,8 @@ const attachEventHandler = ({on, observe, self}: PassDownProps) => {
 export const onInitVal = ({initVal, self}: PassDownProps) => {
     const elementToObserve = self.observedElement;
     const foundInitVal = setInitVal(self, elementToObserve);
-    if(!foundInitVal && self.initEvent!== undefined){
-        elementToObserve.addEventListener(self.initEvent, e => {
+    if(!foundInitVal && (self as unknown as PassDownProps).initEvent!== undefined){
+        elementToObserve.addEventListener((self as unknown as PassDownProps).initEvent!, e => {
             setInitVal(self, elementToObserve);
         }, {once: true});
     }
