@@ -44,7 +44,9 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     }
 
     parseInitVal(elementToObserve: Element){
-        return  getProp(elementToObserve, (self as unknown as PassDownProps).initVal!.split('.'), this);
+        const initVal =  (this as unknown as PassDownProps).initVal;
+        if(initVal === undefined) return undefined;
+        return  getProp(elementToObserve,initVal.split('.'), this);
     }
 
     valFromEvent(e: Event){
