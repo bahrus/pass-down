@@ -108,9 +108,9 @@ export interface PassDownProps extends PDToFrom{
      * Artificially fire event on target element whose name is specified by this attribute.
      * @attr fire-event
      */
-    fireEvent: string | undefined;
+    fireEvent?: string | undefined;
 
-    initVal: string | undefined;
+    initVal?: string | undefined;
     
     /**
      * In some cases, the initVal can only be obtained after initEvent fires
@@ -141,7 +141,7 @@ export interface PassDownProps extends PDToFrom{
 
     mutateEvents: string[] | undefined;
 
-    valFromTarget: string | undefined;
+    valFromTarget?: string | undefined;
 }
 
 export interface PassDownExtProps extends PassDownProps{

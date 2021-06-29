@@ -62,4 +62,16 @@ export class PDDoc extends PD{
      * @attr
      */
     observe: string | undefined;
+
+    
+    
+    /**
+     * Artificially fire event on target element whose name is specified by this attribute.
+     * @attr fire-event
+     */
+     fireEvent: string | undefined;
+
+     initVal: string | undefined;
+ 
+     valFromTarget: string | undefined;
 }

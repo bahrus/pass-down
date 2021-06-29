@@ -21,16 +21,6 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     _sym = Symbol();
 
 
-    
-    /**
-     * Artificially fire event on target element whose name is specified by this attribute.
-     * @attr fire-event
-     */
-    fireEvent: string | undefined;
-
-    initVal: string | undefined;
-
-    valFromTarget: string | undefined;
 
     /**
      * In some cases, the initVal can only be obtained after initEvent fires
@@ -162,7 +152,7 @@ const attachEventHandler = ({on, observe, self}: PassDownProps) => {
  
 };
 
-export const onInitVal = ({initVal, self}: PD) => {
+export const onInitVal = ({initVal, self}: PassDownProps) => {
     const elementToObserve = self.observedElement;
     const foundInitVal = setInitVal(self, elementToObserve);
     if(!foundInitVal && self.initEvent!== undefined){
@@ -172,14 +162,14 @@ export const onInitVal = ({initVal, self}: PD) => {
     }
 };
 
-export const onValFromTarget = ({valFromTarget, self}: PD) => {
-    self.initVal = valFromTarget;
+export const onValFromTarget = ({valFromTarget, self}: PassDownProps) => {
+    (self as unknown as PassDownProps).initVal = valFromTarget;
     (self as unknown as PassDownProps).val = 'target.' + valFromTarget;
 };
 
 function setInitVal(self: PD, elementToObserve: Element){
     
-    let val = getProp(elementToObserve, self.initVal!.split('.'), self);
+    let val = getProp(elementToObserve, (self as unknown as PassDownProps).initVal!.split('.'), self);
     if(val === undefined) return false;
     if(self.parseValAs !== undefined) val = convert(val, self.parseValAs);
     if(self.cloneVal) val = structuralClone(val);

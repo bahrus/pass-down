@@ -14,13 +14,6 @@ export class PD extends HTMLElement {
     reactor = new xc.Rx(this);
     _sym = Symbol();
     /**
-     * Artificially fire event on target element whose name is specified by this attribute.
-     * @attr fire-event
-     */
-    fireEvent;
-    initVal;
-    valFromTarget;
-    /**
      * In some cases, the initVal can only be obtained after initEvent fires
      */
     initEvent;
