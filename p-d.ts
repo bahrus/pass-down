@@ -23,19 +23,6 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 
 
 
-
-
-    /**
-     * Name of property to set on matching (downstream) siblings.
-     * @attr
-     */
-    prop: string | undefined;
-
-    /**
-     * Dynamically determined name of property to set on matching (downstream) siblings from event object.
-     * @attr prop-from-event
-     */
-    propFromEvent: string | undefined;
     
     /**
      * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.

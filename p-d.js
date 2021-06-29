@@ -14,16 +14,6 @@ export class PD extends HTMLElement {
     reactor = new xc.Rx(this);
     _sym = Symbol();
     /**
-     * Name of property to set on matching (downstream) siblings.
-     * @attr
-     */
-    prop;
-    /**
-     * Dynamically determined name of property to set on matching (downstream) siblings from event object.
-     * @attr prop-from-event
-     */
-    propFromEvent;
-    /**
      * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.
      * @attr
      */

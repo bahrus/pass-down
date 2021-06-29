@@ -34,4 +34,16 @@ export class PDDoc extends PD{
      * @attr
      */
     ifTargetMatches: string | undefined;
+
+    /**
+     * Name of property to set on matching (downstream) siblings.
+     * @attr
+     */
+    prop: string | undefined;
+
+    /**
+     * Dynamically determined name of property to set on matching (downstream) siblings from event object.
+     * @attr prop-from-event
+     */
+     propFromEvent: string | undefined;
 }
