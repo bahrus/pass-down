@@ -34,14 +34,14 @@
     "mut-obs": "0.0.8",
     "on-to-me": "0.0.23",
     "trans-render": "0.0.291",
-    "xtal-element": "0.0.405",
+    "xtal-element": "0.0.411",
     "jsonpathesm": "0.0.1"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
     "if-diff": "0.0.74",
     "xtal-test": "0.0.51",
-    "@custom-elements-manifest/analyzer": "0.3.6"
+    "@custom-elements-manifest/analyzer": "0.4.10"
   },
   "scripts": {
     "test": "node test/test.js",
