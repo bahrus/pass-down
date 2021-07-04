@@ -41,10 +41,34 @@ export class PDX extends PD {
     }
     parseValFromEvent(e) {
         const superVal = super.parseValFromEvent(e);
-        if (this.valFilter === undefined) {
+        if (this.valFilter === undefined && this.filterId === undefined) {
             return superVal;
         }
-        return jsonPath(superVal, this.valFilter);
+        let filteredVal = superVal;
+        if (this.valFilter !== undefined) {
+            filteredVal = jsonPath(filteredVal, this.valFilter);
+        }
+        if (this.filterId !== undefined) {
+            const rn = this.getRootNode();
+            const filterScriptElement = rn.querySelector('script#' + this.filterId);
+            if (filterScriptElement !== null) {
+                const filterPath = this.filterScriptProp || '_modExport.filter';
+                const tokens = filterPath.split('.');
+                let filterFn = filterScriptElement;
+                for (const token of tokens) {
+                    if (filterFn !== undefined) {
+                        filterFn = filterFn[token];
+                    }
+                    else {
+                        break;
+                    }
+                }
+                if (typeof filterFn === 'function') {
+                    filteredVal = filterFn(filteredVal);
+                }
+            }
+        }
+        return filteredVal;
     }
     connectedCallback() {
         super.connectedCallback();
