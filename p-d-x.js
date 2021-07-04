@@ -21,7 +21,17 @@ export class PDX extends PD {
             const rn = this.getRootNode();
             const filterScriptElement = rn.querySelector('script#' + this.filterId);
             if (filterScriptElement !== null) {
-                const filterFn = filterScriptElement['filter'];
+                const filterPath = this.filterScriptProp || '_modExport.filter';
+                const tokens = filterPath.split('.');
+                let filterFn = filterScriptElement;
+                for (const token of tokens) {
+                    if (filterFn !== undefined) {
+                        filterFn = filterFn[token];
+                    }
+                    else {
+                        break;
+                    }
+                }
                 if (typeof filterFn === 'function') {
                     val = filterFn(val);
                 }
@@ -52,6 +62,7 @@ const objProp = {
 const propDefMap = {
     valFilter: strProp,
     filterId: strProp,
+    filterScriptProp: strProp,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PDX, slicedPropDefs, 'onPropChange');

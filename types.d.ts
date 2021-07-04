@@ -144,4 +144,5 @@ export interface PassDownProps extends PDToFrom{
 export interface PassDownExtProps extends PassDownProps{
     valFilter: string;
     filterId: string;
+    filterScriptProp: string;
 }
