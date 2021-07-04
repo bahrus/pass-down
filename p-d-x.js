@@ -5,7 +5,7 @@ import { getProp } from 'on-to-me/on-to-me.js';
 export class PDX extends PD {
     static is = 'p-d-x';
     parseInitVal(elementToObserve) {
-        if (this.valFromTarget === undefined) {
+        if (this.valFilter === undefined) {
             return super.parseInitVal(elementToObserve);
         }
         const val = getProp(elementToObserve, this.initVal.split('.'), this);
@@ -14,12 +14,11 @@ export class PDX extends PD {
         return jsonPath(val, this.valFilter);
     }
     parseValFromEvent(e) {
-        const cThis = this;
         const superVal = super.parseValFromEvent(e);
-        if (cThis.valFilter === undefined) {
+        if (this.valFilter === undefined) {
             return superVal;
         }
-        return jsonPath(superVal, cThis.valFilter);
+        return jsonPath(superVal, this.valFilter);
     }
     connectedCallback() {
         super.connectedCallback();
@@ -30,8 +29,12 @@ const strProp = {
     dry: true,
     type: String,
 };
+const objProp = {
+    dry: true,
+    type: Object
+};
 const propDefMap = {
-    valFilter: strProp
+    valFilter: strProp,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PDX, slicedPropDefs, 'onPropChange');

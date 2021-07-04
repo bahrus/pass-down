@@ -1,4 +1,5 @@
-import {PDToFrom} from './types.js';
+import {PD} from './p-d.js';
+import { PDToFrom } from './types.js';
 import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js'; //Typescript requires both of these
 import {passValToMatches, passVal} from 'on-to-me/on-to-me.js';
@@ -47,7 +48,7 @@ export function addDefaultMutObs(self: PDToFrom){
     }
 }
 
-export const handleValChange = ({lastVal, self, to, careOf, m, from, prop}: PDToFrom) => {
+export const handleValChange = ({lastVal, self, to, careOf, m, from, prop}: PD) => {
     if(lastVal === undefined) return;
     if(self.debug){
         debugger;
@@ -60,7 +61,7 @@ export const handleValChange = ({lastVal, self, to, careOf, m, from, prop}: PDTo
     
 }
 
-export const attachMutationEventHandler = ({mutateEvents, self}: PDToFrom) => {
+export const attachMutationEventHandler = ({mutateEvents, self}: PD) => {
     const parentElement = self.parentElement;
     if(!parentElement) return;
     for(const event of mutateEvents!){

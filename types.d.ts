@@ -41,8 +41,6 @@ export interface PDToFrom extends HTMLElement{
 
     mutateEvents?: string[] | undefined;
 
-    self: PDToFrom;
-
     /**
      * Add runtime breakpoints at critical points
      * @attr
@@ -63,7 +61,6 @@ export interface PDToFrom extends HTMLElement{
 }
 
 export interface PassDownProps extends PDToFrom{
-    self: PD;
     /**
     * The event name to monitor for, from previous non-petalian element.
     * @attr

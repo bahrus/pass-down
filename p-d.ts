@@ -85,23 +85,23 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     }
 }
 
+export interface PD extends PassDownProps{}
 
-
-const attachEventHandler = ({on, observe, self}: PassDownProps) => {
+const attachEventHandler = ({on, observe, self}: PD) => {
     const previousElementToObserve = self._wr?.deref();
     self._wr = undefined;
     const elementToObserve = self.observedElement;
     if(!elementToObserve) throw "Could not locate element to observe.";
     let doNudge = previousElementToObserve !== elementToObserve;
-    if((previousElementToObserve !== undefined) && ((self as unknown as PassDownProps).previousOn !== undefined || (previousElementToObserve !== elementToObserve))){
-        previousElementToObserve.removeEventListener((self as unknown as PassDownProps).previousOn || on!, self.handleEvent);
+    if((previousElementToObserve !== undefined) && (self.previousOn !== undefined || (previousElementToObserve !== elementToObserve))){
+        previousElementToObserve.removeEventListener(self.previousOn || on!, self.handleEvent);
     }else{
         doNudge = true;
     }
-    elementToObserve.addEventListener(on!, self.handleEvent, {capture: (self as unknown as PassDownProps).capture});
+    elementToObserve.addEventListener(on!, self.handleEvent, {capture: self.capture});
     if(doNudge){
         if(elementToObserve === self.parentElement && (self as unknown as PassDownProps).ifTargetMatches){
-            elementToObserve.querySelectorAll((self as unknown as PassDownProps).ifTargetMatches!).forEach(publisher =>{
+            elementToObserve.querySelectorAll(self.ifTargetMatches!).forEach(publisher =>{
                 nudge(publisher);
             });
         }else{
@@ -116,17 +116,17 @@ const attachEventHandler = ({on, observe, self}: PassDownProps) => {
  
 };
 
-export const onInitVal = ({initVal, self}: PassDownProps) => {
+export const onInitVal = ({initVal, self}: PD) => {
     const elementToObserve = self.observedElement;
     const foundInitVal = setInitVal(self, elementToObserve);
     if(!foundInitVal && (self as unknown as PassDownProps).initEvent!== undefined){
-        elementToObserve.addEventListener((self as unknown as PassDownProps).initEvent!, e => {
+        elementToObserve.addEventListener(self.initEvent!, e => {
             setInitVal(self, elementToObserve);
         }, {once: true});
     }
 };
 
-export const onValFromTarget = ({valFromTarget, self}: PassDownProps) => {
+export const onValFromTarget = ({valFromTarget, self}: PD) => {
     (self as unknown as PassDownProps).initVal = valFromTarget;
     (self as unknown as PassDownProps).val = 'target.' + valFromTarget;
 };
@@ -134,24 +134,24 @@ export const onValFromTarget = ({valFromTarget, self}: PassDownProps) => {
 function setInitVal(self: PD, elementToObserve: Element){
     let val = self.parseInitVal(elementToObserve);
     if(val === undefined) return false;
-    if((self as unknown as PassDownProps).parseValAs !== undefined) val = convert(val, (self as unknown as PassDownProps).parseValAs!);
-    if((self as unknown as PassDownProps).cloneVal) val = structuralClone(val);
-    (self as unknown as PassDownProps).lastVal = val;
+    if(self.parseValAs !== undefined) val = convert(val, self.parseValAs!);
+    if(self.cloneVal) val = structuralClone(val);
+    self.lastVal = val;
     return true;
 }
 
 
 
-export const handleEvent = ({val, lastEvent, parseValAs, self}: PassDownProps) => {
+export const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
     if(!lastEvent){
         debugger;
     }
     self.setAttribute('status', '🌩️');
-    if(!(self as unknown as PassDownProps).noblock) lastEvent!.stopPropagation();
+    if(!self.noblock) lastEvent!.stopPropagation();
     let valToPass = self.valFromEvent(lastEvent!);
-    (self as unknown as PassDownProps).lastVal = valToPass;
+    self.lastVal = valToPass;
     //holding on to lastEvent could introduce memory leak
-    delete (self as unknown as PassDownProps).lastEvent;
+    delete self.lastEvent;
     self.setAttribute('status', '👂');
 }
 
