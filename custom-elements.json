@@ -4,756 +4,13 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "p-d.js",
+      "path": "p-d-doc.ts",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "PD",
+          "name": "PDDoc",
           "members": [
-            {
-              "kind": "method",
-              "name": "onPropChange",
-              "parameters": [
-                {
-                  "name": "n"
-                },
-                {
-                  "name": "propDef"
-                },
-                {
-                  "name": "nv"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "valFromEvent",
-              "parameters": [
-                {
-                  "name": "e"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "filterEvent",
-              "parameters": [
-                {
-                  "name": "e"
-                }
-              ]
-            },
-            {
-              "kind": "field",
-              "name": "observedElement"
-            }
-          ],
-          "superclass": {
-            "name": "HTMLElement"
-          },
-          "tagName": "p-d",
-          "customElement": true
-        },
-        {
-          "kind": "function",
-          "name": "onInitVal",
-          "parameters": [
-            {
-              "name": "{ initVal, self }"
-            }
-          ]
-        },
-        {
-          "kind": "function",
-          "name": "handleEvent",
-          "parameters": [
-            {
-              "name": "{ val, lastEvent, parseValAs, self }"
-            }
-          ]
-        },
-        {
-          "kind": "variable",
-          "name": "str0"
-        },
-        {
-          "kind": "variable",
-          "name": "str1"
-        },
-        {
-          "kind": "variable",
-          "name": "bool1"
-        },
-        {
-          "kind": "class",
-          "description": "",
-          "name": "PassDown",
-          "superclass": {
-            "name": "PD"
-          },
-          "tagName": "pass-down",
-          "customElement": true,
-          "attributes": [
-            {
-              "name": "debug",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "log",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "on",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "The event name to monitor for, from previous non-petalian element.",
-              "fieldName": "on",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "to",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "css pattern to match for from downstream siblings.",
-              "fieldName": "to",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "care-of",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "CSS Selector to use to select single child within the destination element.",
-              "fieldName": "careOf",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "noblock",
-              "type": {
-                "text": "boolean | undefined"
-              },
-              "description": "Don't block event propagation.",
-              "fieldName": "noblock",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "ifTargetMatches",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Only act on event if target element css-matches the expression specified by this attribute.",
-              "fieldName": "ifTargetMatches",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "prop",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Name of property to set on matching (downstream) siblings.",
-              "fieldName": "prop",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "prop-from-event",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Dynamically determined name of property to set on matching (downstream) siblings from event object.",
-              "fieldName": "propFromEvent",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "val",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.",
-              "fieldName": "val",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "observe",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Specifies element to latch on to, and listen for events.\r\nSearches previous siblings, parent, previous siblings of parent, etc.\r\nStops at Shadow DOM boundary.",
-              "fieldName": "observe",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "name": "fire-event",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Artificially fire event on target element whose name is specified by this attribute.",
-              "fieldName": "fireEvent",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "is",
-              "static": true,
-              "default": "p-d",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "self",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "propActions",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "reactor",
-              "type": {
-                "text": "IReactor"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "_sym",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "on",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "The event name to monitor for, from previous non-petalian element.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "to",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "css pattern to match for from downstream siblings.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "careOf",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "CSS Selector to use to select single child within the destination element.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "noblock",
-              "type": {
-                "text": "boolean | undefined"
-              },
-              "description": "Don't block event propagation.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "ifTargetMatches",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Only act on event if target element css-matches the expression specified by this attribute.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "prop",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Name of property to set on matching (downstream) siblings.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "propFromEvent",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Dynamically determined name of property to set on matching (downstream) siblings from event object.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "val",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "observe",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Specifies element to latch on to, and listen for events.\r\nSearches previous siblings, parent, previous siblings of parent, etc.\r\nStops at Shadow DOM boundary.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "fireEvent",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Artificially fire event on target element whose name is specified by this attribute.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "initVal",
-              "type": {
-                "text": "string | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "initEvent",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "In some cases, the initVal can only be obtained after initEvent fires",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "debug",
-              "type": {
-                "text": "boolean"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "log",
-              "type": {
-                "text": "boolean"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "async",
-              "type": {
-                "text": "boolean"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "parseValAs",
-              "type": {
-                "text": "'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "capture",
-              "type": {
-                "text": "boolean"
-              },
-              "description": "A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "previousOn",
-              "type": {
-                "text": "string | undefined"
-              },
-              "privacy": "private",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "lastEvent",
-              "type": {
-                "text": "Event | undefined"
-              },
-              "privacy": "private",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "lastVal",
-              "type": {
-                "text": "any"
-              },
-              "privacy": "private",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "as",
-              "type": {
-                "text": "asAttr"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "cloneVal",
-              "type": {
-                "text": "boolean | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "m",
-              "type": {
-                "text": "number | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "from",
-              "type": {
-                "text": "string | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "onPropChange",
-              "parameters": [
-                {
-                  "name": "n",
-                  "type": {
-                    "text": "string"
-                  }
-                },
-                {
-                  "name": "propDef",
-                  "type": {
-                    "text": "PropDef"
-                  }
-                },
-                {
-                  "name": "nv",
-                  "type": {
-                    "text": "any"
-                  }
-                }
-              ],
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "handleEvent",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "valFromEvent",
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ],
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "filterEvent",
-              "return": {
-                "type": {
-                  "text": "boolean"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "e",
-                  "type": {
-                    "text": "Event"
-                  }
-                }
-              ],
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "mutateEvents",
-              "type": {
-                "text": "string[] | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "_wr",
-              "type": {
-                "text": "WeakRef<Element> | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "observedElement",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            }
-          ]
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "PD",
-          "declaration": {
-            "name": "PD",
-            "module": "p-d.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "onInitVal",
-          "declaration": {
-            "name": "onInitVal",
-            "module": "p-d.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "handleEvent",
-          "declaration": {
-            "name": "handleEvent",
-            "module": "p-d.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "str0",
-          "declaration": {
-            "name": "str0",
-            "module": "p-d.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "str1",
-          "declaration": {
-            "name": "str1",
-            "module": "p-d.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "bool1",
-          "declaration": {
-            "name": "bool1",
-            "module": "p-d.js"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "PassDown",
-          "declaration": {
-            "name": "PassDown",
-            "module": "p-d.js"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "p-d.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "PD",
-          "members": [
-            {
-              "kind": "field",
-              "name": "is",
-              "static": true,
-              "default": "p-d"
-            },
-            {
-              "kind": "field",
-              "name": "self"
-            },
-            {
-              "kind": "field",
-              "name": "propActions"
-            },
-            {
-              "kind": "field",
-              "name": "reactor",
-              "type": {
-                "text": "IReactor"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "_sym"
-            },
             {
               "kind": "field",
               "name": "on",
@@ -837,6 +94,13 @@
             {
               "kind": "field",
               "name": "initVal",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "valFromTarget",
               "type": {
                 "text": "string | undefined"
               }
@@ -938,6 +202,51 @@
               }
             },
             {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "p-d",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "self",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "propActions",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "reactor",
+              "type": {
+                "text": "IReactor"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_sym",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
               "kind": "method",
               "name": "onPropChange",
               "parameters": [
@@ -959,11 +268,51 @@
                     "text": "any"
                   }
                 }
-              ]
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
             },
             {
               "kind": "field",
-              "name": "handleEvent"
+              "name": "handleEvent",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parseValFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parseInitVal",
+              "parameters": [
+                {
+                  "name": "elementToObserve",
+                  "type": {
+                    "text": "Element"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
             },
             {
               "kind": "method",
@@ -975,7 +324,11 @@
                     "text": "Event"
                   }
                 }
-              ]
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
             },
             {
               "kind": "method",
@@ -992,13 +345,21 @@
                     "text": "Event"
                   }
                 }
-              ]
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
             },
             {
               "kind": "field",
               "name": "mutateEvents",
               "type": {
                 "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
               }
             },
             {
@@ -1006,20 +367,22 @@
               "name": "_wr",
               "type": {
                 "text": "WeakRef<Element> | undefined"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
               }
             },
             {
               "kind": "field",
-              "name": "observedElement"
+              "name": "observedElement",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
             }
           ],
           "attributes": [
-            {
-              "name": "debug"
-            },
-            {
-              "name": "log"
-            },
             {
               "name": "on",
               "type": {
@@ -1099,69 +462,72 @@
               },
               "description": "Artificially fire event on target element whose name is specified by this attribute.",
               "fieldName": "fireEvent"
+            },
+            {
+              "name": "debug",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "name": "log",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
             }
           ],
           "superclass": {
-            "name": "HTMLElement"
+            "name": "PD"
           },
           "tagName": "p-d",
           "customElement": true
-        },
+        }
+      ],
+      "exports": [
         {
-          "kind": "function",
-          "name": "onInitVal",
-          "parameters": [
-            {
-              "name": "{initVal, self}",
-              "type": {
-                "text": "PD"
-              }
-            }
-          ]
-        },
-        {
-          "kind": "function",
-          "name": "handleEvent",
-          "parameters": [
-            {
-              "name": "{val, lastEvent, parseValAs, self}",
-              "type": {
-                "text": "PD"
-              }
-            }
-          ]
-        },
-        {
-          "kind": "variable",
-          "name": "str0",
-          "type": {
-            "text": "PropDef"
+          "kind": "js",
+          "name": "PDDoc",
+          "declaration": {
+            "name": "PDDoc",
+            "module": "p-d-doc.ts"
           }
-        },
-        {
-          "kind": "variable",
-          "name": "str1",
-          "type": {
-            "text": "PropDef"
-          }
-        },
-        {
-          "kind": "variable",
-          "name": "bool1",
-          "type": {
-            "text": "PropDef"
-          }
-        },
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "p-d-x.js",
+      "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "PassDown",
+          "name": "PDX",
           "members": [
             {
               "kind": "field",
               "name": "is",
               "static": true,
-              "default": "pass-down"
+              "default": "p-d-x"
+            },
+            {
+              "kind": "method",
+              "name": "parseInitVal",
+              "parameters": [
+                {
+                  "name": "elementToObserve"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "parseValFromEvent",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
             },
             {
               "kind": "field",
@@ -1193,285 +559,6 @@
             {
               "kind": "field",
               "name": "_sym",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "on",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "The event name to monitor for, from previous non-petalian element.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "to",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "css pattern to match for from downstream siblings.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "careOf",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "CSS Selector to use to select single child within the destination element.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "noblock",
-              "type": {
-                "text": "boolean | undefined"
-              },
-              "description": "Don't block event propagation.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "ifTargetMatches",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Only act on event if target element css-matches the expression specified by this attribute.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "prop",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Name of property to set on matching (downstream) siblings.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "propFromEvent",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Dynamically determined name of property to set on matching (downstream) siblings from event object.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "val",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "observe",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Specifies element to latch on to, and listen for events.\r\nSearches previous siblings, parent, previous siblings of parent, etc.\r\nStops at Shadow DOM boundary.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "fireEvent",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Artificially fire event on target element whose name is specified by this attribute.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "initVal",
-              "type": {
-                "text": "string | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "initEvent",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "In some cases, the initVal can only be obtained after initEvent fires",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "debug",
-              "type": {
-                "text": "boolean"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "log",
-              "type": {
-                "text": "boolean"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "async",
-              "type": {
-                "text": "boolean"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "parseValAs",
-              "type": {
-                "text": "'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "capture",
-              "type": {
-                "text": "boolean"
-              },
-              "description": "A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "previousOn",
-              "type": {
-                "text": "string | undefined"
-              },
-              "privacy": "private",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "lastEvent",
-              "type": {
-                "text": "Event | undefined"
-              },
-              "privacy": "private",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "lastVal",
-              "type": {
-                "text": "any"
-              },
-              "privacy": "private",
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "as",
-              "type": {
-                "text": "asAttr"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "cloneVal",
-              "type": {
-                "text": "boolean | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "m",
-              "type": {
-                "text": "number | undefined"
-              },
-              "inheritedFrom": {
-                "name": "PD",
-                "module": "p-d.ts"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "from",
-              "type": {
-                "text": "string | undefined"
-              },
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
@@ -1584,6 +671,585 @@
           "superclass": {
             "name": "PD"
           },
+          "tagName": "p-d-x",
+          "customElement": true,
+          "attributes": [
+            {
+              "name": "debug",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "name": "log",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "PDX",
+          "declaration": {
+            "name": "PDX",
+            "module": "p-d-x.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "p-d-x.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PDX",
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "p-d-x"
+            },
+            {
+              "kind": "method",
+              "name": "parseInitVal",
+              "parameters": [
+                {
+                  "name": "elementToObserve",
+                  "type": {
+                    "text": "Element"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "parseValFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "self",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "propActions",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "reactor",
+              "type": {
+                "text": "IReactor"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_sym",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "n",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "propDef",
+                  "type": {
+                    "text": "PropDef"
+                  }
+                },
+                {
+                  "name": "nv",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "handleEvent",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "valFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "filterEvent",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "mutateEvents",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_wr",
+              "type": {
+                "text": "WeakRef<Element> | undefined"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "observedElement",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "PD"
+          },
+          "tagName": "p-d-x",
+          "customElement": true,
+          "attributes": [
+            {
+              "name": "debug",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "name": "log",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "PDX",
+          "declaration": {
+            "name": "PDX",
+            "module": "p-d-x.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "p-d.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PD",
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "p-d"
+            },
+            {
+              "kind": "field",
+              "name": "self"
+            },
+            {
+              "kind": "field",
+              "name": "propActions"
+            },
+            {
+              "kind": "field",
+              "name": "reactor"
+            },
+            {
+              "kind": "field",
+              "name": "_sym"
+            },
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "n"
+                },
+                {
+                  "name": "propDef"
+                },
+                {
+                  "name": "nv"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "handleEvent"
+            },
+            {
+              "kind": "method",
+              "name": "parseValFromEvent",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "parseInitVal",
+              "parameters": [
+                {
+                  "name": "elementToObserve"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "valFromEvent",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "filterEvent",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "mutateEvents"
+            },
+            {
+              "kind": "field",
+              "name": "_wr"
+            },
+            {
+              "kind": "field",
+              "name": "observedElement"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "debug"
+            },
+            {
+              "name": "log"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "onInitVal",
+          "parameters": [
+            {
+              "name": "{ initVal, self }"
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "onValFromTarget",
+          "parameters": [
+            {
+              "name": "{ valFromTarget, self }"
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "handleEvent",
+          "parameters": [
+            {
+              "name": "{ val, lastEvent, parseValAs, self }"
+            }
+          ]
+        },
+        {
+          "kind": "variable",
+          "name": "str0"
+        },
+        {
+          "kind": "variable",
+          "name": "str1"
+        },
+        {
+          "kind": "variable",
+          "name": "bool1"
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PassDown",
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "pass-down"
+            },
+            {
+              "kind": "field",
+              "name": "self",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "propActions",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "reactor",
+              "type": {
+                "text": "IReactor"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_sym",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "n",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "propDef",
+                  "type": {
+                    "text": "PropDef"
+                  }
+                },
+                {
+                  "name": "nv",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "handleEvent",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parseValFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "parseInitVal",
+              "parameters": [
+                {
+                  "name": "elementToObserve",
+                  "type": {
+                    "text": "Element"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "valFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "filterEvent",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "mutateEvents",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_wr",
+              "type": {
+                "text": "WeakRef<Element> | undefined"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "observedElement",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "PD"
+          },
           "tagName": "pass-down",
           "customElement": true,
           "attributes": [
@@ -1600,122 +1266,478 @@
                 "name": "PD",
                 "module": "p-d.ts"
               }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "PD",
+          "declaration": {
+            "name": "PD",
+            "module": "p-d.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "onInitVal",
+          "declaration": {
+            "name": "onInitVal",
+            "module": "p-d.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "onValFromTarget",
+          "declaration": {
+            "name": "onValFromTarget",
+            "module": "p-d.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "handleEvent",
+          "declaration": {
+            "name": "handleEvent",
+            "module": "p-d.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "str0",
+          "declaration": {
+            "name": "str0",
+            "module": "p-d.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "str1",
+          "declaration": {
+            "name": "str1",
+            "module": "p-d.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "bool1",
+          "declaration": {
+            "name": "bool1",
+            "module": "p-d.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PassDown",
+          "declaration": {
+            "name": "PassDown",
+            "module": "p-d.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "p-d.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PD",
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "p-d"
             },
             {
-              "name": "on",
+              "kind": "field",
+              "name": "self"
+            },
+            {
+              "kind": "field",
+              "name": "propActions"
+            },
+            {
+              "kind": "field",
+              "name": "reactor",
               "type": {
-                "text": "string | undefined"
+                "text": "IReactor"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_sym"
+            },
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "n",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "propDef",
+                  "type": {
+                    "text": "PropDef"
+                  }
+                },
+                {
+                  "name": "nv",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "handleEvent"
+            },
+            {
+              "kind": "method",
+              "name": "parseValFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "parseInitVal",
+              "parameters": [
+                {
+                  "name": "elementToObserve",
+                  "type": {
+                    "text": "Element"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "valFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "filterEvent",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
               },
-              "description": "The event name to monitor for, from previous non-petalian element.",
-              "fieldName": "on",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "mutateEvents",
+              "type": {
+                "text": "string[] | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_wr",
+              "type": {
+                "text": "WeakRef<Element> | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "observedElement"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "debug"
+            },
+            {
+              "name": "log"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "onInitVal",
+          "parameters": [
+            {
+              "name": "{initVal, self}",
+              "type": {
+                "text": "PD"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "onValFromTarget",
+          "parameters": [
+            {
+              "name": "{valFromTarget, self}",
+              "type": {
+                "text": "PD"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "handleEvent",
+          "parameters": [
+            {
+              "name": "{val, lastEvent, parseValAs, self}",
+              "type": {
+                "text": "PD"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "variable",
+          "name": "str0",
+          "type": {
+            "text": "PropDef"
+          }
+        },
+        {
+          "kind": "variable",
+          "name": "str1",
+          "type": {
+            "text": "PropDef"
+          }
+        },
+        {
+          "kind": "variable",
+          "name": "bool1",
+          "type": {
+            "text": "PropDef"
+          }
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PassDown",
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "pass-down"
+            },
+            {
+              "kind": "field",
+              "name": "self",
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "to",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "css pattern to match for from downstream siblings.",
-              "fieldName": "to",
+              "kind": "field",
+              "name": "propActions",
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "care-of",
+              "kind": "field",
+              "name": "reactor",
               "type": {
-                "text": "string | undefined"
+                "text": "IReactor"
               },
-              "description": "CSS Selector to use to select single child within the destination element.",
-              "fieldName": "careOf",
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "noblock",
-              "type": {
-                "text": "boolean | undefined"
-              },
-              "description": "Don't block event propagation.",
-              "fieldName": "noblock",
+              "kind": "field",
+              "name": "_sym",
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "ifTargetMatches",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Only act on event if target element css-matches the expression specified by this attribute.",
-              "fieldName": "ifTargetMatches",
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "n",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "propDef",
+                  "type": {
+                    "text": "PropDef"
+                  }
+                },
+                {
+                  "name": "nv",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ],
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "prop",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Name of property to set on matching (downstream) siblings.",
-              "fieldName": "prop",
+              "kind": "field",
+              "name": "handleEvent",
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "prop-from-event",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Dynamically determined name of property to set on matching (downstream) siblings from event object.",
-              "fieldName": "propFromEvent",
+              "kind": "method",
+              "name": "parseValFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "val",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.",
-              "fieldName": "val",
+              "kind": "method",
+              "name": "parseInitVal",
+              "parameters": [
+                {
+                  "name": "elementToObserve",
+                  "type": {
+                    "text": "Element"
+                  }
+                }
+              ],
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "observe",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Specifies element to latch on to, and listen for events.\r\nSearches previous siblings, parent, previous siblings of parent, etc.\r\nStops at Shadow DOM boundary.",
-              "fieldName": "observe",
+              "kind": "method",
+              "name": "valFromEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
               }
             },
             {
-              "name": "fire-event",
-              "type": {
-                "text": "string | undefined"
+              "kind": "method",
+              "name": "filterEvent",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
               },
-              "description": "Artificially fire event on target element whose name is specified by this attribute.",
-              "fieldName": "fireEvent",
+              "parameters": [
+                {
+                  "name": "e",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "mutateEvents",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_wr",
+              "type": {
+                "text": "WeakRef<Element> | undefined"
+              },
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "observedElement",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "PD"
+          },
+          "tagName": "pass-down",
+          "customElement": true,
+          "attributes": [
+            {
+              "name": "debug",
+              "inheritedFrom": {
+                "name": "PD",
+                "module": "p-d.ts"
+              }
+            },
+            {
+              "name": "log",
               "inheritedFrom": {
                 "name": "PD",
                 "module": "p-d.ts"
@@ -1738,6 +1760,14 @@
           "name": "onInitVal",
           "declaration": {
             "name": "onInitVal",
+            "module": "p-d.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "onValFromTarget",
+          "declaration": {
+            "name": "onValFromTarget",
             "module": "p-d.ts"
           }
         },
@@ -1932,7 +1962,7 @@
             {
               "name": "{lastVal, self, to, careOf, m, from, prop}",
               "type": {
-                "text": "PDToFrom"
+                "text": "PD"
               }
             }
           ]
@@ -1944,7 +1974,7 @@
             {
               "name": "{mutateEvents, self}",
               "type": {
-                "text": "PDToFrom"
+                "text": "PD"
               }
             }
           ]
