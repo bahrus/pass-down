@@ -142,7 +142,18 @@ export interface PassDownProps extends PDToFrom{
 }
 
 export interface PassDownExtProps extends PassDownProps{
+    /**
+     * JSONPath expression
+     */
     valFilter: string;
-    filterId: string;
-    filterScriptProp: string;
+    /**
+     * Id within the ShadowDOM Realm of p-d-x of a script tag.
+     * The script tag is expected to have a property path where a custom filter function is specified.
+     * This custom filter function is applied to the value.
+     */
+    valFilterScriptId: string;
+    /**
+     * Property path from the script tag, where custom filter function can be obtained.
+     */
+    valFilterScriptPropPath: string;
 }

@@ -8,7 +8,7 @@ import { getProp } from 'on-to-me/on-to-me.js';
 export class PDX extends PD {
     static is = 'p-d-x';
     parseInitVal(elementToObserve) {
-        if (this.valFilter === undefined && this.filterId === undefined) {
+        if (this.valFilter === undefined && this.valFilterScriptId === undefined) {
             return super.parseInitVal(elementToObserve);
         }
         let val = getProp(elementToObserve, this.initVal.split('.'), this);
@@ -17,11 +17,11 @@ export class PDX extends PD {
         if (this.valFilter !== undefined) {
             val = jsonPath(val, this.valFilter);
         }
-        if (this.filterId !== undefined) {
+        if (this.valFilterScriptId !== undefined) {
             const rn = this.getRootNode();
-            const filterScriptElement = rn.querySelector('script#' + this.filterId);
+            const filterScriptElement = rn.querySelector('script#' + this.valFilterScriptId);
             if (filterScriptElement !== null) {
-                const filterPath = this.filterScriptProp || '_modExport.filter';
+                const filterPath = this.valFilterScriptPropPath || '_modExport.filter';
                 const tokens = filterPath.split('.');
                 let filterFn = filterScriptElement;
                 for (const token of tokens) {
@@ -41,18 +41,18 @@ export class PDX extends PD {
     }
     parseValFromEvent(e) {
         const superVal = super.parseValFromEvent(e);
-        if (this.valFilter === undefined && this.filterId === undefined) {
+        if (this.valFilter === undefined && this.valFilterScriptId === undefined) {
             return superVal;
         }
         let filteredVal = superVal;
         if (this.valFilter !== undefined) {
             filteredVal = jsonPath(filteredVal, this.valFilter);
         }
-        if (this.filterId !== undefined) {
+        if (this.valFilterScriptId !== undefined) {
             const rn = this.getRootNode();
-            const filterScriptElement = rn.querySelector('script#' + this.filterId);
+            const filterScriptElement = rn.querySelector('script#' + this.valFilterScriptId);
             if (filterScriptElement !== null) {
-                const filterPath = this.filterScriptProp || '_modExport.filter';
+                const filterPath = this.valFilterScriptPropPath || '_modExport.filter';
                 const tokens = filterPath.split('.');
                 let filterFn = filterScriptElement;
                 for (const token of tokens) {
@@ -85,8 +85,8 @@ const objProp = {
 };
 const propDefMap = {
     valFilter: strProp,
-    filterId: strProp,
-    filterScriptProp: strProp,
+    valFilterScriptId: strProp,
+    valFilterScriptPropPath: strProp,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PDX, slicedPropDefs, 'onPropChange');
