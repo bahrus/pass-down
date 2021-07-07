@@ -154,11 +154,11 @@ export interface PassDownExtProps extends PassDownProps{
      */
     valFilterScriptId: string;
     /**
-     * Property path from the script tag, where custom filter function can be obtained.
+     * @prop {string} [valFilterScriptPropPath=] - Property path from the script tag, where custom filter function can be obtained.
      */
     valFilterScriptPropPath: string;
 
-    weakMapKeyUpSearch: string;
+    closestWeakMapKey: string;
 
 
 }

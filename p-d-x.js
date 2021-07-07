@@ -40,11 +40,15 @@ export class PDX extends PD {
         return val;
     }
     parseValFromEvent(e) {
-        const superVal = super.parseValFromEvent(e);
-        if (this.valFilter === undefined && this.valFilterScriptId === undefined) {
-            return superVal;
+        let filteredVal = super.parseValFromEvent(e);
+        if (this.closestWeakMapKey !== undefined && filteredVal instanceof WeakMap) {
+            const closest = this.closest(this.closestWeakMapKey); //TODO:  cache? //dispose in disconnectedcallback()?
+            if (closest !== null) {
+                filteredVal = filteredVal.get(closest);
+                if (!filteredVal)
+                    return filteredVal;
+            }
         }
-        let filteredVal = superVal;
         if (this.valFilter !== undefined) {
             filteredVal = jsonPath(filteredVal, this.valFilter);
         }
@@ -87,6 +91,7 @@ const propDefMap = {
     valFilter: strProp,
     valFilterScriptId: strProp,
     valFilterScriptPropPath: strProp,
+    closestWeakMapKey: strProp,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PDX, slicedPropDefs, 'onPropChange');
