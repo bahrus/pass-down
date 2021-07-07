@@ -79,7 +79,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
         if(element !== undefined){
             return element;
         }
-        const elementToObserve = getPreviousSib(this.previousElementSibling || this as HTMLElement, (this as unknown as PassDownProps).observe ?? null) as Element;
+        const elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement as HTMLElement, (this as unknown as PassDownProps).observe ?? null) as Element;
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
