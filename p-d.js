@@ -69,6 +69,9 @@ export class PD extends HTMLElement {
         let elementToObserve;
         if (this.observeClosest !== undefined) {
             elementToObserve = this.closest(this.observeClosest);
+            if (elementToObserve !== null && this.observe !== undefined) {
+                elementToObserve = getPreviousSib(elementToObserve.previousElementSibling || elementToObserve.parentElement, this.observe);
+            }
         }
         else {
             elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement, this.observe ?? null);

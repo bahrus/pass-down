@@ -11,37 +11,11 @@ export class PDX extends PD {
     static is = 'p-d-x';
 
     override parseInitVal(elementToObserve: Element){
-        if(this.valFilter === undefined && this.valFilterScriptId === undefined){
-            return super.parseInitVal(elementToObserve);
-        }
-        let val = getProp(elementToObserve, this.initVal!.split('.'), this);
-        if(val === undefined) return undefined;
-        if(this.valFilter !== undefined){
-            val = jsonPath(val, (this as unknown as PassDownExtProps).valFilter);
-        }
-        if(this.valFilterScriptId !== undefined){
-            const rn = this.getRootNode() as DocumentFragment;
-            const filterScriptElement = rn.querySelector('script#' + this.valFilterScriptId) as any;
-            if(filterScriptElement !== null){
-                const filterPath = this.valFilterScriptPropPath || '_modExport.filter';
-                const tokens = filterPath.split('.');
-                let filterFn = filterScriptElement;
-                for(const token of tokens){
-                    if(filterFn !== undefined){
-                        filterFn = filterFn[token];
-                    }else{
-                        break;
-                    }
-                }
-                if(typeof filterFn === 'function'){
-                    val = filterFn(val);
-                }
-            }
-        }
-        return val;
+        let filteredVal = super.parseInitVal(elementToObserve);
+        return this.filterVal(filteredVal);
     }
-    override parseValFromEvent(e: Event){ //TODO:  share code with above
-        let filteredVal = super.parseValFromEvent(e);
+    filterVal(val: any){
+        let filteredVal = val;
         if(this.closestWeakMapKey !== undefined && filteredVal instanceof WeakMap){
             const closest = this.closest(this.closestWeakMapKey); //TODO:  cache? //dispose in disconnectedcallback()?
             if(closest !== null){
@@ -71,7 +45,11 @@ export class PDX extends PD {
                 }
             }
         }
-        return filteredVal;
+    }
+    override parseValFromEvent(e: Event){ //TODO:  share code with above
+        let filteredVal = super.parseValFromEvent(e);
+
+        return this.filterVal(filteredVal);
     }
 
     connectedCallback(){
