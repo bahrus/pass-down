@@ -66,7 +66,7 @@ export class PD extends HTMLElement {
         if (element !== undefined) {
             return element;
         }
-        const elementToObserve = getPreviousSib(this.previousElementSibling, this.observe ?? null);
+        const elementToObserve = getPreviousSib(this.previousElementSibling || this, this.observe ?? null);
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
