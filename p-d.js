@@ -66,7 +66,15 @@ export class PD extends HTMLElement {
         if (element !== undefined) {
             return element;
         }
-        const elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement, this.observe ?? null);
+        let elementToObserve;
+        if (this.observeClosest !== undefined) {
+            elementToObserve = this.closest(this.observeClosest);
+        }
+        else {
+            elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement, this.observe ?? null);
+        }
+        if (elementToObserve === null)
+            return null;
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
@@ -101,6 +109,10 @@ const attachEventHandler = ({ on, observe, self }) => {
 };
 export const onInitVal = ({ initVal, self }) => {
     const elementToObserve = self.observedElement;
+    if (elementToObserve === null) {
+        console.error('404');
+        return;
+    }
     const foundInitVal = setInitVal(self, elementToObserve);
     if (!foundInitVal && self.initEvent !== undefined) {
         elementToObserve.addEventListener(self.initEvent, e => {
@@ -166,7 +178,7 @@ const num = {
     dry: true,
 };
 const propDefMap = {
-    observe: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
+    observe: str0, observeClosest: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str1,
     fireEvent: str0, debug: bool1, log: bool1, as: str0,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,

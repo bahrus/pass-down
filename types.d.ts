@@ -100,6 +100,8 @@ export interface PassDownProps extends PDToFrom{
      * @attr
      */
     observe?: string | undefined;
+
+    observeClosest?: string | undefined;
     
     /**
      * Artificially fire event on target element whose name is specified by this attribute.

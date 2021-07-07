@@ -74,12 +74,18 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     mutateEvents: string[] | undefined;
 
     _wr: WeakRef<Element> | undefined;
-    get observedElement(){
+    get observedElement() : Element | null{
         const element = this._wr?.deref();
         if(element !== undefined){
             return element;
         }
-        const elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement as HTMLElement, (this as unknown as PassDownProps).observe ?? null) as Element;
+        let elementToObserve: Element | null;
+        if(this.observeClosest !== undefined){
+            elementToObserve = this.closest(this.observeClosest);
+        }else{
+            elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement as HTMLElement, (this as unknown as PassDownProps).observe ?? null) as Element;
+        }
+        if(elementToObserve === null) return null;
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
@@ -118,6 +124,10 @@ const attachEventHandler = ({on, observe, self}: PD) => {
 
 export const onInitVal = ({initVal, self}: PD) => {
     const elementToObserve = self.observedElement;
+    if(elementToObserve === null){
+        console.error('404');
+        return;
+    }
     const foundInitVal = setInitVal(self, elementToObserve);
     if(!foundInitVal && (self as unknown as PassDownProps).initEvent!== undefined){
         elementToObserve.addEventListener(self.initEvent!, e => {
@@ -196,7 +206,7 @@ const num: PropDef = {
 }
 
 const propDefMap: PropDefMap<PassDownProps> = {
-    observe: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0, 
+    observe: str0, observeClosest: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0, 
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str1,
     fireEvent: str0, debug: bool1, log: bool1, as: str0,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
