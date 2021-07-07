@@ -143,7 +143,8 @@ export interface PassDownProps extends PDToFrom{
 
 export interface PassDownExtProps extends PassDownProps{
     /**
-     * JSONPath expression
+     * @prop {string} [valFilter] - JSONPath expression
+     * @attr {string} [val-filter] - JSONPath expression
      */
     valFilter: string;
     /**
@@ -156,4 +157,8 @@ export interface PassDownExtProps extends PassDownProps{
      * Property path from the script tag, where custom filter function can be obtained.
      */
     valFilterScriptPropPath: string;
+
+    weakMapKeyUpSearch: string;
+
+
 }

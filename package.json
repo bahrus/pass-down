@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
-    "if-diff": "0.0.74",
+    "if-diff": "0.0.78",
     "xtal-test": "0.0.51",
     "@custom-elements-manifest/analyzer": "0.4.10"
   },
