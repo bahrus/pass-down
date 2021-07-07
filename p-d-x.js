@@ -43,6 +43,7 @@ export class PDX extends PD {
                 }
             }
         }
+        return filteredVal;
     }
     parseValFromEvent(e) {
         let filteredVal = super.parseValFromEvent(e);

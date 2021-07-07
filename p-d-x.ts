@@ -45,6 +45,7 @@ export class PDX extends PD {
                 }
             }
         }
+        return filteredVal;
     }
     override parseValFromEvent(e: Event){ //TODO:  share code with above
         let filteredVal = super.parseValFromEvent(e);
