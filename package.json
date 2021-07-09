@@ -33,7 +33,7 @@
     "on-to-me": "0.0.26",
     "trans-render": "0.0.291",
     "xtal-element": "0.0.413",
-    "jsonpathesm": "0.0.1"
+    "jsonpathesm": "0.0.2"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
