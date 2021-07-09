@@ -17,7 +17,6 @@
     "./pdUtils.js": "./pdUtils.js",
     "./p-d.js": "./p-d.js",
     "./p-d-x.js": "./p-d-x.js",
-    "./customElements.json": "./custom-elements.json"
   },
   "files": [
     "p-d.js",
