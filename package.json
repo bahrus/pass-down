@@ -30,16 +30,16 @@
   "types": "./types.d.ts",
   "dependencies": {
     "mut-obs": "0.0.9",
-    "on-to-me": "0.0.26",
+    "on-to-me": "0.0.27",
     "trans-render": "0.0.291",
-    "xtal-element": "0.0.413",
+    "xtal-element": "0.0.414",
     "jsonpathesm": "0.0.2"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
-    "if-diff": "0.0.80",
+    "if-diff": "0.0.91",
     "xtal-test": "0.0.51",
-    "@custom-elements-manifest/analyzer": "0.4.11"
+    "@custom-elements-manifest/analyzer": "0.4.12"
   },
   "scripts": {
     "test": "node test/test.js",
