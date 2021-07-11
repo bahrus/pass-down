@@ -164,7 +164,7 @@ Since
 2. Since the "to" attribute follows a special pattern, where
 
   * the expression ends with an attribute selector, and where 
-  * that attribute starts with a dash (or data-)
+  * that attribute starts with a dash (or data-data-)
  
 then the "prop" attribute defaults to the attribute following the first dash i.e.  "lhs" or "rhs."  lisp-case to camelCase property setting is supported.  I.e. to="[data-my-long-winded-property-name]" will set the property with name "myLongWindedPropertyName."
 
