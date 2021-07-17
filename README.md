@@ -6,7 +6,7 @@
 
 <img src="https://badgen.net/bundlephobia/minzip/pass-down">
 
-pass-down (or p-d for short) is one of the key components that make up the [p-et-alia](https://github.com/bahrus/p-et-alia) "framework".  It builds on [on-to-me](https://github.com/bahrus/on-to-me).
+pass-down (or p-d for short) is one of the key web components that make up the [p-et-alia](https://github.com/bahrus/p-et-alia) "framework".  It builds on lighter/smaller [on-to-me](https://github.com/bahrus/on-to-me) web component.
 
 "p-d" agrees with the [ancient](https://youtu.be/9knX6YGPtL0?t=927) wisdom "all streams flow to the sea because it is lower than they are. Humility gives it its power."
 
@@ -87,7 +87,8 @@ Another benefit of making this explicit:  There is likely less overhead from com
 One can't help noticing quite a bit of redundancy in the markup above.  We can reduce this redundancy if we apply some default settings. 
 
 1)  If no CSS specifier is defined, it will pass the properties to the next element.
-2)  If no value is specified, it will try target.value.
+2)  If no "val" is specified, it will try target.value.
+
 
 
 We can also forgo quotes when not needed.
@@ -146,11 +147,11 @@ So we provide support for a slight variation in the syntax:
     <largest-scale>
         <woman-with-carrot-attached-to-nose></woman-with-carrot-attached-to-nose>
     </largest-scale>
-    <p-d on=value-changed to=[-lhs] m=1 val=target.value></p-d>
+    <p-d val-from-target=value to=[-lhs] m=1></p-d>
     <largest-scale>
         <a-duck></a-duck>
     </largest-scale>
-    <p-d on=value-changed to=[-rhs] m=1 val=target.value></p-d>
+    <p-d val-from-target=value to=[-rhs] m=1 ></p-d>
     <iff-diff iff -lhs not-equals -rhs set-attr=hidden></iff-diff>
     <div hidden>A witch!</div>
 </ways-of-science>

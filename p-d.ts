@@ -140,8 +140,9 @@ export const onInitVal = ({initVal, self}: PD) => {
 };
 
 export const onValFromTarget = ({valFromTarget, self}: PD) => {
-    (self as unknown as PassDownProps).initVal = valFromTarget;
-    (self as unknown as PassDownProps).val = 'target.' + valFromTarget;
+    self.initVal = valFromTarget;
+    self.val = 'target.' + valFromTarget;
+    if(self.to=== undefined) self.to = valFromTarget + '-changed';
 };
 
 function setInitVal(self: PD, elementToObserve: Element){
