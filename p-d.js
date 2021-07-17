@@ -126,8 +126,8 @@ export const onInitVal = ({ initVal, self }) => {
 export const onValFromTarget = ({ valFromTarget, self }) => {
     self.initVal = valFromTarget;
     self.val = 'target.' + valFromTarget;
-    if (self.to === undefined)
-        self.to = valFromTarget + '-changed';
+    if (self.on === undefined)
+        self.on = valFromTarget + '-changed';
 };
 function setInitVal(self, elementToObserve) {
     let val = self.parseInitVal(elementToObserve);

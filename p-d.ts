@@ -142,7 +142,7 @@ export const onInitVal = ({initVal, self}: PD) => {
 export const onValFromTarget = ({valFromTarget, self}: PD) => {
     self.initVal = valFromTarget;
     self.val = 'target.' + valFromTarget;
-    if(self.to=== undefined) self.to = valFromTarget + '-changed';
+    if(self.on === undefined) self.on = valFromTarget + '-changed';
 };
 
 function setInitVal(self: PD, elementToObserve: Element){
