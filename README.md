@@ -8,7 +8,9 @@
 
 pass-down (or p-d for short) is one of the key web components that make up the [p-et-alia](https://github.com/bahrus/p-et-alia) "framework".  It builds on lighter/smaller [on-to-me](https://github.com/bahrus/on-to-me) web component.
 
-"p-d" agrees with the [ancient](https://youtu.be/9knX6YGPtL0?t=927) wisdom "all streams flow to the sea because it is lower than they are. Humility gives it its power."
+These components adopt a concept that there are often fully qualified names for things ("pass-down") as well as abbreviations.  Choosing when to use the abbreviations depends on the audience.  If the audience is developers who will use these components frequently, use the abbreviated names.  Otherwise, use the longer names for better readability.  
+
+"p-d" agrees with the [ancient](https://www.libertariannews.org/2012/11/08/how-to-govern-a-nation-by-a-2600-year-old-philosopher/) wisdom "all streams flow to the sea because it is lower than they are. Humility gives it its power."
 
 "p-d" has an attribute/property, "on" that specifies an event to monitor for.  It attaches an event listener for the specified event to the first previous element sibling without attribute "on".  You can alternatively specify the criteria for which previous element to observe, as will be discussed later.
 
@@ -24,11 +26,11 @@ p-d  passes information from that previous sibling's event down the p-d instance
     <input>                                                                    
     <p-d on="input" to="url-builder" prop="input" val="target.value" m="1"></p-d>
     <url-builder prepend="api/allEmployees?startsWith="></url-builder>    
-    <p-d on="value-changed" to="fetch-data" prop="url" val="detail.value" m="1"></p-d>
+    <p-d on="value-changed" to="fetch-data" prop="url" val="target.value" m="1"></p-d>
     <fetch-data></fetch-data>                                                   
-    <p-d on="fetch-complete" to="my-filter" prop="input" val="detail.value" m="2"></p-d>
+    <p-d on="fetch-complete" to="my-filter" prop="input" val="target.value" m="2"></p-d>
     <my-filter select="isActive"></my-filter>                                   
-    <p-d on="value-changed"  to="#activeList" prop="items" val="detail.value" m="1"></p-d>
+    <p-d on="value-changed"  to="#activeList" prop="items" val="target.value" m="1"></p-d>
     <my-filter select="!isActive"></my-filter>                                  
     <p-d on="value-changed"  to="#inactiveList" prop="items" val="target.value" m="1"></p-d>
     <h3>Active</h3>
@@ -152,6 +154,23 @@ So we provide support for a slight variation in the syntax:
         <a-duck></a-duck>
     </largest-scale>
     <p-d val-from-target=value to=[-rhs] m=1 ></p-d>
+    <iff-diff iff -lhs not-equals -rhs set-attr=hidden></iff-diff>
+    <div hidden>A witch!</div>
+</ways-of-science>
+```
+
+This can be abbreviated further:
+
+```html
+<ways-of-science>
+    <largest-scale>
+        <woman-with-carrot-attached-to-nose></woman-with-carrot-attached-to-nose>
+    </largest-scale>
+    <p-d vft=value to=[-lhs] m=1></p-d>
+    <largest-scale>
+        <a-duck></a-duck>
+    </largest-scale>
+    <p-d vft=value to=[-rhs] m=1 ></p-d>
     <iff-diff iff -lhs not-equals -rhs set-attr=hidden></iff-diff>
     <div hidden>A witch!</div>
 </ways-of-science>

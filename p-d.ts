@@ -212,6 +212,10 @@ const num: PropDef = {
 const propDefMap: PropDefMap<PassDownProps> = {
     observe: str0, observeClosest: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0, 
     noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str1,
+    vft:{
+        ...str0,
+        echoTo: 'valFromTarget'
+    },
     fireEvent: str0, debug: bool1, log: bool1, as: str0,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
