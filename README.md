@@ -159,7 +159,9 @@ So we provide support for a slight variation in the syntax:
 </ways-of-science>
 ```
 
-This can be abbreviated further:
+val-from-target/valFromTarget is a convenience attribute/property, which expands the setting as follows:  "on" gets set to "value-changed".  init-val is set to "value".  And "val" is set to target.value."  This, in practice, is the most common triple of settings, so val-from-target makes it simpler to set them in one setting.
+
+This can be abbreviated further, for those more deeply invested in use of p-et-alia components:
 
 ```html
 <ways-of-science>
