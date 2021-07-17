@@ -25,7 +25,8 @@
     "p-d-x.ts",
     "pdUtils.ts",
     "pdUtils.js",
-    "types.d.ts"
+    "types.d.ts",
+    "custom-elements.json"
   ],
   "types": "./types.d.ts",
   "dependencies": {
