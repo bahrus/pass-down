@@ -17,6 +17,7 @@ export class PD extends HTMLElement {
     connectedCallback() {
         this.style.display = 'none';
         xc.mergeProps(this, slicedPropDefs);
+        this.isC = true;
     }
     onPropChange(n, propDef, nv) {
         this.reactor.addToQueue(propDef, nv);
@@ -83,12 +84,7 @@ export class PD extends HTMLElement {
         return elementToObserve;
     }
 }
-const attachEventHandler = ({ on, observe, self }) => {
-    if (!self.isConnected) {
-        setTimeout(() => {
-            attachEventHandler(self);
-        }, 50);
-    }
+const attachEventHandler = ({ on, observe, isC, self }) => {
     const previousElementToObserve = self._wr?.deref();
     self._wr = undefined;
     const elementToObserve = self.observedElement;
@@ -116,7 +112,7 @@ const attachEventHandler = ({ on, observe, self }) => {
     self.previousOn = on;
     addDefaultMutObs(self);
 };
-export const onInitVal = ({ initVal, self }) => {
+export const onInitVal = ({ initVal, isC, self }) => {
     const elementToObserve = self.observedElement;
     if (elementToObserve === null) {
         console.error('404');
@@ -129,7 +125,7 @@ export const onInitVal = ({ initVal, self }) => {
         }, { once: true });
     }
 };
-export const onValFromTarget = ({ valFromTarget, self }) => {
+export const onValFromTarget = ({ valFromTarget, isC, self }) => {
     if (valFromTarget === undefined)
         return;
     const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget;
@@ -149,7 +145,7 @@ function setInitVal(self, elementToObserve) {
     self.lastVal = val;
     return true;
 }
-export const handleEvent = ({ val, lastEvent, parseValAs, self }) => {
+export const handleEvent = ({ val, lastEvent, parseValAs, isC, self }) => {
     if (!lastEvent) {
         debugger;
     }
@@ -179,10 +175,10 @@ export const bool1 = {
     type: Boolean,
     dry: true,
 };
-// const bool2: PropDef = {
-//     ...bool1,
-//     stopReactionsIfFalsy: true,
-// }
+const bool2 = {
+    ...bool1,
+    stopReactionsIfFalsy: true,
+};
 const obj1 = {
     ...baseObj,
     stopReactionsIfFalsy: true,
@@ -202,7 +198,7 @@ const propDefMap = {
         ...str0,
         echoTo: 'valFromTarget'
     },
-    fireEvent: str0, debug: bool1, log: bool1, as: str0,
+    fireEvent: str0, debug: bool1, log: bool1, as: str0, isC: bool2,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
     lastVal: baseObj,

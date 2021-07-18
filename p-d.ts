@@ -25,6 +25,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
     connectedCallback(){
         this.style.display = 'none';
         xc.mergeProps(this, slicedPropDefs);
+        this.isC = true;
     }
     onPropChange(n: string, propDef: PropDef, nv: any){
         this.reactor.addToQueue(propDef, nv);
@@ -97,12 +98,7 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 
 export interface PD extends PassDownProps{}
 
-const attachEventHandler = ({on, observe, self}: PD) => {
-    if(!self.isConnected){
-        setTimeout(() => {
-            attachEventHandler(self);
-        }, 50);
-    }
+const attachEventHandler = ({on, observe, isC, self}: PD) => {
     const previousElementToObserve = self._wr?.deref();
     self._wr = undefined;
     const elementToObserve = self.observedElement;
@@ -131,7 +127,7 @@ const attachEventHandler = ({on, observe, self}: PD) => {
  
 };
 
-export const onInitVal = ({initVal, self}: PD) => {
+export const onInitVal = ({initVal, isC, self}: PD) => {
     const elementToObserve = self.observedElement;
     if(elementToObserve === null){
         console.error('404');
@@ -145,7 +141,7 @@ export const onInitVal = ({initVal, self}: PD) => {
     }
 };
 
-export const onValFromTarget = ({valFromTarget, self}: PD) => {
+export const onValFromTarget = ({valFromTarget, isC, self}: PD) => {
     if(valFromTarget === undefined) return;
     const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget;
     self.initVal = valFromTargetOrValue;
@@ -164,7 +160,7 @@ function setInitVal(self: PD, elementToObserve: Element){
 
 
 
-export const handleEvent = ({val, lastEvent, parseValAs, self}: PD) => {
+export const handleEvent = ({val, lastEvent, parseValAs, isC, self}: PD) => {
     if(!lastEvent){
         debugger;
     }
@@ -202,10 +198,10 @@ export const bool1: PropDef = {
     dry: true,
 };
 
-// const bool2: PropDef = {
-//     ...bool1,
-//     stopReactionsIfFalsy: true,
-// }
+const bool2: PropDef = {
+    ...bool1,
+    stopReactionsIfFalsy: true,
+}
 
 const obj1: PropDef = {
     ...baseObj,
@@ -229,7 +225,7 @@ const propDefMap: PropDefMap<PassDownProps> = {
         ...str0,
         echoTo: 'valFromTarget'
     },
-    fireEvent: str0, debug: bool1, log: bool1, as: str0,
+    fireEvent: str0, debug: bool1, log: bool1, as: str0, isC: bool2,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
     lastVal: baseObj,

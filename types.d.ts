@@ -144,6 +144,7 @@ export interface PassDownProps extends PDToFrom{
 
     vft: string | undefined;
 
+    isC: boolean | undefined;
 }
 
 export interface PassDownExtProps extends PassDownProps{
