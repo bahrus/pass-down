@@ -179,14 +179,14 @@ export const bool1 = {
     type: Boolean,
     dry: true,
 };
-const bool2 = {
-    ...bool1,
+// const bool2: PropDef = {
+//     ...bool1,
+//     stopReactionsIfFalsy: true,
+// }
+const obj1 = {
+    ...baseObj,
     stopReactionsIfFalsy: true,
 };
-// const obj1: PropDef = {
-//     ...baseObj,
-//     stopReactionsIfFalsy: true,
-// };
 const obj2 = {
     ...obj1,
     parse: true,
