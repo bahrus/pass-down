@@ -178,6 +178,27 @@ This can be abbreviated further, for those more deeply invested in use of p-et-a
 </ways-of-science>
 ```
 
+Since vft=value will be so common (at least if using Polymer (non-lit) or xtal- components), a further shortcut is available:
+
+```html
+<ways-of-science>
+    <largest-scale>
+        <woman-with-carrot-attached-to-nose></woman-with-carrot-attached-to-nose>
+    </largest-scale>
+    <p-d vft to=[-lhs] m=1></p-d>
+    <largest-scale>
+        <a-duck></a-duck>
+    </largest-scale>
+    <p-d vft to=[-rhs] m=1 ></p-d>
+    <iff-diff iff -lhs not-equals -rhs set-attr=hidden></iff-diff>
+    <div hidden>A witch!</div>
+</ways-of-science>
+```
+
+How's that for unobtrusive syntax?
+
+Let's focus, though on what the value of to does when it ends with [-lhs] or [data-data-lhs]:
+
 What does p-d do with this syntax?
 
 Since 

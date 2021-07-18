@@ -1,5 +1,6 @@
 import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface, IReactor} from 'xtal-element/lib/XtalCore.js';
 import {getPreviousSib, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
+import {camelToLisp} from 'trans-render/lib/camelToLisp.js';
 import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js';
 import {structuralClone} from 'xtal-element/lib/structuralClone.js';
@@ -140,9 +141,11 @@ export const onInitVal = ({initVal, self}: PD) => {
 };
 
 export const onValFromTarget = ({valFromTarget, self}: PD) => {
-    self.initVal = valFromTarget;
-    self.val = 'target.' + valFromTarget;
-    if(self.on === undefined) self.on = valFromTarget + '-changed';
+    if(valFromTarget === undefined) return;
+    const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget;
+    self.initVal = valFromTargetOrValue;
+    self.val = 'target.' + valFromTargetOrValue;
+    if(self.on === undefined) self.on = camelToLisp(valFromTargetOrValue) + '-changed';
 };
 
 function setInitVal(self: PD, elementToObserve: Element){
@@ -211,7 +214,7 @@ const num: PropDef = {
 
 const propDefMap: PropDefMap<PassDownProps> = {
     observe: str0, observeClosest: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0, 
-    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str1,
+    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str0,
     vft:{
         ...str0,
         echoTo: 'valFromTarget'
