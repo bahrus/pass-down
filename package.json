@@ -1,6 +1,6 @@
 {
   "name": "pass-down",
-  "version": "0.0.69",
+  "version": "0.0.70",
   "description": "Glue DOM and Custom Elements together.",
   "keywords": [
     "webcomponents",
