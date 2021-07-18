@@ -143,6 +143,7 @@ export interface PassDownProps extends PDToFrom{
     valFromTarget?: string | undefined;
 
     vft: string | undefined;
+
 }
 
 export interface PassDownExtProps extends PassDownProps{

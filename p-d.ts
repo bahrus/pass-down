@@ -98,6 +98,11 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
 export interface PD extends PassDownProps{}
 
 const attachEventHandler = ({on, observe, self}: PD) => {
+    if(!self.isConnected){
+        setTimeout(() => {
+            attachEventHandler(self);
+        }, 50);
+    }
     const previousElementToObserve = self._wr?.deref();
     self._wr = undefined;
     const elementToObserve = self.observedElement;
@@ -197,10 +202,15 @@ export const bool1: PropDef = {
     dry: true,
 };
 
-const obj1: PropDef = {
-    ...baseObj,
+const bool2: PropDef = {
+    ...bool1,
     stopReactionsIfFalsy: true,
-};
+}
+
+// const obj1: PropDef = {
+//     ...baseObj,
+//     stopReactionsIfFalsy: true,
+// };
 
 const obj2: PropDef = {
     ...obj1,

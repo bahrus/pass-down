@@ -84,6 +84,11 @@ export class PD extends HTMLElement {
     }
 }
 const attachEventHandler = ({ on, observe, self }) => {
+    if (!self.isConnected) {
+        setTimeout(() => {
+            attachEventHandler(self);
+        }, 50);
+    }
     const previousElementToObserve = self._wr?.deref();
     self._wr = undefined;
     const elementToObserve = self.observedElement;
@@ -174,10 +179,14 @@ export const bool1 = {
     type: Boolean,
     dry: true,
 };
-const obj1 = {
-    ...baseObj,
+const bool2 = {
+    ...bool1,
     stopReactionsIfFalsy: true,
 };
+// const obj1: PropDef = {
+//     ...baseObj,
+//     stopReactionsIfFalsy: true,
+// };
 const obj2 = {
     ...obj1,
     parse: true,
