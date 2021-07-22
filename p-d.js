@@ -167,6 +167,9 @@ export const str1 = {
     ...str0,
     stopReactionsIfFalsy: true,
 };
+const baseObj2 = {
+    type: Object
+};
 const baseObj = {
     type: Object,
     dry: true,
@@ -201,7 +204,7 @@ const propDefMap = {
     fireEvent: str0, debug: bool1, log: bool1, as: str0, isC: bool2,
     async: bool1, parseValAs: str0, capture: bool1, cloneVal: bool1,
     lastEvent: obj1, m: num, from: str0, mutateEvents: obj2,
-    lastVal: baseObj,
+    lastVal: baseObj2,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(PD, slicedPropDefs, 'onPropChange');

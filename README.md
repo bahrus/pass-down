@@ -195,9 +195,9 @@ Since vft=value will be so common (at least if using Polymer (non-lit) or xtal- 
 </ways-of-science>
 ```
 
-How's that for unobtrusive syntax?
+How's that for concise syntax?
 
-Let's focus, though on what the value of to does when it ends with [-lhs] or [data-data-lhs]:
+Let's focus, though, on what the value of to does when it ends with [-lhs] or [data-data-lhs]:
 
 What does p-d do with this syntax?
 
