@@ -30,6 +30,9 @@ export class PD extends HTMLElement {
         }
         if (!this.filterEvent(e))
             return;
+        if (this.propFromEvent !== undefined) {
+            this.prop = getProp(e, this.propFromEvent.split('.'), this);
+        }
         this.lastEvent = e;
     };
     parseValFromEvent(e) {
