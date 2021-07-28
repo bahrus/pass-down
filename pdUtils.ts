@@ -2,7 +2,7 @@ import {PD} from './p-d.js';
 import { PDToFrom } from './types.js';
 import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js'; //Typescript requires both of these
-import {passValToMatches, passVal} from 'on-to-me/on-to-me.js';
+import {passValToMatches, passVal, getProp} from 'on-to-me/on-to-me.js';
 
 //TODO reference count the mut-obs element, delete when no more listeners.
 //Or maybe mut-obs should have a custom method to add listeners, go away when no more listeners?
@@ -56,7 +56,11 @@ export const handleValChange = ({lastVal, self, to, careOf, m, from, prop}: PD) 
         console.log('passVal', {lastVal, self});
     }
     const hSelf = self as HTMLElement;
-    const matches = passVal(lastVal, hSelf, to, careOf, m, from, prop, self.as);
+    let dynProp = prop;
+    if(self.propFromTarget !== undefined){
+        dynProp = getProp(self.observedElement, self.propFromTarget.split('.'), self);
+    }
+    const matches = passVal(lastVal, hSelf, to, careOf, m, from, dynProp, self.as);
     hSelf.setAttribute('matches', '' + matches.length);
     
 }

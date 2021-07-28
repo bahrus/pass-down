@@ -5,15 +5,26 @@ import 'mut-obs/mut-obs.js';
 import { structuralClone } from 'xtal-element/lib/structuralClone.js';
 import { addDefaultMutObs, handleValChange, attachMutationEventHandler } from './pdUtils.js';
 export class PD extends HTMLElement {
-    static is = 'p-d';
-    static observedAttributes = ['debug', 'log'];
+    constructor() {
+        super(...arguments);
+        this.self = this;
+        this.propActions = propActions;
+        this.reactor = new xc.Rx(this);
+        this._sym = Symbol();
+        //https://web.dev/javascript-this/
+        this.handleEvent = (e) => {
+            if (this.ifTargetMatches !== undefined) {
+                if (!e.target.matches(this.ifTargetMatches))
+                    return;
+            }
+            if (!this.filterEvent(e))
+                return;
+            this.lastEvent = e;
+        };
+    }
     attributeChangedCallback(n, ov, nv) {
         this[n] = (nv !== null);
     }
-    self = this;
-    propActions = propActions;
-    reactor = new xc.Rx(this);
-    _sym = Symbol();
     connectedCallback() {
         this.style.display = 'none';
         xc.mergeProps(this, slicedPropDefs);
@@ -22,19 +33,6 @@ export class PD extends HTMLElement {
     onPropChange(n, propDef, nv) {
         this.reactor.addToQueue(propDef, nv);
     }
-    //https://web.dev/javascript-this/
-    handleEvent = (e) => {
-        if (this.ifTargetMatches !== undefined) {
-            if (!e.target.matches(this.ifTargetMatches))
-                return;
-        }
-        if (!this.filterEvent(e))
-            return;
-        if (this.propFromEvent !== undefined) {
-            this.prop = getProp(e, this.propFromEvent.split('.'), this);
-        }
-        this.lastEvent = e;
-    };
     parseValFromEvent(e) {
         const val = this.val || 'target.value';
         const valToPass = getProp(e, val.split('.'), this);
@@ -64,8 +62,6 @@ export class PD extends HTMLElement {
     filterEvent(e) {
         return true;
     }
-    mutateEvents;
-    _wr;
     get observedElement() {
         const element = this._wr?.deref();
         if (element !== undefined) {
@@ -87,6 +83,8 @@ export class PD extends HTMLElement {
         return elementToObserve;
     }
 }
+PD.is = 'p-d';
+PD.observedAttributes = ['debug', 'log'];
 const attachEventHandler = ({ on, observe, isC, self }) => {
     const previousElementToObserve = self._wr?.deref();
     self._wr = undefined;
@@ -199,7 +197,7 @@ const num = {
 };
 const propDefMap = {
     observe: str0, observeClosest: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0,
-    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str0,
+    noblock: bool1, prop: str0, propFromTarget: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str0,
     vft: {
         ...str0,
         echoTo: 'valFromTarget'
@@ -216,6 +214,6 @@ xc.define(PD);
  * @element pass-down
  */
 export class PassDown extends PD {
-    static is = 'pass-down';
 }
+PassDown.is = 'pass-down';
 xc.define(PassDown);

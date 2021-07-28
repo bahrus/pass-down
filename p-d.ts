@@ -36,9 +36,6 @@ export class PD extends HTMLElement implements ReactiveSurface, PassDownProps{
             if(!(e.target as HTMLElement).matches((this as unknown as PassDownProps).ifTargetMatches!)) return;
         }
         if(!this.filterEvent(e)) return;
-        if(this.propFromEvent !== undefined){
-            this.prop = getProp(e, this.propFromEvent.split('.'), this);
-        }
         (this as unknown as PassDownProps).lastEvent = e;
     }
 
@@ -226,7 +223,7 @@ const num: PropDef = {
 
 const propDefMap: PropDefMap<PassDownProps> = {
     observe: str0, observeClosest: str0, on: str1, to: str0, careOf: str0, ifTargetMatches: str0, 
-    noblock: bool1, prop: str0, propFromEvent: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str0,
+    noblock: bool1, prop: str0, propFromTarget: str0, val: str0, initVal: str1, initEvent: bool1, valFromTarget: str0,
     vft:{
         ...str0,
         echoTo: 'valFromTarget'

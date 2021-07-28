@@ -82,10 +82,10 @@ export interface PassDownProps extends PDToFrom{
 
 
     /**
-     * Dynamically determined name of property to set on matching (downstream) siblings from event object.
-     * @attr prop-from-event
+     * Dynamically determined name of property to set on matching (downstream) siblings from target.
+     * @attr prop-from-target
      */
-    propFromEvent?: string | undefined;
+    propFromTarget?: string | undefined;
     
     /**
      * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.
