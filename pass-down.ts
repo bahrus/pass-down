@@ -2,9 +2,9 @@ import {define, Action, PropInfo, camelToLisp} from 'liquid-xtal/define.js';
 import {PassDownProps} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'xtal-element/lib/structuralClone.js';
-import {addDefaultMutObs, handleValChange, attachMutationEventHandler} from './pdUtils.js';
+import {PDMixin, addDefaultMutObs} from './PDMixin.js';
 
-export class PDMixin {
+export class PassDownMixin {
 
     init(){
         this.style.display = 'none';
@@ -72,21 +72,21 @@ export class PDMixin {
     }
 
     attachEventHandler(self: PD) {
-        const on = self.on!;
-        const previousElementToObserve = self._wr?.deref();
+        const {on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches} = self;
+        const previousElementToObserve = _wr !== undefined ? _wr.deref() : undefined; //TODO switch to ?. when bundlephobia catches up to the 2020's.
         self._wr = undefined;
         const elementToObserve = self.observedElement;
         if(!elementToObserve) throw "Could not locate element to observe.";
         let doNudge = previousElementToObserve !== elementToObserve;
-        if((previousElementToObserve !== undefined) && (self.previousOn !== undefined || (previousElementToObserve !== elementToObserve))){
-            previousElementToObserve.removeEventListener(self.previousOn || on, self.handleEvent);
+        if((previousElementToObserve !== undefined) && (previousOn !== undefined || (previousElementToObserve !== elementToObserve))){
+            previousElementToObserve.removeEventListener(previousOn || on as keyof ElementEventMap, handleEvent);
         }else{
             doNudge = true;
         }
-        elementToObserve.addEventListener(on!, self.handleEvent, {capture: self.capture});
+        elementToObserve.addEventListener(on!, handleEvent, {capture: capture});
         if(doNudge){
-            if(elementToObserve === self.parentElement && (self as unknown as PassDownProps).ifTargetMatches){
-                elementToObserve.querySelectorAll(self.ifTargetMatches!).forEach(publisher =>{
+            if(elementToObserve === parentElement && ifTargetMatches !== undefined){
+                elementToObserve.querySelectorAll(ifTargetMatches).forEach(publisher =>{
                     nudge(publisher);
                 });
             }else{
@@ -95,33 +95,29 @@ export class PDMixin {
             
         }
         self.setAttribute('status', '👂');
-        (self as unknown as PassDownProps).previousOn = on;
+        self.previousOn = on;
         addDefaultMutObs(self);
-        
-     
     };
 
     onInitVal(self: PD) {
-        const elementToObserve = self.observedElement;
-        if(elementToObserve === null){
+        const {observedElement, initEvent, parseValAs, cloneVal} = self;
+        if(observedElement === null){
             console.error('404');
             return;
         }
-        const foundInitVal = setInitVal(self, elementToObserve);
-        if(!foundInitVal && (self as unknown as PassDownProps).initEvent!== undefined){
-            elementToObserve.addEventListener(self.initEvent!, e => {
-                setInitVal(self, elementToObserve);
+        const foundInitVal = setInitVal({parseValAs, cloneVal}, self, observedElement);
+        if(!foundInitVal && initEvent !== undefined){
+            observedElement.addEventListener(initEvent, e => {
+                setInitVal({parseValAs, cloneVal}, self, observedElement);
             }, {once: true});
         }
     };
 
     doEvent(self: PD) {
-        if(!self.lastEvent){
-            debugger;
-        }
+        const {lastEvent, noblock, valFromEvent} = self;
         self.setAttribute('status', '🌩️');
-        if(!self.noblock) self.lastEvent!.stopPropagation();
-        let valToPass = self.valFromEvent(self.lastEvent!);
+        if(!noblock) lastEvent!.stopPropagation();
+        let valToPass = valFromEvent(lastEvent!);
         self.lastVal = valToPass;
         //holding on to lastEvent could introduce memory leak
         delete self.lastEvent;
@@ -129,37 +125,36 @@ export class PDMixin {
     }
 
     handleValChange(self: PD){
-        const lastVal = self.lastVal, prop = self.prop;
-        if(self.debug){
+        const {lastVal, prop, debug, log, propFromTarget, to, careOf, m, from, as} = self;
+        if(debug){
             debugger;
-        }else if(self.log){
+        }else if(log){
             console.log('passVal', {lastVal, self});
         }
-        const hSelf = self as HTMLElement;
         let dynProp = prop;
-        if(self.propFromTarget !== undefined){
-            dynProp = getProp(self.observedElement, self.propFromTarget.split('.'), self);
+        if(propFromTarget !== undefined){
+            dynProp = getProp(self.observedElement, propFromTarget.split('.'), self);
         }
-        const matches = passVal(lastVal, hSelf, self.to, self.careOf, self.m, self.from, dynProp, self.as);
-        hSelf.setAttribute('matches', '' + matches.length);
+        const matches = passVal(lastVal, self, to, careOf, m, from, dynProp, as);
+        self.setAttribute('matches', '' + matches.length);
         
     }
 
     attachMutationEventHandler(self: PD){
-        const parentElement = self.parentElement;
+        const {parentElement, mutateEvents} = self;
         if(!parentElement) return;
-        for(const event of self.mutateEvents!){
+        for(const event of mutateEvents!){
             parentElement.addEventListener(event, e => {
                 if(self.lastVal !== undefined){
-                    handleValChange(self);
+                    self.handleValChange(self);
                 }
             })
         }
     };
 
     onValFromTarget(self: PD){
-        const valFromTarget = self.valFromTarget!
-        const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget;
+        const {valFromTarget} = self;
+        const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget!;
         self.initVal = valFromTargetOrValue;
         self.val = 'target.' + valFromTargetOrValue;
         if(self.on === undefined) self.on = camelToLisp(valFromTargetOrValue) + '-changed';
@@ -170,11 +165,13 @@ export class PDMixin {
     }
 }
 
-const disabledFilter: Partial<Action<PDMixin>> = {
+export interface PassDownMixin extends PDMixin, PassDownProps{}
+
+const disabledFilter: Partial<Action<PassDownMixin>> = {
     rift: ['disabled']
 };
 
-const defaultFilters: Partial<Action<PDMixin>> = {
+const defaultFilters: Partial<Action<PassDownMixin>> = {
     riff: ['isC'],
     ...disabledFilter,
 }
@@ -185,7 +182,7 @@ const isStringProp: PropInfo = {
 
 const filters = ['isC', 'disabled'];
 
-define<PDMixin>({
+export const PassDown = define<PassDownMixin>({
     config: {
         tagName: 'pass-down',
         initMethod: 'init',
@@ -195,27 +192,34 @@ define<PDMixin>({
             debug: false,
             log: false,
             m: Infinity,
+            cloneVal: false,
+            noblock: false,
         },
         actions:[
             {
                 do: 'onInitVal',
                 upon: [
-                    'initVal', isStringProp, 
+                    'initVal', isStringProp, 'initEvent', isStringProp, 'parseValAs', isStringProp, 'cloneVal',
                     ...filters
                 ],
                 ...defaultFilters
             },{
                 do: 'attachEventHandler',
                 upon: [
-                    'on', isStringProp, 'observe', isStringProp, ...filters],
-                ...defaultFilters
+                    'on', isStringProp, 'observe', isStringProp, 'ifTargetMatches', isStringProp,
+                    ...filters
+                ],
+                riff: ['isC', 'on'],
+                ...disabledFilter,
             },{
                 do: 'doEvent',
                 upon: [
-                    'val', isStringProp, 'parseValAs', isStringProp,
-                    'lastEvent', ...filters
+                    'val', isStringProp, 'parseValAs', isStringProp, 
+                    'noblock', 'lastEvent', 
+                    ...filters
                 ],
-                ...defaultFilters
+                riff: ['isC', 'lastEvent'],
+                ...disabledFilter
             },{
                 do: 'handleValChange',
                 upon: [
@@ -245,115 +249,25 @@ define<PDMixin>({
                 do: 'setAliases',
                 upon: [
                     'vft', isStringProp
-                ]
+                ],
+                riff: ['vft']
             }
             
         ]
     },
-    mixins: [PDMixin]
-});
+    mixins: [PassDownMixin]
+}) as any as PassDownMixin;
 
-function setInitVal(self: PD, elementToObserve: Element){
+
+function setInitVal({parseValAs, cloneVal}: Partial<PD>, self: PD, elementToObserve: Element){
     let val = self.parseInitVal(elementToObserve);
     if(val === undefined) return false;
-    if(self.parseValAs !== undefined) val = convert(val, self.parseValAs!);
-    if(self.cloneVal) val = structuralClone(val);
+    if(parseValAs !== undefined) val = convert(val, parseValAs);
+    if(cloneVal) val = structuralClone(val);
     self.lastVal = val;
     return true;
 }
 
-// export function passVal(
-//     val: any, self: HTMLElement, to: string | undefined | null, careOf: string | undefined | null, 
-//     me: number | undefined, from: string | undefined | null, prop: string | undefined | null, as: asAttr, cachedMatches?: Element[] | undefined){
-//     const matches = cachedMatches ?? findMatches(self, to, me, from, careOf);
-//     passValToMatches(matches, val, to, careOf, prop, as);
-//     return matches;
-// }
+type PD = PassDownMixin;
 
-// export function findMatches(start: Element, match: string | undefined | null, m: number | undefined, from: string | null | undefined, careOf: string | null | undefined): Element[]{
-//     let returnObj = [] as Element[];
-//     match = match || '*';
-//     const ubound = m ?? Infinity;
-//     let count = 0;
-//     let start2;
-//     if(from){
-//         start2 = start.closest(from);
-//     }else{
-//         start2 = start.nextElementSibling;
-//     }
-//     while(start2 !== null){
-//         if(start2.matches(match)) {
-//             if(careOf){
-//                 const careOfs = Array.from(start2.querySelectorAll(careOf));
-//                 returnObj = returnObj.concat(careOfs);
-//                 count += careOfs.length;
-//             }else{
-//                 count++;
-//                 returnObj.push(start2);
-//             }
-//             if(count > ubound) break;
-//         }
-//         start2 = start2.nextElementSibling;
-//     }
-//     return returnObj;
-// }
-
-// export function passValToMatches(matches: Element[], val: any, to: string | undefined | null, careOf: string | undefined | null, prop: string | undefined | null,
-//     as: asAttr){
-//     const dynToProp = getToProp(to, careOf, as);
-//     const hasBoth = !!prop && dynToProp !== null; //hasBoth is there for use with an element ref property.
-//     const toProp = hasBoth ? dynToProp : prop || dynToProp;
-//     if(toProp === null) throw "No to prop."
-//     matches.forEach( match => {
-//         let subMatch = match;
-//         if(hasBoth){
-//             if((<any>match)[prop!] === undefined){
-//                 (<any>match)[prop!] = {};
-//             }
-//             subMatch = (<any>match)[prop!];
-//         }
-//         switch(as){
-//             case 'str-attr':
-//                 subMatch.setAttribute(toProp, val.toString());
-//                 break;
-//             case 'obj-attr':
-//                 subMatch.setAttribute(toProp, JSON.stringify(val));
-//                 break;
-//             case 'bool-attr':
-//                 if(val) {
-//                     subMatch.setAttribute(toProp, '');
-//                 }else{
-//                     subMatch.removeAttribute(toProp);
-//                 }
-//                 break;
-//             default:
-//                 if(toProp === '...'){
-//                     Object.assign(subMatch, val);
-//                 }else{
-//                     (<any>subMatch)[toProp] = val;
-//                 }
-                
-
-//         }
-//     });
-// }
-
-// export function getToProp(to: string | null | undefined, careOf: string | null | undefined, as: asAttr): string | null{
-//     let target = careOf || to;
-//     if(!target || !target.endsWith(']')) return null;
-//     const iPos = target.lastIndexOf('[');
-//     if(iPos === -1) return null;
-//     target = target.replace('[data-data-', '[-');
-//     if(target[iPos + 1] !== '-') return null;
-//     target = target.substring(iPos + 2, target.length - 1);
-//     return !!as ? target : lispToCamel(target);
-// }
-
-const ltcRe = /(\-\w)/g;
-export function lispToCamel(s: string){
-    return s.replace(ltcRe, function(m){return m[1].toUpperCase();});
-}
-
-type PD = PDMixin;
-
-export interface PDMixin extends PassDownProps{}
+export interface PassDownMixin extends PassDownProps{}

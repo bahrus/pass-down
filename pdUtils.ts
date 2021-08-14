@@ -4,9 +4,7 @@ import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js'; //Typescript requires both of these
 import {passValToMatches, passVal, getProp} from 'on-to-me/on-to-me.js';
 
-//TODO reference count the mut-obs element, delete when no more listeners.
-//Or maybe mut-obs should have a custom method to add listeners, go away when no more listeners?
-const p_std = 'p_std';
+
 
 export function getFrom(self: PDToFrom){
     return self.from !== undefined ? self.closest!(self.from) : self
