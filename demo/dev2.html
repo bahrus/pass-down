@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button data-test=hello type=button>My button</button>
+    <pass-down on=click to=[-text-content] m=1 val=target.dataset.test init-val=dataset.test></pass-down>
+    <div -text-content></div>
+    <script type=importmap>
+        {
+            "imports":{
+                "xtal-element/": "../node_modules/xtal-element/",
+                "trans-render/": "../node_modules/trans-render/",
+                "mut-obs/": "../node_modules/mut-obs/",
+                "on-to-me/": "../node_modules/on-to-me/"
+            }
+        }
+    </script>
+    <script type=module>
+        import '../p-d.js';
+    </script>
+    <!-- polyfill -->
+    <script async src="https://unpkg.com/es-module-shims@0.10.1/dist/es-module-shims.js"></script>
+</body>
+</html>

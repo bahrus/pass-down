@@ -58,6 +58,8 @@ export interface PDToFrom extends HTMLElement{
      * @attr
      */
     m?: number | undefined;
+
+    disabled?: boolean | undefined;
 }
 
 export interface PassDownProps extends PDToFrom{

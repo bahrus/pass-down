@@ -34,13 +34,14 @@
     "on-to-me": "0.0.32",
     "trans-render": "0.0.291",
     "xtal-element": "0.0.416",
+    "liquid-xtal": "0.0.2",
     "jsonpathesm": "0.0.2"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
     "if-diff": "0.0.99",
     "xtal-test": "0.0.51",
-    "@custom-elements-manifest/analyzer": "0.4.12"
+    "@custom-elements-manifest/analyzer": "0.4.17"
   },
   "scripts": {
     "test": "node test/test.js",

@@ -10,6 +10,7 @@
 	},
 	"files": [
 		"p-d.ts",
+		"pass-down.ts",
 		"pdUtils.ts",
 		"p-d-x.ts",
 	]
