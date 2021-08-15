@@ -5,8 +5,9 @@ import { passValToMatches, passVal, getProp } from 'on-to-me/on-to-me.js';
 const p_std = 'p_std';
 export const PDMixin = (superclass) => class extends superclass {
     addDefaultMutObs(self) {
+        var _a;
         const { lastVal, to, careOf, prop, as } = self;
-        const parent = getFrom(self)?.parentElement;
+        const parent = (_a = getFrom(self)) === null || _a === void 0 ? void 0 : _a.parentElement;
         if (parent) {
             const mutObs = document.createElement('mut-obs');
             const s = mutObs.setAttribute.bind(mutObs);
@@ -72,7 +73,8 @@ export function isMatchAfterFrom(match, self) {
     return false;
 }
 export function addDefaultMutObs(self) {
-    const parent = getFrom(self)?.parentElement;
+    var _a;
+    const parent = (_a = getFrom(self)) === null || _a === void 0 ? void 0 : _a.parentElement;
     if (parent) {
         const mutObs = document.createElement('mut-obs');
         const s = mutObs.setAttribute.bind(mutObs);

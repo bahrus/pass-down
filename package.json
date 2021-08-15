@@ -26,8 +26,8 @@
   ],
   "types": "./types.d.ts",
   "dependencies": {
-    "mut-obs": "0.0.9",
-    "on-to-me": "0.0.32",
+    "mut-obs": "0.0.10",
+    "on-to-me": "0.0.35",
     "trans-render": "0.0.298",
     "jsonpathesm": "0.0.2",
     "xtal-element": "0.0.422"

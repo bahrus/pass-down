@@ -3,19 +3,37 @@ import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { PDMixin, addDefaultMutObs } from './PDMixin.js';
 const PassDownMixin = (superclass) => class extends PDMixin(superclass) {
+    constructor() {
+        super(...arguments);
+        //https://web.dev/javascript-this/
+        this.handleEvent = (e) => {
+            if (this.ifTargetMatches !== undefined) {
+                if (!e.target.matches(this.ifTargetMatches))
+                    return;
+            }
+            if (!this.filterEvent(e))
+                return;
+            this.lastEvent = e;
+        };
+        this.valFromEvent = (e) => {
+            const val = this.val || 'target.value';
+            let valToPass = this.parseValFromEvent(e);
+            if (valToPass === undefined) {
+                const target = e.target || this.observedElement;
+                const attribVal = target.getAttribute(val);
+                if (attribVal !== null) {
+                    valToPass = attribVal;
+                }
+            }
+            if (this.parseValAs !== undefined) {
+                valToPass = convert(valToPass, this.parseValAs);
+            }
+            return this.cloneVal ? structuralClone(valToPass) : valToPass;
+        };
+    }
     init() {
         this.style.display = 'none';
     }
-    //https://web.dev/javascript-this/
-    handleEvent = (e) => {
-        if (this.ifTargetMatches !== undefined) {
-            if (!e.target.matches(this.ifTargetMatches))
-                return;
-        }
-        if (!this.filterEvent(e))
-            return;
-        this.lastEvent = e;
-    };
     parseValFromEvent(e) {
         const val = this.val || 'target.value';
         const valToPass = getProp(e, val.split('.'), this);
@@ -27,27 +45,12 @@ const PassDownMixin = (superclass) => class extends PDMixin(superclass) {
             return undefined;
         return getProp(elementToObserve, initVal.split('.'), this);
     }
-    valFromEvent = (e) => {
-        const val = this.val || 'target.value';
-        let valToPass = this.parseValFromEvent(e);
-        if (valToPass === undefined) {
-            const target = e.target || this.observedElement;
-            const attribVal = target.getAttribute(val);
-            if (attribVal !== null) {
-                valToPass = attribVal;
-            }
-        }
-        if (this.parseValAs !== undefined) {
-            valToPass = convert(valToPass, this.parseValAs);
-        }
-        return this.cloneVal ? structuralClone(valToPass) : valToPass;
-    };
     filterEvent(e) {
         return true;
     }
-    _wr;
     get observedElement() {
-        const element = this._wr === undefined ? undefined : this._wr?.deref(); //TODO  wait for bundlephobia to get over it's updatephobia
+        var _a, _b;
+        const element = this._wr === undefined ? undefined : (_a = this._wr) === null || _a === void 0 ? void 0 : _a.deref(); //TODO  wait for bundlephobia to get over it's updatephobia
         if (element !== undefined) {
             return element;
         }
@@ -59,7 +62,7 @@ const PassDownMixin = (superclass) => class extends PDMixin(superclass) {
             }
         }
         else {
-            elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement, this.observe ?? null);
+            elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement, (_b = this.observe) !== null && _b !== void 0 ? _b : null);
         }
         if (elementToObserve === null)
             return null;
@@ -165,10 +168,7 @@ const PassDownMixin = (superclass) => class extends PDMixin(superclass) {
 const disabledFilter = {
     rift: ['disabled']
 };
-const defaultFilters = {
-    riff: ['isC'],
-    ...disabledFilter,
-};
+const defaultFilters = Object.assign({ riff: ['isC'] }, disabledFilter);
 const stringProp = {
     type: 'String'
 };
@@ -192,49 +192,26 @@ export const PassDown = define({
             mutateEvents: stringProp, valFromTarget: stringProp, vft: stringProp,
         },
         actions: [
-            {
-                do: 'onInitVal',
-                upon: [
+            Object.assign({ do: 'onInitVal', upon: [
                     'initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'disabled'
-                ],
-                ...defaultFilters
-            }, {
-                do: 'attachEventHandler',
-                upon: [
+                ] }, defaultFilters),
+            Object.assign({ do: 'attachEventHandler', upon: [
                     'on', 'observe', 'ifTargetMatches', 'isC', 'disabled'
-                ],
-                riff: ['isC', 'on'],
-                ...disabledFilter,
-            }, {
-                do: 'doEvent',
-                upon: [
+                ], riff: ['isC', 'on'] }, disabledFilter),
+            Object.assign({ do: 'doEvent', upon: [
                     'val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'disabled'
-                ],
-                riff: ['isC', 'lastEvent'],
-                ...disabledFilter
-            }, {
-                do: 'handleValChange',
-                upon: [
+                ], riff: ['isC', 'lastEvent'] }, disabledFilter),
+            Object.assign({ do: 'handleValChange', upon: [
                     'lastVal', 'debug', 'log', 'm',
                     'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'disabled'
-                ],
-                riff: ['isC', 'lastVal'],
-                ...disabledFilter
-            }, {
-                do: 'attachMutationEventHandler',
-                upon: [
+                ], riff: ['isC', 'lastVal'] }, disabledFilter),
+            Object.assign({ do: 'attachMutationEventHandler', upon: [
                     'mutateEvents', 'isC', 'disabled'
-                ],
-                riff: ['isC', 'mutateEvents'],
-                ...disabledFilter
-            }, {
-                do: 'onValFromTarget',
-                upon: [
+                ], riff: ['isC', 'mutateEvents'] }, disabledFilter),
+            Object.assign({ do: 'onValFromTarget', upon: [
                     'valFromTarget', 'isC', 'disabled'
-                ],
-                riff: ['isC', 'valFromTarget'],
-                ...disabledFilter
-            }, {
+                ], riff: ['isC', 'valFromTarget'] }, disabledFilter),
+            {
                 do: 'setAliases',
                 upon: ['vft'],
                 riff: ['vft']
