@@ -28,9 +28,8 @@
   "dependencies": {
     "mut-obs": "0.0.9",
     "on-to-me": "0.0.32",
-    "trans-render": "0.0.291",
+    "trans-render": "0.0.297",
     "xtal-element": "0.0.422",
-    "liquid-xtal": "0.0.7",
     "jsonpathesm": "0.0.2"
   },
   "devDependencies": {

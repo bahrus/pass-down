@@ -1,4 +1,4 @@
-import {define, Action, PropInfo, camelToLisp} from 'liquid-xtal/define.js';
+import {define, Action, PropInfo, camelToLisp} from 'trans-render/lib/define.js';
 import {PassDownProps} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'xtal-element/lib/structuralClone.js';
@@ -12,7 +12,7 @@ const PassDownMixin = (superclass: any) => class extends PDMixin(superclass) imp
     //https://web.dev/javascript-this/
     handleEvent = (e: Event) => {
         if(this.ifTargetMatches !== undefined){
-            if(!(e.target as HTMLElement).matches((this as unknown as PassDownProps).ifTargetMatches!)) return;
+            if(!(e.target as HTMLElement).matches(this.ifTargetMatches!)) return;
         }
         if(!this.filterEvent(e)) return;
         this.lastEvent = e;
@@ -44,7 +44,7 @@ const PassDownMixin = (superclass: any) => class extends PDMixin(superclass) imp
         if(this.parseValAs !== undefined){
             valToPass = convert(valToPass, (this as unknown as PassDownProps).parseValAs!);
         }
-        return (this as unknown as PassDownProps).cloneVal ? structuralClone(valToPass) :  valToPass;
+        return this.cloneVal ? structuralClone(valToPass) :  valToPass;
     }
 
     filterEvent(e: Event) : boolean{
@@ -193,7 +193,7 @@ const defaultFilters: Partial<Action<PassDownMixin>> = {
     ...disabledFilter,
 }
 
-const isStringProp: PropInfo = {
+const stringProp: PropInfo = {
     type: 'String'
 };
 
@@ -203,7 +203,7 @@ export const PassDown: {new(): PassDown} = define<PassDown>({
     config: {
         tagName: 'pass-down',
         initMethod: 'init',
-        initPropMerge:{
+        propDefaults:{
             isC: true,
             disabled: false,
             debug: false,
@@ -212,28 +212,29 @@ export const PassDown: {new(): PassDown} = define<PassDown>({
             cloneVal: false,
             noblock: false,
         },
+        propInfo:{
+            initVal:stringProp, initEvent:stringProp, parseValAs:stringProp, on:stringProp, observe:stringProp, ifTargetMatches:stringProp,
+            val:stringProp, propFromTarget:stringProp, to:stringProp, careOf:stringProp, from:stringProp, prop:stringProp, as:stringProp,
+            mutateEvents:stringProp, valFromTarget:stringProp, vft:stringProp,
+        },
         actions:[
             {
                 do: 'onInitVal',
                 upon: [
-                    'initVal', isStringProp, 'initEvent', isStringProp, 'parseValAs', isStringProp, 'cloneVal',
-                    ...filters
+                    'initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'disabled'
                 ],
                 ...defaultFilters
             },{
                 do: 'attachEventHandler',
                 upon: [
-                    'on', isStringProp, 'observe', isStringProp, 'ifTargetMatches', isStringProp,
-                    ...filters
+                    'on', 'observe', 'ifTargetMatches', 'isC', 'disabled'
                 ],
                 riff: ['isC', 'on'],
                 ...disabledFilter,
             },{
                 do: 'doEvent',
                 upon: [
-                    'val', isStringProp, 'parseValAs', isStringProp, 
-                    'noblock', 'lastEvent', 
-                    ...filters
+                    'val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'disabled'
                 ],
                 riff: ['isC', 'lastEvent'],
                 ...disabledFilter
@@ -241,32 +242,27 @@ export const PassDown: {new(): PassDown} = define<PassDown>({
                 do: 'handleValChange',
                 upon: [
                     'lastVal', 'debug', 'log', 'm',
-                    'propFromTarget', isStringProp, 'to', isStringProp, 'careOf', isStringProp, 'from', isStringProp, 'prop', isStringProp, 'as', isStringProp,
-                    ...filters
+                    'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'disabled'
                 ], 
                 riff: ['isC', 'lastVal'],
                 ...disabledFilter
             },{
                 do: 'attachMutationEventHandler',
                 upon: [
-                    'mutateEvents', isStringProp,
-                    ...filters
+                    'mutateEvents', 'isC', 'disabled'
                 ],
                 riff: ['isC', 'mutateEvents'],
                 ...disabledFilter
             },{
                 do: 'onValFromTarget',
                 upon: [
-                    'valFromTarget', isStringProp,
-                    ...filters
+                    'valFromTarget', 'isC', 'disabled'
                 ],
                 riff: ['isC', 'valFromTarget'],
                 ...disabledFilter
             },{
                 do: 'setAliases',
-                upon: [
-                    'vft', isStringProp
-                ],
+                upon: ['vft'],
                 riff: ['vft']
             }
             
