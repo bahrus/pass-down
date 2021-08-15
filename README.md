@@ -4,7 +4,7 @@
 
 [![Actions Status](https://github.com/bahrus/pass-down/workflows/CI/badge.svg)](https://github.com/bahrus/pass-down/actions?query=workflow%3ACI)
 
-<img src="https://badgen.net/bundlephobia/minzip/pass-down">
+<img src="https://badgen.net/bundlephobia/minzip/pass-down@0.0.80">
 
 pass-down (or p-d for short) is one of the key web components that make up the [p-et-alia](https://github.com/bahrus/p-et-alia) "framework".  It builds on lighter/smaller [on-to-me](https://github.com/bahrus/on-to-me) web component.
 
