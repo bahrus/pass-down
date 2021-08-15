@@ -10,21 +10,17 @@
     "bind",
     "dom-bind"
   ],
-  "main": "p-d.js",
-  "module": "p-d.js",
+  "main": "pass-down.js",
+  "module": "pass-down.js",
   "exports": {
-    ".": "./p-d.js",
-    "./pdUtils.js": "./pdUtils.js",
+    ".": "./pass-down.js",
+    "./pass-down.js": "./pass-down.js",
+    "./PDMixin.js": "./PDMixin.js",
     "./p-d.js": "./p-d.js",
     "./p-d-x.js": "./p-d-x.js"
   },
   "files": [
-    "p-d.js",
-    "p-d.ts",
-    "p-d-x.js",
-    "p-d-x.ts",
-    "pdUtils.ts",
-    "pdUtils.js",
+    "p*.*",
     "types.d.ts",
     "custom-elements.json"
   ],
