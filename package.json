@@ -30,7 +30,7 @@
     "on-to-me": "0.0.32",
     "trans-render": "0.0.291",
     "xtal-element": "0.0.422",
-    "liquid-xtal": "0.0.6",
+    "liquid-xtal": "0.0.7",
     "jsonpathesm": "0.0.2"
   },
   "devDependencies": {

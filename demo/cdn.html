@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button data-test=hello type=button>My button</button>
+    <p-d on=click to=[-text-content] m=1 val=target.dataset.test init-val=dataset.test></p-d>
+    <div -text-content></div>
+    <script type=module crossorigin>
+        import 'https://cdn.skypack.dev/pass-down?min';
+    </script>
+    <!-- polyfill -->
+</body>
+</html>
