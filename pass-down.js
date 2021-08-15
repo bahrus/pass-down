@@ -1,8 +1,8 @@
 import { define, camelToLisp } from 'liquid-xtal/define.js';
 import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import { structuralClone } from 'xtal-element/lib/structuralClone.js';
-import { addDefaultMutObs } from './PDMixin.js';
-export class PassDownMixin {
+import { PDMixin, addDefaultMutObs } from './PDMixin.js';
+const PassDownMixin = (superclass) => class extends PDMixin(superclass) {
     init() {
         this.style.display = 'none';
     }
@@ -27,7 +27,7 @@ export class PassDownMixin {
             return undefined;
         return getProp(elementToObserve, initVal.split('.'), this);
     }
-    valFromEvent(e) {
+    valFromEvent = (e) => {
         const val = this.val || 'target.value';
         let valToPass = this.parseValFromEvent(e);
         if (valToPass === undefined) {
@@ -41,13 +41,13 @@ export class PassDownMixin {
             valToPass = convert(valToPass, this.parseValAs);
         }
         return this.cloneVal ? structuralClone(valToPass) : valToPass;
-    }
+    };
     filterEvent(e) {
         return true;
     }
     _wr;
     get observedElement() {
-        const element = this._wr?.deref();
+        const element = this._wr === undefined ? undefined : this._wr?.deref(); //TODO  wait for bundlephobia to get over it's updatephobia
         if (element !== undefined) {
             return element;
         }
@@ -161,7 +161,7 @@ export class PassDownMixin {
     setAliases(self) {
         self.valFromTarget = self.vft;
     }
-}
+};
 const disabledFilter = {
     rift: ['disabled']
 };
@@ -215,7 +215,7 @@ export const PassDown = define({
                 do: 'handleValChange',
                 upon: [
                     'lastVal', 'debug', 'log', 'm',
-                    'propFromTarget', isStringProp, 'to', isStringProp, 'careOf', isStringProp, 'from', isStringProp, 'prop', isStringProp,
+                    'propFromTarget', isStringProp, 'to', isStringProp, 'careOf', isStringProp, 'from', isStringProp, 'prop', isStringProp, 'as', isStringProp,
                     ...filters
                 ],
                 riff: ['isC', 'lastVal'],
@@ -234,7 +234,7 @@ export const PassDown = define({
                     'valFromTarget', isStringProp,
                     ...filters
                 ],
-                riff: ['isC', 'onValFromTarget'],
+                riff: ['isC', 'valFromTarget'],
                 ...disabledFilter
             }, {
                 do: 'setAliases',

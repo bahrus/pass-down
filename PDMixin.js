@@ -3,7 +3,7 @@ import { passValToMatches, passVal, getProp } from 'on-to-me/on-to-me.js';
 //TODO reference count the mut-obs element, delete when no more listeners.
 //Or maybe mut-obs should have a custom method to add listeners, go away when no more listeners?
 const p_std = 'p_std';
-export class PDMixin {
+export const PDMixin = (superclass) => class extends superclass {
     addDefaultMutObs(self) {
         const { lastVal, to, careOf, prop, as } = self;
         const parent = getFrom(self)?.parentElement;
@@ -44,19 +44,18 @@ export class PDMixin {
         self.setAttribute('matches', '' + matches.length);
     }
     attachMutationEventHandler(self) {
-        const { parentElement, mutateEvents, handleValChange } = self;
+        const { parentElement, mutateEvents } = self;
         if (!parentElement)
             return;
         for (const event of mutateEvents) {
             parentElement.addEventListener(event, e => {
                 if (self.lastVal !== undefined) {
-                    handleValChange(self);
+                    this.handleValChange(self);
                 }
             });
         }
     }
-    ;
-}
+};
 export function getFrom(self) {
     return self.from !== undefined ? self.closest(self.from) : self;
 }

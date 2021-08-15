@@ -63,11 +63,41 @@ export interface PDToFrom extends HTMLElement{
 }
 
 export interface PassDownProps extends PDToFrom{
+
+    async?: boolean | undefined;
+
     /**
-    * The event name to monitor for, from previous non-petalian element.
-    * @attr
+     * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
     */
-    on?: string | undefined;
+    capture?: boolean | undefined;
+
+    cloneVal?: boolean | undefined;
+
+    /**
+     * Artificially fire event on target element whose name is specified by this attribute.
+     * @attr fire-event
+     */
+    fireEvent?: string | undefined;
+
+    /**
+     * Only act on event if target element css-matches the expression specified by this attribute.
+     * @attr
+     */
+    ifTargetMatches?: string | undefined;
+
+        
+    /**
+     * In some cases, the initVal can only be obtained after initEvent fires
+     */
+    initEvent?: string | undefined;
+
+    initVal?: string | undefined;
+
+    isC: boolean | undefined;
+
+    lastEvent?: Event | undefined;
+
+    mutateEvents: string[] | undefined;
 
     /**
      * Don't block event propagation.
@@ -76,12 +106,26 @@ export interface PassDownProps extends PDToFrom{
     noblock?: boolean | undefined;
 
     /**
-     * Only act on event if target element css-matches the expression specified by this attribute.
+     * Specifies element to latch on to, and listen for events.
+     * Searches previous siblings, parent, previous siblings of parent, etc.
+     * Stops at Shadow DOM boundary.
      * @attr
      */
-    ifTargetMatches?: string | undefined;
+    observe?: string | undefined;
 
+    observeClosest?: string | undefined;
 
+    observedElement : Element | null;
+
+    /**
+    * The event name to monitor for, from previous non-petalian element.
+    * @attr
+    */
+    on?: string | undefined;
+
+    parseValAs?: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
+
+    previousOn?: string | undefined;
 
     /**
      * Dynamically determined name of property to set on matching (downstream) siblings from target.
@@ -94,64 +138,24 @@ export interface PassDownProps extends PDToFrom{
      * @attr
      */
     val?: string | undefined;
-    
-    /**
-     * Specifies element to latch on to, and listen for events.
-     * Searches previous siblings, parent, previous siblings of parent, etc.
-     * Stops at Shadow DOM boundary.
-     * @attr
-     */
-    observe?: string | undefined;
-
-    observeClosest?: string | undefined;
-    
-    /**
-     * Artificially fire event on target element whose name is specified by this attribute.
-     * @attr fire-event
-     */
-    fireEvent?: string | undefined;
-
-    initVal?: string | undefined;
-    
-    /**
-     * In some cases, the initVal can only be obtained after initEvent fires
-     */
-    initEvent?: string | undefined;
-
-
-    async?: boolean | undefined;
-
-    parseValAs?: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
-    
-    /**
-     * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
-    */
-    capture?: boolean | undefined;
-
-    previousOn?: string | undefined;
-
-    lastEvent?: Event | undefined;
 
     
 
-    
-
-    cloneVal?: boolean | undefined;
-
-
-
-    mutateEvents: string[] | undefined;
+    //valFromEvent?: string | undefined;
 
     valFromTarget?: string | undefined;
 
     vft: string | undefined;
 
-    isC: boolean | undefined;
+    
 
-    observedElement : Element | null;
+    
 
 
-    //elementToObserve: string | undefined;
+}
+
+export interface PassDown extends PassDownProps{
+
 }
 
 export interface PassDownExtProps extends PassDownProps{

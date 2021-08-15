@@ -4,18 +4,18 @@ import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-m
 import {structuralClone} from 'xtal-element/lib/structuralClone.js';
 import {PDMixin, addDefaultMutObs} from './PDMixin.js';
 
-export class PassDownMixin {
+const PassDownMixin = (superclass: any) => class extends PDMixin(superclass) implements PassDown {
 
     init(){
         this.style.display = 'none';
     }
     //https://web.dev/javascript-this/
     handleEvent = (e: Event) => {
-        if((this as unknown as PassDownProps).ifTargetMatches !== undefined){
+        if(this.ifTargetMatches !== undefined){
             if(!(e.target as HTMLElement).matches((this as unknown as PassDownProps).ifTargetMatches!)) return;
         }
         if(!this.filterEvent(e)) return;
-        (this as unknown as PassDownProps).lastEvent = e;
+        this.lastEvent = e;
     }
 
     parseValFromEvent(e: Event){
@@ -25,12 +25,12 @@ export class PassDownMixin {
     }
 
     parseInitVal(elementToObserve: Element){
-        const initVal =  (this as unknown as PassDownProps).initVal;
+        const initVal =  this.initVal;
         if(initVal === undefined) return undefined;
         return getProp(elementToObserve,initVal.split('.'), this);
     }
 
-    valFromEvent(e: Event){
+    valFromEvent = (e: Event) => {
         const val = this.val || 'target.value';
         let valToPass = this.parseValFromEvent(e);
         
@@ -53,7 +53,7 @@ export class PassDownMixin {
 
     _wr: WeakRef<Element> | undefined;
     get observedElement() : Element | null{
-        const element = this._wr?.deref();
+        const element = this._wr === undefined ? undefined : this._wr?.deref(); //TODO  wait for bundlephobia to get over it's updatephobia
         if(element !== undefined){
             return element;
         }
@@ -71,7 +71,7 @@ export class PassDownMixin {
         return elementToObserve;
     }
 
-    attachEventHandler(self: PD) {
+    attachEventHandler(self: PassDown) {
         const {on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches} = self;
         const previousElementToObserve = _wr !== undefined ? _wr.deref() : undefined; //TODO switch to ?. when bundlephobia catches up to the 2020's.
         self._wr = undefined;
@@ -99,7 +99,7 @@ export class PassDownMixin {
         addDefaultMutObs(self);
     };
 
-    onInitVal(self: PD) {
+    onInitVal(self: PassDown) {
         const {observedElement, initEvent, parseValAs, cloneVal} = self;
         if(observedElement === null){
             console.error('404');
@@ -113,7 +113,7 @@ export class PassDownMixin {
         }
     };
 
-    doEvent(self: PD) {
+    doEvent(self: PassDown) {
         const {lastEvent, noblock, valFromEvent} = self;
         self.setAttribute('status', '🌩️');
         if(!noblock) lastEvent!.stopPropagation();
@@ -124,7 +124,7 @@ export class PassDownMixin {
         self.setAttribute('status', '👂');
     }
 
-    handleValChange(self: PD){
+    handleValChange(self: PDM){
         const {lastVal, prop, debug, log, propFromTarget, to, careOf, m, from, as} = self;
         if(debug){
             debugger;
@@ -140,7 +140,7 @@ export class PassDownMixin {
         
     }
 
-    attachMutationEventHandler(self: PD){
+    attachMutationEventHandler(self: PassDown){
         const {parentElement, mutateEvents} = self;
         if(!parentElement) return;
         for(const event of mutateEvents!){
@@ -152,7 +152,7 @@ export class PassDownMixin {
         }
     };
 
-    onValFromTarget(self: PD){
+    onValFromTarget(self: PDM){
         const {valFromTarget} = self;
         const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget!;
         self.initVal = valFromTargetOrValue;
@@ -160,12 +160,29 @@ export class PassDownMixin {
         if(self.on === undefined) self.on = camelToLisp(valFromTargetOrValue) + '-changed';
     };
     
-    setAliases(self: PD){
+    setAliases(self: PDM){
         self.valFromTarget = self.vft;
     }
 }
 
 export interface PassDownMixin extends PDMixin, PassDownProps{}
+
+type PDM = PassDownMixin;
+
+export interface PassDown extends HTMLElement, PDMixin{
+    attachEventHandler(self: PassDown): void;
+    attachMutationEventHandler(self: PassDown): void;
+    doEvent(self: PassDown): void;    
+    handleEvent: (e: Event) => void;
+    handleValChange(self: PDM): void; 
+    init(): void;
+    parseInitVal(elementToObserve: Element): any;
+    setAliases(self: PDM): void;
+    onInitVal(self: PassDown): void;
+    onValFromTarget(self: PDM): void;
+    valFromEvent(e: Event): void;
+    _wr: WeakRef<Element> | undefined; //TODO:  make private?
+}
 
 const disabledFilter: Partial<Action<PassDownMixin>> = {
     rift: ['disabled']
@@ -182,7 +199,7 @@ const isStringProp: PropInfo = {
 
 const filters = ['isC', 'disabled'];
 
-export const PassDown = define<PassDownMixin>({
+export const PassDown: {new(): PassDown} = define<PassDown>({
     config: {
         tagName: 'pass-down',
         initMethod: 'init',
@@ -224,7 +241,7 @@ export const PassDown = define<PassDownMixin>({
                 do: 'handleValChange',
                 upon: [
                     'lastVal', 'debug', 'log', 'm',
-                    'propFromTarget', isStringProp, 'to', isStringProp, 'careOf', isStringProp, 'from', isStringProp, 'prop', isStringProp,
+                    'propFromTarget', isStringProp, 'to', isStringProp, 'careOf', isStringProp, 'from', isStringProp, 'prop', isStringProp, 'as', isStringProp,
                     ...filters
                 ], 
                 riff: ['isC', 'lastVal'],
@@ -243,7 +260,7 @@ export const PassDown = define<PassDownMixin>({
                     'valFromTarget', isStringProp,
                     ...filters
                 ],
-                riff: ['isC', 'onValFromTarget'],
+                riff: ['isC', 'valFromTarget'],
                 ...disabledFilter
             },{
                 do: 'setAliases',
@@ -256,10 +273,10 @@ export const PassDown = define<PassDownMixin>({
         ]
     },
     mixins: [PassDownMixin]
-}) as any as PassDownMixin;
+});
 
 
-function setInitVal({parseValAs, cloneVal}: Partial<PD>, self: PD, elementToObserve: Element){
+function setInitVal({parseValAs, cloneVal}: Partial<PDM>, self: PassDown, elementToObserve: Element){
     let val = self.parseInitVal(elementToObserve);
     if(val === undefined) return false;
     if(parseValAs !== undefined) val = convert(val, parseValAs);
@@ -268,6 +285,3 @@ function setInitVal({parseValAs, cloneVal}: Partial<PD>, self: PD, elementToObse
     return true;
 }
 
-type PD = PassDownMixin;
-
-export interface PassDownMixin extends PassDownProps{}

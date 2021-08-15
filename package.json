@@ -3,10 +3,10 @@
   "version": "0.0.74",
   "description": "Glue DOM and Custom Elements together.",
   "keywords": [
-    "webcomponents",
-    "webcomponent",
-    "customelements",
-    "customelement",
+    "web components",
+    "web component",
+    "custom elements",
+    "custom element",
     "bind",
     "dom-bind"
   ],
@@ -33,8 +33,8 @@
     "mut-obs": "0.0.9",
     "on-to-me": "0.0.32",
     "trans-render": "0.0.291",
-    "xtal-element": "0.0.416",
-    "liquid-xtal": "0.0.2",
+    "xtal-element": "0.0.422",
+    "liquid-xtal": "0.0.6",
     "jsonpathesm": "0.0.2"
   },
   "devDependencies": {
