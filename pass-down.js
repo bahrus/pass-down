@@ -1,6 +1,6 @@
 import { define, camelToLisp } from 'trans-render/lib/define.js';
 import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
-import { structuralClone } from 'xtal-element/lib/structuralClone.js';
+import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { PDMixin, addDefaultMutObs } from './PDMixin.js';
 const PassDownMixin = (superclass) => class extends PDMixin(superclass) {
     init() {
