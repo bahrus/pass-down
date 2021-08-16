@@ -1,5 +1,5 @@
 //import {PD} from './p-d.js';
-import { PDToFrom, PassDownProps } from './types.js';
+import { PDToFrom, PassDownProps, IPDMixin } from './types.js';
 import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js'; //Typescript requires both of these
 import {passValToMatches, passVal, getProp} from 'on-to-me/on-to-me.js';
@@ -7,8 +7,8 @@ import {passValToMatches, passVal, getProp} from 'on-to-me/on-to-me.js';
 //Or maybe mut-obs should have a custom method to add listeners, go away when no more listeners?
 const p_std = 'p_std';
 
-export const PDMixin = (superclass: {new(): PDMixin}) => class extends superclass {
-    addDefaultMutObs(self: PDMixin){
+export const PDMixin = (superclass: {new(): IPDMixin}) => class extends superclass implements IPDMixin {
+    addDefaultMutObs(self: IPDMixin){
         const {lastVal, to, careOf, prop, as} = self;
         const parent = getFrom(self)?.parentElement;
         if(parent){
@@ -34,7 +34,7 @@ export const PDMixin = (superclass: {new(): PDMixin}) => class extends superclas
         }
     }
 
-    handleValChange(self: PDMixin){
+    handleValChange(self: IPDMixin){
         const {lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget} = self;
         if(self.debug){
             debugger;
@@ -50,7 +50,7 @@ export const PDMixin = (superclass: {new(): PDMixin}) => class extends superclas
         
     }
 
-    attachMutationEventHandler(self: PDMixin){
+    attachMutationEventHandler(self: IPDMixin){
         const {parentElement, mutateEvents} = self;
         if(!parentElement) return;
         for(const event of mutateEvents!){
@@ -63,7 +63,7 @@ export const PDMixin = (superclass: {new(): PDMixin}) => class extends superclas
     }
 }
 
-export interface PDMixin extends PassDownProps{}
+
 
 export function getFrom(self: PDToFrom){
     return self.from !== undefined ? self.closest!(self.from) : self

@@ -6,14 +6,14 @@ export interface PDToFrom extends HTMLElement{
      * css pattern to match for from downstream siblings.
      * @attr
      */
-    to?: string | undefined;
+    to?: string;
 
     /**
      * Find the closest ancestor matching this css pattern.
      * Use that as the base element to pass down the value from.
      * @attr
      */
-    from?: string | undefined;
+    from?: string;
 
     /**
      * @private
@@ -25,85 +25,85 @@ export interface PDToFrom extends HTMLElement{
      * @attr care-of
      * 
      */
-    careOf?: string | undefined;
+    careOf?: string;
 
     /**
      * Name of property to set on matching (downstream) siblings.
      * @attr
      */
-    prop?: string | undefined;
+    prop?: string;
 
     /**
      * Pass value to an attribute
      * @attr as-attr
      */
-    as?: asAttr | undefined;
+    as?: asAttr;
 
-    mutateEvents?: string[] | undefined;
+    mutateEvents?: string[];
 
     /**
      * Add runtime breakpoints at critical points
      * @attr
      */
-    debug?: boolean | undefined;
+    debug?: boolean;
 
     /**
      * Add console.logs at critical points
      * @attr
      */
-    log?: boolean | undefined;
+    log?: boolean;
 
     /**
      * Maximum number of elements to search for
      * @attr
      */
-    m?: number | undefined;
+    m?: number;
 
-    disabled?: boolean | undefined;
+    disabled?: boolean;
 }
 
 export interface PassDownProps extends PDToFrom{
 
-    async?: boolean | undefined;
+    async?: boolean;
 
     /**
      * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
     */
-    capture?: boolean | undefined;
+    capture?: boolean;
 
-    cloneVal?: boolean | undefined;
+    cloneVal?: boolean;
 
     /**
      * Artificially fire event on target element whose name is specified by this attribute.
      * @attr fire-event
      */
-    fireEvent?: string | undefined;
+    fireEvent?: string;
 
     /**
      * Only act on event if target element css-matches the expression specified by this attribute.
      * @attr
      */
-    ifTargetMatches?: string | undefined;
+    ifTargetMatches?: string;
 
         
     /**
      * In some cases, the initVal can only be obtained after initEvent fires
      */
-    initEvent?: string | undefined;
+    initEvent?: string;
 
-    initVal?: string | undefined;
+    initVal?: string;
 
-    isC: boolean | undefined;
+    isC?: boolean;
 
-    lastEvent?: Event | undefined;
+    lastEvent?: Event;
 
-    mutateEvents: string[] | undefined;
+    mutateEvents?: string[];
 
     /**
      * Don't block event propagation.
      * @attr
      */
-    noblock?: boolean | undefined;
+    noblock?: boolean;
 
     /**
      * Specifies element to latch on to, and listen for events.
@@ -111,41 +111,41 @@ export interface PassDownProps extends PDToFrom{
      * Stops at Shadow DOM boundary.
      * @attr
      */
-    observe?: string | undefined;
+    observe?: string;
 
-    observeClosest?: string | undefined;
+    observeClosest?: string;
 
-    observedElement : Element | null;
+    observedElement?: Element | null;
 
     /**
     * The event name to monitor for, from previous non-petalian element.
     * @attr
     */
-    on?: string | undefined;
+    on?: string;
 
-    parseValAs?: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | undefined;  
+    parseValAs?: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy';  
 
-    previousOn?: string | undefined;
+    previousOn?: string;
 
     /**
      * Dynamically determined name of property to set on matching (downstream) siblings from target.
      * @attr prop-from-target
      */
-    propFromTarget?: string | undefined;
+    propFromTarget?: string;
     
     /**
      * Specifies path to JS object from event, that should be passed to downstream siblings.  Value of '.' passes entire entire object.
      * @attr
      */
-    val?: string | undefined;
+    val?: string;
 
     
 
-    //valFromEvent?: string | undefined;
+    //valFromEvent?: string;
 
-    valFromTarget?: string | undefined;
+    valFromTarget?: string;
 
-    vft: string | undefined;
+    vft?: string;
 
     
 
@@ -163,19 +163,37 @@ export interface PassDownExtProps extends PassDownProps{
      * @prop {string} [valFilter] - JSONPath expression
      * @attr {string} [val-filter] - JSONPath expression
      */
-    valFilter: string;
+    valFilter?: string;
     /**
      * Id within the ShadowDOM Realm of p-d-x of a script tag.
      * The script tag is expected to have a property path where a custom filter function is specified.
      * This custom filter function is applied to the value.
      */
-    valFilterScriptId: string;
+    valFilterScriptId?: string;
     /**
      * @prop {string} [valFilterScriptPropPath=] - Property path from the script tag, where custom filter function can be obtained.
      */
-    valFilterScriptPropPath: string;
+    valFilterScriptPropPath?: string;
 
-    closestWeakMapKey: string;
+    closestWeakMapKey?: string;
 
 
+}
+
+export interface IPDMixin extends PassDownProps{}
+
+type pd = IPassDown;
+export interface IPassDown extends IPDMixin{
+    attachEventHandler(self: pd): void;
+    attachMutationEventHandler(self: pd): void;
+    doEvent(self: pd): void;    
+    handleEvent: (e: Event) => void;
+    handleValChange(self: pd): void; 
+    init(self: pd): void;
+    parseInitVal(elementToObserve: Element): any;
+    setAliases(self: pd): void;
+    onInitVal(self: pd): void;
+    onValFromTarget(self: pd): void;
+    valFromEvent(e: Event): void;
+    _wr: WeakRef<Element> | undefined; //TODO:  make private?
 }

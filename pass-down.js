@@ -2,9 +2,9 @@ import { define, camelToLisp } from 'trans-render/lib/define.js';
 import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { PDMixin, addDefaultMutObs } from './PDMixin.js';
-const PassDownMixin = (superclass) => class extends PDMixin(superclass) {
-    init() {
-        this.style.display = 'none';
+const PassDownMixin = (superclass) => class C extends PDMixin(superclass) {
+    init(self) {
+        self.style.display = 'none';
     }
     //https://web.dev/javascript-this/
     handleEvent = (e) => {
@@ -162,6 +162,8 @@ const PassDownMixin = (superclass) => class extends PDMixin(superclass) {
         self.valFromTarget = self.vft;
     }
 };
+//export interface PassDownMixin extends IPDMixin, PassDownProps{}
+//type PDM = PassDownMixin;
 const disabledFilter = {
     rift: ['disabled']
 };
@@ -194,44 +196,31 @@ export const PassDown = define({
         actions: [
             {
                 do: 'onInitVal',
-                upon: [
-                    'initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'disabled'
-                ],
+                upon: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'disabled'],
                 ...defaultFilters
             }, {
                 do: 'attachEventHandler',
-                upon: [
-                    'on', 'observe', 'ifTargetMatches', 'isC', 'disabled'
-                ],
+                upon: ['on', 'observe', 'ifTargetMatches', 'isC', 'disabled'],
                 riff: ['isC', 'on'],
                 ...disabledFilter,
             }, {
                 do: 'doEvent',
-                upon: [
-                    'val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'disabled'
-                ],
+                upon: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'disabled'],
                 riff: ['isC', 'lastEvent'],
                 ...disabledFilter
             }, {
                 do: 'handleValChange',
-                upon: [
-                    'lastVal', 'debug', 'log', 'm',
-                    'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'disabled'
-                ],
+                upon: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'disabled'],
                 riff: ['isC', 'lastVal'],
                 ...disabledFilter
             }, {
                 do: 'attachMutationEventHandler',
-                upon: [
-                    'mutateEvents', 'isC', 'disabled'
-                ],
+                upon: ['mutateEvents', 'isC', 'disabled'],
                 riff: ['isC', 'mutateEvents'],
                 ...disabledFilter
             }, {
                 do: 'onValFromTarget',
-                upon: [
-                    'valFromTarget', 'isC', 'disabled'
-                ],
+                upon: ['valFromTarget', 'isC', 'disabled'],
                 riff: ['isC', 'valFromTarget'],
                 ...disabledFilter
             }, {
