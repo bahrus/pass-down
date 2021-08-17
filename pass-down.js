@@ -162,7 +162,6 @@ class PassDownCore extends HTMLElement {
         self.valFromTarget = self.vft;
     }
 }
-//type PDM = PassDownMixin;
 const disabledFilter = {
     rift: ['disabled']
 };

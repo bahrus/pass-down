@@ -169,9 +169,6 @@ class PassDownCore extends HTMLElement implements IPassDown {
 
 interface PassDownCore extends PassDownProps{}
 
-//type PDM = PassDownMixin;
-
-
 
 const disabledFilter: Partial<Action<pd>> = {
     rift: ['disabled']
