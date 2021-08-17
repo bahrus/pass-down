@@ -180,7 +180,9 @@ export interface PassDownExtProps extends PassDownProps{
 
 }
 
-export interface IPDMixin extends PassDownProps{}
+export interface IPDMixin extends PassDownProps{
+    handleValChange(self: IPDMixin): void;
+}
 
 type pd = IPassDown;
 export interface IPassDown extends IPDMixin{

@@ -29,11 +29,11 @@ export const PDMixin = (superclass) => class extends superclass {
         }
     }
     handleValChange(self) {
-        const { lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget } = self;
-        if (self.debug) {
+        const { lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log } = self;
+        if (debug) {
             debugger;
         }
-        else if (self.log) {
+        else if (log) {
             console.log('passVal', { lastVal, self });
         }
         let dynProp = prop;
@@ -50,7 +50,7 @@ export const PDMixin = (superclass) => class extends superclass {
         for (const event of mutateEvents) {
             parentElement.addEventListener(event, e => {
                 if (self.lastVal !== undefined) {
-                    this.handleValChange(self);
+                    self.handleValChange(self);
                 }
             });
         }

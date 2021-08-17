@@ -1,5 +1,5 @@
 import { define, camelToLisp } from 'trans-render/lib/define.js';
-import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
+import { getPreviousSib, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { PDMixin, addDefaultMutObs } from './PDMixin.js';
 class PassDownCore extends HTMLElement {
@@ -120,21 +120,6 @@ class PassDownCore extends HTMLElement {
         //holding on to lastEvent could introduce memory leak
         delete self.lastEvent;
         self.setAttribute('status', '👂');
-    }
-    handleValChange(self) {
-        const { lastVal, prop, debug, log, propFromTarget, to, careOf, m, from, as } = self;
-        if (debug) {
-            debugger;
-        }
-        else if (log) {
-            console.log('passVal', { lastVal, self });
-        }
-        let dynProp = prop;
-        if (propFromTarget !== undefined) {
-            dynProp = getProp(self.observedElement, propFromTarget.split('.'), self);
-        }
-        const matches = passVal(lastVal, self, to, careOf, m, from, dynProp, as);
-        self.setAttribute('matches', '' + matches.length);
     }
     attachMutationEventHandler(self) {
         const { parentElement, mutateEvents } = self;

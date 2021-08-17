@@ -126,22 +126,6 @@ class PassDownCore extends HTMLElement implements IPassDown {
         self.setAttribute('status', '👂');
     }
 
-    handleValChange(self: pd){
-        const {lastVal, prop, debug, log, propFromTarget, to, careOf, m, from, as} = self;
-        if(debug){
-            debugger;
-        }else if(log){
-            console.log('passVal', {lastVal, self});
-        }
-        let dynProp = prop;
-        if(propFromTarget !== undefined){
-            dynProp = getProp(self.observedElement, propFromTarget.split('.'), self);
-        }
-        const matches = passVal(lastVal, self, to, careOf, m, from, dynProp, as);
-        self.setAttribute('matches', '' + matches.length);
-        
-    }
-
     attachMutationEventHandler(self: pd){
         const {parentElement, mutateEvents} = self;
         if(!parentElement) return;
