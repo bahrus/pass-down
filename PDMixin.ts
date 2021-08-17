@@ -8,31 +8,6 @@ import {passValToMatches, passVal, getProp} from 'on-to-me/on-to-me.js';
 const p_std = 'p_std';
 
 export const PDMixin = (superclass: {new(): IPDMixin}) => class extends superclass implements IPDMixin {
-    addDefaultMutObs(self: IPDMixin){
-        const {lastVal, to, careOf, prop, as} = self;
-        const parent = getFrom(self)?.parentElement;
-        if(parent){
-            const mutObs = document.createElement('mut-obs') as MutObs;
-            const s = mutObs.setAttribute.bind(mutObs);
-            s('dispatch', p_std);
-            s('child-list', '');
-            s('observe', 'parentElement');
-            s('on', self.to!);
-            parent.appendChild(mutObs);
-            mutObs.addEventListener(p_std, (e: Event) => {
-                e.stopPropagation();
-                const mutObj = e.target as MutObs;
-                if(lastVal !== undefined){
-                    const ae = e as any;
-                    const match = ae.detail.match;
-                    if(isMatchAfterFrom(match, self)){
-                        passValToMatches([match], lastVal, to, careOf, prop, as);
-                    }
-                }
-            });
-            
-        }
-    }
 
     handleValChange(self: IPDMixin){
         const {lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log} = self;

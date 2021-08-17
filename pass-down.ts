@@ -1,5 +1,5 @@
 import {define, Action, PropInfo, camelToLisp} from 'trans-render/lib/define.js';
-import {PassDownProps, IPassDown} from './types.js';
+import {PassDownProps, IPassDown, IPassDownWithIPDMixin} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {PDMixin, addDefaultMutObs} from './PDMixin.js';
@@ -126,17 +126,6 @@ class PassDownCore extends HTMLElement implements IPassDown {
         self.setAttribute('status', '👂');
     }
 
-    attachMutationEventHandler(self: pd){
-        const {parentElement, mutateEvents} = self;
-        if(!parentElement) return;
-        for(const event of mutateEvents!){
-            parentElement.addEventListener(event, e => {
-                if(self.lastVal !== undefined){
-                    self.handleValChange(self);
-                }
-            })
-        }
-    };
 
     onValFromTarget(self: pd){
         const {valFromTarget} = self;
@@ -169,7 +158,7 @@ const stringProp: PropInfo = {
 
 const filters = ['isC', 'disabled'];
 
-export const PassDown: {new(): IPassDown} = define<IPassDown>({
+export const PassDown: {new(): IPassDownWithIPDMixin} = define<IPassDownWithIPDMixin>({
     config: {
         tagName: 'pass-down',
         propDefaults:{

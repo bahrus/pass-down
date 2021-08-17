@@ -121,19 +121,6 @@ class PassDownCore extends HTMLElement {
         delete self.lastEvent;
         self.setAttribute('status', '👂');
     }
-    attachMutationEventHandler(self) {
-        const { parentElement, mutateEvents } = self;
-        if (!parentElement)
-            return;
-        for (const event of mutateEvents) {
-            parentElement.addEventListener(event, e => {
-                if (self.lastVal !== undefined) {
-                    self.handleValChange(self);
-                }
-            });
-        }
-    }
-    ;
     onValFromTarget(self) {
         const { valFromTarget } = self;
         const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget;

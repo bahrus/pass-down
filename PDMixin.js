@@ -4,30 +4,6 @@ import { passValToMatches, passVal, getProp } from 'on-to-me/on-to-me.js';
 //Or maybe mut-obs should have a custom method to add listeners, go away when no more listeners?
 const p_std = 'p_std';
 export const PDMixin = (superclass) => class extends superclass {
-    addDefaultMutObs(self) {
-        const { lastVal, to, careOf, prop, as } = self;
-        const parent = getFrom(self)?.parentElement;
-        if (parent) {
-            const mutObs = document.createElement('mut-obs');
-            const s = mutObs.setAttribute.bind(mutObs);
-            s('dispatch', p_std);
-            s('child-list', '');
-            s('observe', 'parentElement');
-            s('on', self.to);
-            parent.appendChild(mutObs);
-            mutObs.addEventListener(p_std, (e) => {
-                e.stopPropagation();
-                const mutObj = e.target;
-                if (lastVal !== undefined) {
-                    const ae = e;
-                    const match = ae.detail.match;
-                    if (isMatchAfterFrom(match, self)) {
-                        passValToMatches([match], lastVal, to, careOf, prop, as);
-                    }
-                }
-            });
-        }
-    }
     handleValChange(self) {
         const { lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log } = self;
         if (debug) {

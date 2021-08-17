@@ -182,15 +182,14 @@ export interface PassDownExtProps extends PassDownProps{
 
 export interface IPDMixin extends PassDownProps{
     handleValChange(self: IPDMixin): void;
+    attachMutationEventHandler(self: IPDMixin): void;
 }
 
 type pd = IPassDown;
-export interface IPassDown extends IPDMixin{
+export interface IPassDown extends PassDownProps{
     attachEventHandler(self: pd): void;
-    attachMutationEventHandler(self: pd): void;
     doEvent(self: pd): void;    
     handleEvent: (e: Event) => void;
-    handleValChange(self: pd): void; 
     parseInitVal(elementToObserve: Element): any;
     setAliases(self: pd): void;
     onInitVal(self: pd): void;
@@ -198,3 +197,5 @@ export interface IPassDown extends IPDMixin{
     valFromEvent(e: Event): void;
     _wr: WeakRef<Element> | undefined; //TODO:  make private?
 }
+
+export interface IPassDownWithIPDMixin extends IPassDown, IPDMixin{}
