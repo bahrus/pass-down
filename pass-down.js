@@ -2,9 +2,9 @@ import { define, camelToLisp } from 'trans-render/lib/define.js';
 import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { PDMixin, addDefaultMutObs } from './PDMixin.js';
-const PassDownMixin = (superclass) => class C extends PDMixin(superclass) {
-    init(self) {
-        self.style.display = 'none';
+class PassDownCore extends HTMLElement {
+    connectedCallback() {
+        this.style.display = 'none';
     }
     //https://web.dev/javascript-this/
     handleEvent = (e) => {
@@ -161,8 +161,7 @@ const PassDownMixin = (superclass) => class C extends PDMixin(superclass) {
     setAliases(self) {
         self.valFromTarget = self.vft;
     }
-};
-//export interface PassDownMixin extends IPDMixin, PassDownProps{}
+}
 //type PDM = PassDownMixin;
 const disabledFilter = {
     rift: ['disabled']
@@ -178,7 +177,6 @@ const filters = ['isC', 'disabled'];
 export const PassDown = define({
     config: {
         tagName: 'pass-down',
-        initMethod: 'init',
         propDefaults: {
             isC: true,
             disabled: false,
@@ -230,7 +228,8 @@ export const PassDown = define({
             }
         ]
     },
-    mixins: [PassDownMixin]
+    superclass: PassDownCore,
+    mixins: [PDMixin]
 });
 function setInitVal({ parseValAs, cloneVal }, self, elementToObserve) {
     let val = self.parseInitVal(elementToObserve);

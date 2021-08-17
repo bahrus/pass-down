@@ -5,11 +5,12 @@ import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {PDMixin, addDefaultMutObs} from './PDMixin.js';
 
 type pd = IPassDown;
-const PassDownMixin = (superclass: {new(): HTMLElement}) => class C extends PDMixin(superclass) implements IPassDown {
+class PassDownCore extends HTMLElement implements IPassDown {
 
-    init(self: pd){
-        self.style.display = 'none';
+    connectedCallback(){
+        this.style.display = 'none';
     }
+
     //https://web.dev/javascript-this/
     handleEvent = (e: Event) => {
         if(this.ifTargetMatches !== undefined){
@@ -166,7 +167,7 @@ const PassDownMixin = (superclass: {new(): HTMLElement}) => class C extends PDMi
     }
 }
 
-//export interface PassDownMixin extends IPDMixin, PassDownProps{}
+interface PassDownCore extends PassDownProps{}
 
 //type PDM = PassDownMixin;
 
@@ -190,7 +191,6 @@ const filters = ['isC', 'disabled'];
 export const PassDown: {new(): IPassDown} = define<IPassDown>({
     config: {
         tagName: 'pass-down',
-        initMethod: 'init',
         propDefaults:{
             isC: true,
             disabled: false,
@@ -243,7 +243,8 @@ export const PassDown: {new(): IPassDown} = define<IPassDown>({
             
         ]
     },
-    mixins: [PassDownMixin]
+    superclass: PassDownCore,
+    mixins: [PDMixin]
 });
 
 

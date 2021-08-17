@@ -189,7 +189,6 @@ export interface IPassDown extends IPDMixin{
     doEvent(self: pd): void;    
     handleEvent: (e: Event) => void;
     handleValChange(self: pd): void; 
-    init(self: pd): void;
     parseInitVal(elementToObserve: Element): any;
     setAliases(self: pd): void;
     onInitVal(self: pd): void;
