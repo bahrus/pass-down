@@ -1,4 +1,5 @@
 import {define, Action, PropInfo, camelToLisp} from 'trans-render/lib/define.js';
+import {NotifyMixin, INotifyPropInfo} from 'trans-render/lib/mixins/notify.js';
 import {PassDownProps, IPassDown, IPassDownWithIPDMixin} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
@@ -143,13 +144,8 @@ class PassDownCore extends HTMLElement implements IPassDown {
 interface PassDownCore extends PassDownProps{}
 
 
-const disabledFilter: Partial<Action<pd>> = {
-    rift: ['disabled']
-};
-
 const defaultFilters: Partial<Action<pd>> = {
-    riff: ['isC'],
-    ...disabledFilter,
+    riff: ['isC', 'enabled'],
 }
 
 const stringProp: PropInfo = {
@@ -158,12 +154,13 @@ const stringProp: PropInfo = {
 
 const filters = ['isC', 'disabled'];
 
-export const PassDown: {new(): IPassDownWithIPDMixin} = define<IPassDownWithIPDMixin>({
+export const PassDown: {new(): IPassDownWithIPDMixin} = define<IPassDownWithIPDMixin, INotifyPropInfo>({
     config: {
         tagName: 'pass-down',
         propDefaults:{
             isC: true,
             disabled: false,
+            enabled: true,
             debug: false,
             log: false,
             m: Infinity,
@@ -171,6 +168,9 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = define<IPassDownWithIPDM
             noblock: false,
         },
         propInfo:{
+            disabled:{
+                notify:{toggleTo:'enabled'}
+            },
             initVal:stringProp, initEvent:stringProp, parseValAs:stringProp, on:stringProp, observe:stringProp, ifTargetMatches:stringProp,
             val:stringProp, propFromTarget:stringProp, to:stringProp, careOf:stringProp, from:stringProp, prop:stringProp, as:stringProp,
             mutateEvents:stringProp, valFromTarget:stringProp, vft:stringProp,
@@ -178,33 +178,29 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = define<IPassDownWithIPDM
         actions:[
             {
                 do: 'onInitVal',
-                upon: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'disabled'],
+                upon: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
                 ...defaultFilters
             },{
                 do: 'attachEventHandler',
-                upon: ['on', 'observe', 'ifTargetMatches', 'isC', 'disabled'],
-                riff: ['isC', 'on'],
-                ...disabledFilter,
+                upon: ['on', 'observe', 'ifTargetMatches', 'isC', 'enabled'],
+                riff: ['isC', 'on', 'enabled'],
+                
             },{
                 do: 'doEvent',
-                upon: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'disabled'],
-                riff: ['isC', 'lastEvent'],
-                ...disabledFilter
+                upon: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'enabled'],
+                riff: ['isC', 'lastEvent', 'enabled'],
             },{
                 do: 'handleValChange',
-                upon: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'disabled'], 
-                riff: ['isC', 'lastVal'],
-                ...disabledFilter
+                upon: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'], 
+                riff: ['isC', 'lastVal', 'enabled'],
             },{
                 do: 'attachMutationEventHandler',
-                upon: ['mutateEvents', 'isC', 'disabled'],
-                riff: ['isC', 'mutateEvents'],
-                ...disabledFilter
+                upon: ['mutateEvents', 'isC', 'enabled'],
+                riff: ['isC', 'mutateEvents', 'enabled'],
             },{
                 do: 'onValFromTarget',
-                upon: ['valFromTarget', 'isC', 'disabled'],
-                riff: ['isC', 'valFromTarget'],
-                ...disabledFilter
+                upon: ['valFromTarget', 'isC', 'enabled'],
+                riff: ['isC', 'valFromTarget', 'enabled'],
             },{
                 do: 'setAliases',
                 upon: ['vft'],
@@ -214,7 +210,7 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = define<IPassDownWithIPDM
         ]
     },
     superclass: PassDownCore,
-    mixins: [PDMixin]
+    mixins: [NotifyMixin, PDMixin]
 });
 
 

@@ -60,6 +60,8 @@ export interface PDToFrom extends HTMLElement{
     m?: number;
 
     disabled?: boolean;
+
+    enabled?: boolean;
 }
 
 export interface PassDownProps extends PDToFrom{
