@@ -130,6 +130,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
 
     onValFromTarget(self: pd){
         const {valFromTarget} = self;
+        if(valFromTarget === undefined) return;
         const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget!;
         self.initVal = valFromTargetOrValue;
         self.val = 'target.' + valFromTargetOrValue;

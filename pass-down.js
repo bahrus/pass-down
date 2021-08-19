@@ -124,6 +124,8 @@ class PassDownCore extends HTMLElement {
     }
     onValFromTarget(self) {
         const { valFromTarget } = self;
+        if (valFromTarget === undefined)
+            return;
         const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget;
         self.initVal = valFromTargetOrValue;
         self.val = 'target.' + valFromTargetOrValue;
