@@ -1,8 +1,9 @@
-import { define, camelToLisp } from 'trans-render/lib/define.js';
+import { CE } from 'trans-render/lib/CE.js';
 import { NotifyMixin } from 'trans-render/lib/mixins/notify.js';
 import { getPreviousSib, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { PDMixin, addDefaultMutObs } from './PDMixin.js';
+const ce = new CE();
 class PassDownCore extends HTMLElement {
     connectedCallback() {
         this.style.display = 'none';
@@ -130,7 +131,7 @@ class PassDownCore extends HTMLElement {
         self.initVal = valFromTargetOrValue;
         self.val = 'target.' + valFromTargetOrValue;
         if (self.on === undefined)
-            self.on = camelToLisp(valFromTargetOrValue) + '-changed';
+            self.on = ce.toLisp(valFromTargetOrValue) + '-changed';
     }
     ;
     setAliases(self) {
@@ -144,7 +145,7 @@ const stringProp = {
     type: 'String'
 };
 const filters = ['isC', 'disabled'];
-export const PassDown = define({
+export const PassDown = ce.def({
     config: {
         tagName: 'pass-down',
         propDefaults: {

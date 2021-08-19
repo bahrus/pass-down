@@ -1,4 +1,4 @@
-import {define, Action, PropInfo, camelToLisp} from 'trans-render/lib/define.js';
+import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
 import {NotifyMixin, INotifyPropInfo} from 'trans-render/lib/mixins/notify.js';
 import {PassDownProps, IPassDown, IPassDownWithIPDMixin} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
@@ -6,6 +6,7 @@ import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {PDMixin, addDefaultMutObs} from './PDMixin.js';
 
 type pd = IPassDown;
+const ce = new CE<IPassDownWithIPDMixin, INotifyPropInfo>();
 class PassDownCore extends HTMLElement implements IPassDown {
 
     connectedCallback(){
@@ -134,7 +135,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
         const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget!;
         self.initVal = valFromTargetOrValue;
         self.val = 'target.' + valFromTargetOrValue;
-        if(self.on === undefined) self.on = camelToLisp(valFromTargetOrValue) + '-changed';
+        if(self.on === undefined) self.on = ce.toLisp(valFromTargetOrValue) + '-changed';
     };
     
     setAliases(self: pd){
@@ -155,7 +156,7 @@ const stringProp: PropInfo = {
 
 const filters = ['isC', 'disabled'];
 
-export const PassDown: {new(): IPassDownWithIPDMixin} = define<IPassDownWithIPDMixin, INotifyPropInfo>({
+export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
     config: {
         tagName: 'pass-down',
         propDefaults:{
