@@ -75,7 +75,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
         return elementToObserve;
     }
 
-    attachEventHandler(self: pd) {
+    attachEventHandler(self: this) {
         const {on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches} = self;
         const previousElementToObserve = _wr !== undefined ? _wr.deref() : undefined; //TODO switch to ?. when bundlephobia catches up to the 2020's.
         self._wr = undefined;
@@ -103,7 +103,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
         addDefaultMutObs(self);
     };
 
-    onInitVal(self: pd) {
+    onInitVal(self: this) {
         const {observedElement, initEvent, parseValAs, cloneVal} = self;
         if(observedElement === null){
             console.error('404');
@@ -117,7 +117,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
         }
     };
 
-    doEvent(self: pd) {
+    doEvent(self: this) {
         const {lastEvent, noblock, valFromEvent} = self;
         self.setAttribute('status', '🌩️');
         if(!noblock) lastEvent!.stopPropagation();
@@ -129,7 +129,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
     }
 
 
-    onValFromTarget(self: pd){
+    onValFromTarget(self: this){
         const {valFromTarget} = self;
         if(valFromTarget === undefined) return;
         const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget!;
@@ -138,7 +138,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
         if(self.on === undefined) self.on = ce.toLisp(valFromTargetOrValue) + '-changed';
     };
     
-    setAliases(self: pd){
+    setAliases(self: this){
         self.valFromTarget = self.vft;
     }
 }
