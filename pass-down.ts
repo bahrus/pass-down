@@ -200,11 +200,10 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = define<IPassDownWithIPDM
             },{
                 do: 'onValFromTarget',
                 upon: ['valFromTarget', 'isC', 'enabled'],
-                riff: ['isC', 'valFromTarget', 'enabled'],
+                riff: ['isC', 'enabled'],
             },{
                 do: 'setAliases',
                 upon: ['vft'],
-                riff: ['vft']
             }
             
         ]
