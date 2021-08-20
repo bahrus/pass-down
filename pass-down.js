@@ -39,7 +39,7 @@ class PassDownCore extends HTMLElement {
                 valToPass = attribVal;
             }
         }
-        if (this.parseValAs !== undefined) {
+        if (this.parseValAs) {
             valToPass = convert(valToPass, this.parseValAs);
         }
         return this.cloneVal ? structuralClone(valToPass) : valToPass;
@@ -54,9 +54,9 @@ class PassDownCore extends HTMLElement {
             return element;
         }
         let elementToObserve;
-        if (this.observeClosest !== undefined) {
+        if (this.observeClosest) {
             elementToObserve = this.closest(this.observeClosest);
-            if (elementToObserve !== null && this.observe !== undefined) {
+            if (elementToObserve !== null && this.observe) {
                 elementToObserve = getPreviousSib(elementToObserve.previousElementSibling || elementToObserve.parentElement, this.observe);
             }
         }
@@ -105,7 +105,7 @@ class PassDownCore extends HTMLElement {
             return;
         }
         const foundInitVal = setInitVal({ parseValAs, cloneVal }, self, observedElement);
-        if (!foundInitVal && initEvent !== undefined) {
+        if (!foundInitVal && initEvent) {
             observedElement.addEventListener(initEvent, e => {
                 setInitVal({ parseValAs, cloneVal }, self, observedElement);
             }, { once: true });
@@ -125,8 +125,6 @@ class PassDownCore extends HTMLElement {
     }
     onValFromTarget(self) {
         const { valFromTarget } = self;
-        if (valFromTarget === undefined)
-            return;
         const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget;
         self.initVal = valFromTargetOrValue;
         self.val = 'target.' + valFromTargetOrValue;
@@ -162,40 +160,40 @@ export const PassDown = ce.def({
             disabled: {
                 notify: { toggleTo: 'enabled' }
             },
-            initVal: stringProp, initEvent: stringProp, parseValAs: stringProp, on: stringProp, observe: stringProp, ifTargetMatches: stringProp,
+            on: stringProp, initEvent: stringProp, parseValAs: stringProp, observe: stringProp, initVal: stringProp, observe: stringProp, ifTargetMatches: stringProp,
             val: stringProp, propFromTarget: stringProp, to: stringProp, careOf: stringProp, from: stringProp, prop: stringProp, as: stringProp,
             mutateEvents: stringProp, valFromTarget: stringProp, vft: stringProp,
         },
-        actions: [
-            {
-                do: 'onInitVal',
+        actions: {
+            onInitVal: {
                 upon: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
                 ...defaultFilters
-            }, {
-                do: 'attachEventHandler',
+            },
+            attachEventHandler: {
                 upon: ['on', 'observe', 'ifTargetMatches', 'isC', 'enabled'],
                 riff: ['isC', 'on', 'enabled'],
-            }, {
-                do: 'doEvent',
+            },
+            doEvent: {
                 upon: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'enabled'],
                 riff: ['isC', 'lastEvent', 'enabled'],
-            }, {
-                do: 'handleValChange',
+            },
+            handleValChange: {
                 upon: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
                 riff: ['isC', 'lastVal', 'enabled'],
-            }, {
-                do: 'attachMutationEventHandler',
+            },
+            attachMutationEventHandler: {
                 upon: ['mutateEvents', 'isC', 'enabled'],
-                riff: ['isC', 'mutateEvents', 'enabled'],
-            }, {
-                do: 'onValFromTarget',
+                riff: '"'
+            },
+            onValFromTarget: {
                 upon: ['valFromTarget', 'isC', 'enabled'],
-                riff: ['isC', 'enabled'],
-            }, {
-                do: 'setAliases',
+                riff: '"'
+            },
+            setAliases: {
                 upon: ['vft'],
+                riff: '"',
             }
-        ]
+        }
     },
     superclass: PassDownCore,
     mixins: [NotifyMixin, PDMixin]
@@ -204,7 +202,7 @@ function setInitVal({ parseValAs, cloneVal }, self, elementToObserve) {
     let val = self.parseInitVal(elementToObserve);
     if (val === undefined)
         return false;
-    if (parseValAs !== undefined)
+    if (parseValAs)
         val = convert(val, parseValAs);
     if (cloneVal)
         val = structuralClone(val);

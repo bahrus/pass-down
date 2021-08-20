@@ -125,7 +125,7 @@ export interface PassDownProps extends PDToFrom{
     */
     on?: string;
 
-    parseValAs?: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy';  
+    parseValAs?: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | '';  
 
     previousOn?: string;
 
