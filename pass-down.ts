@@ -1,13 +1,13 @@
 import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
 import {NotifyMixin, INotifyPropInfo} from 'trans-render/lib/mixins/notify.js';
-import {PassDownProps, IPassDown, IPassDownWithIPDMixin, PassDownActions} from './types.js';
+import {PassDownProps, IPassDown, IPassDownWithIPDMixin, PassDownActions, PassDownCompositeActions} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {PDMixin, addDefaultMutObs} from './PDMixin.js';
 
 type pd = IPassDown;
-const ce = new CE<IPassDownWithIPDMixin, INotifyPropInfo, PassDownActions>();
-class PassDownCore extends HTMLElement implements IPassDown {
+const ce = new CE<IPassDownWithIPDMixin, INotifyPropInfo, PassDownCompositeActions>();
+class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
 
     connectedCallback(){
         this.style.display = 'none';
@@ -129,7 +129,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
     }
 
 
-    onValFromTarget(self: this){
+    setValFromTarget(self: this){
         const {valFromTarget} = self;
         const initVal = valFromTarget === '' ? 'value' : valFromTarget!;
         const val = 'target.' + initVal;
@@ -196,9 +196,8 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
             attachMutationEventHandler:{
                 ifAllOf: ['mutateEvents', 'isC', 'enabled'],
             },
-            onValFromTarget:{
+            setValFromTarget:{
                 ifAllOf: ['valFromTarget', 'isC', 'enabled'],
-                merge: true,
             },
             setAliases: {
                 ifAllOf: ['vft'],

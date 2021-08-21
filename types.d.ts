@@ -154,11 +154,9 @@ export interface PassDownProps extends PDToFrom{
 export interface PassDownActions {
     doInit(self: this): void;
     doEvent(self: this): void;
-    onValFromTarget(self: this): void;
+    setValFromTarget(self: this): void;
     setAliases(self: this): void;
     attachEventHandler(self: this): void;
-    handleValChange(self: this): void;
-    attachMutationEventHandler(self: this): void;
 }
 
 export interface PassDown extends PassDownProps{
@@ -187,10 +185,14 @@ export interface PassDownExtProps extends PassDownProps{
 
 }
 
-export interface IPDMixin extends PassDownProps{
+export interface PDMixinActions {
     handleValChange(self: IPDMixin): void;
     attachMutationEventHandler(self: IPDMixin): void;
 }
+
+export interface IPDMixin extends PassDownProps, PDMixinActions{}
+
+export interface PassDownCompositeActions extends PDMixinActions, PassDownActions{}
 
 type pd = IPassDown;
 export interface IPassDown extends PassDownProps{
@@ -200,7 +202,7 @@ export interface IPassDown extends PassDownProps{
     parseInitVal(elementToObserve: Element): any;
     setAliases(self: pd): void;
     doInit(self: pd): void;
-    onValFromTarget(self: pd): void;
+    setValFromTarget(self: pd): void;
     valFromEvent(e: Event): void;
     _wr: WeakRef<Element> | undefined; //TODO:  make private?
 }

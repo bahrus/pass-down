@@ -123,7 +123,7 @@ class PassDownCore extends HTMLElement {
         delete self.lastEvent;
         self.setAttribute('status', '👂');
     }
-    onValFromTarget(self) {
+    setValFromTarget(self) {
         const { valFromTarget } = self;
         const initVal = valFromTarget === '' ? 'value' : valFromTarget;
         const val = 'target.' + initVal;
@@ -183,7 +183,7 @@ export const PassDown = ce.def({
             attachMutationEventHandler: {
                 ifAllOf: ['mutateEvents', 'isC', 'enabled'],
             },
-            onValFromTarget: {
+            setValFromTarget: {
                 ifAllOf: ['valFromTarget', 'isC', 'enabled'],
                 merge: true,
             },
