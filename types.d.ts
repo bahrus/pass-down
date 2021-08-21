@@ -149,11 +149,15 @@ export interface PassDownProps extends PDToFrom{
 
     vft?: string;
 
-    
+}
 
-    
-
-
+export interface PassDownActions {
+    doInit(self: this): void;
+    doEvent(self: this): void;
+    onValFromTarget(self: this): void;
+    setAliases(self: this): void;
+    attachEventHandler(self: this): void;
+    handleValChange(self: this): void;
 }
 
 export interface PassDown extends PassDownProps{

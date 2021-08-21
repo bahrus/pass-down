@@ -1,12 +1,12 @@
 import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
 import {NotifyMixin, INotifyPropInfo} from 'trans-render/lib/mixins/notify.js';
-import {PassDownProps, IPassDown, IPassDownWithIPDMixin} from './types.js';
+import {PassDownProps, IPassDown, IPassDownWithIPDMixin, PassDownActions} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {PDMixin, addDefaultMutObs} from './PDMixin.js';
 
 type pd = IPassDown;
-const ce = new CE<IPassDownWithIPDMixin, INotifyPropInfo>();
+const ce = new CE<IPassDownWithIPDMixin, INotifyPropInfo, PassDownActions>();
 class PassDownCore extends HTMLElement implements IPassDown {
 
     connectedCallback(){
