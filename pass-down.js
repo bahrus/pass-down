@@ -98,7 +98,7 @@ class PassDownCore extends HTMLElement {
         addDefaultMutObs(self);
     }
     ;
-    onInitVal(self) {
+    doInit(self) {
         const { observedElement, initEvent, parseValAs, cloneVal } = self;
         if (observedElement === null) {
             console.error('404');
@@ -137,7 +137,7 @@ class PassDownCore extends HTMLElement {
     }
 }
 const defaultFilters = {
-    riff: ['isC', 'enabled'],
+    ifAllOf: ['isC', 'enabled'],
 };
 const stringProp = {
     type: 'String'
@@ -160,38 +160,35 @@ export const PassDown = ce.def({
             disabled: {
                 notify: { toggleTo: 'enabled' }
             },
-            on: stringProp, initEvent: stringProp, parseValAs: stringProp, observe: stringProp, initVal: stringProp, observe: stringProp, ifTargetMatches: stringProp,
+            on: stringProp, initEvent: stringProp, parseValAs: stringProp, observe: stringProp, initVal: stringProp, ifTargetMatches: stringProp,
             val: stringProp, propFromTarget: stringProp, to: stringProp, careOf: stringProp, from: stringProp, prop: stringProp, as: stringProp,
             mutateEvents: stringProp, valFromTarget: stringProp, vft: stringProp,
         },
         actions: {
-            onInitVal: {
-                upon: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
+            doInit: {
+                ifAllOf: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
                 ...defaultFilters
             },
             attachEventHandler: {
-                upon: ['on', 'observe', 'ifTargetMatches', 'isC', 'enabled'],
-                riff: ['isC', 'on', 'enabled'],
+                ifAnyOf: ['on', 'observe', 'ifTargetMatches', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'on', 'enabled'],
             },
             doEvent: {
-                upon: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'enabled'],
-                riff: ['isC', 'lastEvent', 'enabled'],
+                ifAnyOf: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'lastEvent', 'enabled'],
             },
             handleValChange: {
-                upon: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
-                riff: ['isC', 'lastVal', 'enabled'],
+                ifAnyOf: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'lastVal', 'enabled'],
             },
             attachMutationEventHandler: {
-                upon: ['mutateEvents', 'isC', 'enabled'],
-                riff: '"'
+                ifAllOf: ['mutateEvents', 'isC', 'enabled'],
             },
             onValFromTarget: {
-                upon: ['valFromTarget', 'isC', 'enabled'],
-                riff: '"'
+                ifAllOf: ['valFromTarget', 'isC', 'enabled'],
             },
             setAliases: {
-                upon: ['vft'],
-                riff: '"',
+                ifAllOf: ['vft'],
             }
         }
     },

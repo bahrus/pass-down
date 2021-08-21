@@ -194,7 +194,7 @@ export interface IPassDown extends PassDownProps{
     handleEvent: (e: Event) => void;
     parseInitVal(elementToObserve: Element): any;
     setAliases(self: pd): void;
-    onInitVal(self: pd): void;
+    doInit(self: pd): void;
     onValFromTarget(self: pd): void;
     valFromEvent(e: Event): void;
     _wr: WeakRef<Element> | undefined; //TODO:  make private?

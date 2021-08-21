@@ -4,7 +4,6 @@ import {PassDownProps, IPassDown, IPassDownWithIPDMixin} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {PDMixin, addDefaultMutObs} from './PDMixin.js';
-import { def } from '../trans-render/lib/def.js';
 
 type pd = IPassDown;
 const ce = new CE<IPassDownWithIPDMixin, INotifyPropInfo>();
@@ -104,7 +103,7 @@ class PassDownCore extends HTMLElement implements IPassDown {
         addDefaultMutObs(self);
     };
 
-    onInitVal(self: this) {
+    doInit(self: this) {
         const {observedElement, initEvent, parseValAs, cloneVal} = self;
         if(observedElement === null){
             console.error('404');
@@ -147,7 +146,7 @@ interface PassDownCore extends PassDownProps{}
 
 
 const defaultFilters: Partial<Action<pd>> = {
-    riff: ['isC', 'enabled'],
+    ifAllOf: ['isC', 'enabled'],
 }
 
 const stringProp: PropInfo = {
@@ -173,38 +172,35 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
             disabled:{
                 notify:{toggleTo:'enabled'}
             },
-            on:stringProp, initEvent:stringProp, parseValAs: stringProp, observe: stringProp, initVal:stringProp, observe:stringProp, ifTargetMatches:stringProp,
+            on:stringProp, initEvent:stringProp, parseValAs: stringProp, observe: stringProp, initVal:stringProp, ifTargetMatches:stringProp,
             val:stringProp, propFromTarget:stringProp, to:stringProp, careOf:stringProp, from:stringProp, prop:stringProp, as:stringProp,
             mutateEvents:stringProp, valFromTarget:stringProp, vft:stringProp,
         },
         actions:{
-            onInitVal:{
-                upon: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
+            doInit:{
+                ifAllOf: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
                 ...defaultFilters
             },
             attachEventHandler:{
-                upon: ['on', 'observe', 'ifTargetMatches', 'isC', 'enabled'],
-                riff: ['isC', 'on', 'enabled'],
+                ifAnyOf: ['on', 'observe', 'ifTargetMatches', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'on', 'enabled'],
             },
             doEvent:{
-                upon: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'enabled'],
-                riff: ['isC', 'lastEvent', 'enabled'],
+                ifAnyOf: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'lastEvent', 'enabled'],
             },
             handleValChange:{
-                upon: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
-                riff: ['isC', 'lastVal', 'enabled'],
+                ifAnyOf: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'lastVal', 'enabled'],
             },
             attachMutationEventHandler:{
-                upon: ['mutateEvents', 'isC', 'enabled'],
-                riff: '"'
+                ifAllOf: ['mutateEvents', 'isC', 'enabled'],
             },
             onValFromTarget:{
-                upon: ['valFromTarget', 'isC', 'enabled'],
-                riff: '"'
+                ifAllOf: ['valFromTarget', 'isC', 'enabled'],
             },
             setAliases: {
-                upon: ['vft'],
-                riff: '"',
+                ifAllOf: ['vft'],
             }
         }
 

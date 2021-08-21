@@ -28,7 +28,7 @@
   "dependencies": {
     "mut-obs": "0.0.10",
     "on-to-me": "0.0.35",
-    "trans-render": "0.0.324",
+    "trans-render": "0.0.329",
     "jsonpathesm": "0.0.2",
     "xtal-element": "0.0.422"
   },
