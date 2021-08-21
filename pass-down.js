@@ -125,11 +125,10 @@ class PassDownCore extends HTMLElement {
     }
     onValFromTarget(self) {
         const { valFromTarget } = self;
-        const valFromTargetOrValue = valFromTarget === '' ? 'value' : valFromTarget;
-        self.initVal = valFromTargetOrValue;
-        self.val = 'target.' + valFromTargetOrValue;
-        if (self.on === undefined)
-            self.on = ce.toLisp(valFromTargetOrValue) + '-changed';
+        const initVal = valFromTarget === '' ? 'value' : valFromTarget;
+        const val = 'target.' + initVal;
+        const on = self.on === undefined ? ce.toLisp(initVal) + '-changed' : self.on;
+        return { on, val, initVal };
     }
     ;
     setAliases(self) {
@@ -186,6 +185,7 @@ export const PassDown = ce.def({
             },
             onValFromTarget: {
                 ifAllOf: ['valFromTarget', 'isC', 'enabled'],
+                merge: true,
             },
             setAliases: {
                 ifAllOf: ['vft'],

@@ -158,6 +158,7 @@ export interface PassDownActions {
     setAliases(self: this): void;
     attachEventHandler(self: this): void;
     handleValChange(self: this): void;
+    attachMutationEventHandler(self: this): void;
 }
 
 export interface PassDown extends PassDownProps{

@@ -9,7 +9,7 @@ const p_std = 'p_std';
 
 export const PDMixin = (superclass: {new(): IPDMixin}) => class extends superclass implements IPDMixin {
 
-    handleValChange(self: IPDMixin){
+    handleValChange(self: this){
         const {lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log} = self;
         if(debug){
             debugger;
@@ -25,7 +25,7 @@ export const PDMixin = (superclass: {new(): IPDMixin}) => class extends supercla
         
     }
 
-    attachMutationEventHandler(self: IPDMixin){
+    attachMutationEventHandler(self: this){
         const {parentElement, mutateEvents} = self;
         if(!parentElement) return;
         for(const event of mutateEvents!){
