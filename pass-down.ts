@@ -6,7 +6,7 @@ import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {PDMixin, addDefaultMutObs} from './PDMixin.js';
 
 type pd = IPassDown;
-const ce = new CE<IPassDownWithIPDMixin, INotifyPropInfo, PassDownCompositeActions>();
+const ce = new CE<IPassDownWithIPDMixin, PassDownCompositeActions, INotifyPropInfo>();
 class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
 
     connectedCallback(){
@@ -145,9 +145,9 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
 interface PassDownCore extends PassDownProps{}
 
 
-const defaultFilters: Partial<Action<pd>> = {
-    ifAllOf: ['isC', 'enabled'],
-}
+// const defaultFilters: Partial<Action<pd>> = {
+//     ifAllOf: ['isC', 'enabled'],
+// }
 
 const stringProp: PropInfo = {
     type: 'String'
@@ -179,19 +179,20 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
         actions:{
             doInit:{
                 ifAllOf: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
-                ...defaultFilters
             },
             attachEventHandler:{
-                ifAnyOf: ['on', 'observe', 'ifTargetMatches', 'isC', 'enabled'],
                 ifAllOf: ['isC', 'on', 'enabled'],
+                andAlsoActIfKeyIn: ['observe', 'ifTargetMatches', 'isC'],
+                
             },
             doEvent:{
-                ifAnyOf: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'enabled'],
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],
+                andAlsoActIfKeyIn: ['val', 'parseValAs', 'noblock'],
             },
             handleValChange:{
-                ifAnyOf: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
                 ifAllOf: ['isC', 'lastVal', 'enabled'],
+                andAlsoActIfKeyIn: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
+                
             },
             attachMutationEventHandler:{
                 ifAllOf: ['mutateEvents', 'isC', 'enabled'],

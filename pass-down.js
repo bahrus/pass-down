@@ -135,9 +135,9 @@ class PassDownCore extends HTMLElement {
         self.valFromTarget = self.vft;
     }
 }
-const defaultFilters = {
-    ifAllOf: ['isC', 'enabled'],
-};
+// const defaultFilters: Partial<Action<pd>> = {
+//     ifAllOf: ['isC', 'enabled'],
+// }
 const stringProp = {
     type: 'String'
 };
@@ -166,26 +166,24 @@ export const PassDown = ce.def({
         actions: {
             doInit: {
                 ifAllOf: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
-                ...defaultFilters
             },
             attachEventHandler: {
-                ifAnyOf: ['on', 'observe', 'ifTargetMatches', 'isC', 'enabled'],
                 ifAllOf: ['isC', 'on', 'enabled'],
+                andAlsoActIfKeyIn: ['observe', 'ifTargetMatches', 'isC'],
             },
             doEvent: {
-                ifAnyOf: ['val', 'parseValAs', 'noblock', 'lastEvent', 'isC', 'enabled'],
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],
+                andAlsoActIfKeyIn: ['val', 'parseValAs', 'noblock'],
             },
             handleValChange: {
-                ifAnyOf: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
                 ifAllOf: ['isC', 'lastVal', 'enabled'],
+                andAlsoActIfKeyIn: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
             },
             attachMutationEventHandler: {
                 ifAllOf: ['mutateEvents', 'isC', 'enabled'],
             },
             setValFromTarget: {
                 ifAllOf: ['valFromTarget', 'isC', 'enabled'],
-                merge: true,
             },
             setAliases: {
                 ifAllOf: ['vft'],
