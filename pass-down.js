@@ -8,6 +8,20 @@ class PassDownCore extends HTMLElement {
     connectedCallback() {
         this.style.display = 'none';
     }
+    doInit(self) {
+        const { observedElement, initEvent, parseValAs, cloneVal } = self;
+        if (observedElement === null) {
+            console.error('404');
+            return;
+        }
+        const foundInitVal = setInitVal({ parseValAs, cloneVal }, self, observedElement);
+        if (!foundInitVal && initEvent) {
+            observedElement.addEventListener(initEvent, e => {
+                setInitVal({ parseValAs, cloneVal }, self, observedElement);
+            }, { once: true });
+        }
+    }
+    ;
     //https://web.dev/javascript-this/
     handleEvent = (e) => {
         if (this.ifTargetMatches !== undefined) {
@@ -98,20 +112,6 @@ class PassDownCore extends HTMLElement {
         addDefaultMutObs(self);
     }
     ;
-    doInit(self) {
-        const { observedElement, initEvent, parseValAs, cloneVal } = self;
-        if (observedElement === null) {
-            console.error('404');
-            return;
-        }
-        const foundInitVal = setInitVal({ parseValAs, cloneVal }, self, observedElement);
-        if (!foundInitVal && initEvent) {
-            observedElement.addEventListener(initEvent, e => {
-                setInitVal({ parseValAs, cloneVal }, self, observedElement);
-            }, { once: true });
-        }
-    }
-    ;
     doEvent(self) {
         const { lastEvent, noblock, valFromEvent } = self;
         self.setAttribute('status', '🌩️');
@@ -165,7 +165,8 @@ export const PassDown = ce.def({
         },
         actions: {
             doInit: {
-                ifAllOf: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
+                ifAllOf: ['initVal', 'isC', 'enabled'],
+                andAlsoActIfKeyIn: ['initEvent', 'parseValAs', 'cloneVal'],
             },
             attachEventHandler: {
                 ifAllOf: ['isC', 'on', 'enabled'],
@@ -177,7 +178,7 @@ export const PassDown = ce.def({
             },
             handleValChange: {
                 ifAllOf: ['isC', 'lastVal', 'enabled'],
-                andAlsoActIfKeyIn: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
+                andAlsoActIfKeyIn: ['debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
             },
             attachMutationEventHandler: {
                 ifAllOf: ['mutateEvents', 'isC', 'enabled'],

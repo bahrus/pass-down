@@ -13,6 +13,20 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
         this.style.display = 'none';
     }
 
+    doInit(self: this) {
+        const {observedElement, initEvent, parseValAs, cloneVal} = self;
+        if(observedElement === null){
+            console.error('404');
+            return;
+        }
+        const foundInitVal = setInitVal({parseValAs, cloneVal}, self, observedElement!);
+        if(!foundInitVal && initEvent){
+            observedElement!.addEventListener(initEvent, e => {
+                setInitVal({parseValAs, cloneVal}, self, observedElement!);
+            }, {once: true});
+        }
+    };
+
     //https://web.dev/javascript-this/
     handleEvent = (e: Event) => {
         if(this.ifTargetMatches !== undefined){
@@ -103,19 +117,7 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
         addDefaultMutObs(self);
     };
 
-    doInit(self: this) {
-        const {observedElement, initEvent, parseValAs, cloneVal} = self;
-        if(observedElement === null){
-            console.error('404');
-            return;
-        }
-        const foundInitVal = setInitVal({parseValAs, cloneVal}, self, observedElement!);
-        if(!foundInitVal && initEvent){
-            observedElement!.addEventListener(initEvent, e => {
-                setInitVal({parseValAs, cloneVal}, self, observedElement!);
-            }, {once: true});
-        }
-    };
+
 
     doEvent(self: this) {
         const {lastEvent, noblock, valFromEvent} = self;
@@ -178,7 +180,8 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
         },
         actions:{
             doInit:{
-                ifAllOf: ['initVal', 'initEvent', 'parseValAs', 'cloneVal', 'isC', 'enabled'],
+                ifAllOf: ['initVal', 'isC', 'enabled'],
+                andAlsoActIfKeyIn: ['initEvent', 'parseValAs', 'cloneVal'],
             },
             attachEventHandler:{
                 ifAllOf: ['isC', 'on', 'enabled'],
@@ -191,7 +194,7 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
             },
             handleValChange:{
                 ifAllOf: ['isC', 'lastVal', 'enabled'],
-                andAlsoActIfKeyIn: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
+                andAlsoActIfKeyIn: ['debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
                 
             },
             attachMutationEventHandler:{
