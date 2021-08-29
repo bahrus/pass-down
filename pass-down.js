@@ -167,19 +167,19 @@ export const PassDown = ce.def({
         actions: {
             doInit: {
                 ifAllOf: ['initVal', 'isC', 'enabled'],
-                andAlsoActIfKeyIn: ['initEvent', 'parseValAs', 'cloneVal'],
+                ifKeyIn: ['initEvent', 'parseValAs', 'cloneVal'],
             },
             attachEventHandler: {
                 ifAllOf: ['isC', 'on', 'enabled'],
-                andAlsoActIfKeyIn: ['observe', 'ifTargetMatches', 'isC'],
+                ifKeyIn: ['observe', 'ifTargetMatches', 'isC'],
             },
             doEvent: {
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],
-                andAlsoActIfKeyIn: ['val', 'parseValAs', 'noblock'],
+                ifKeyIn: ['val', 'parseValAs', 'noblock'],
             },
             handleValChange: {
                 ifAllOf: ['isC', 'enabled'],
-                andAlsoActIfKeyIn: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
+                ifKeyIn: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
             },
             attachMutationEventHandler: {
                 ifAllOf: ['mutateEvents', 'isC', 'enabled'],
