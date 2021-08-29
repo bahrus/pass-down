@@ -13,19 +13,18 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
         this.style.display = 'none';
     }
 
-    doInit(self: this) {
-        const {observedElement, initEvent, parseValAs, cloneVal} = self;
+    doInit = ({observedElement, parseValAs, cloneVal, initEvent}: this) => {
         if(observedElement === null){
             console.error('404');
             return;
         }
-        const foundInitVal = setInitVal({parseValAs, cloneVal}, self, observedElement!);
+        const foundInitVal = setInitVal({parseValAs, cloneVal}, this, observedElement!);
         if(!foundInitVal && initEvent){
             observedElement!.addEventListener(initEvent, e => {
-                setInitVal({parseValAs, cloneVal}, self, observedElement!);
+                setInitVal({parseValAs, cloneVal}, this, observedElement!);
             }, {once: true});
         }
-    };
+    }
 
     //https://web.dev/javascript-this/
     handleEvent = (e: Event) => {
@@ -174,6 +173,9 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
             disabled:{
                 notify:{toggleTo:'enabled'}
             },
+            lastVal:{
+                dry: false,
+            },
             on:stringProp, initEvent:stringProp, parseValAs: stringProp, observe: stringProp, initVal:stringProp, ifTargetMatches:stringProp,
             val:stringProp, propFromTarget:stringProp, to:stringProp, careOf:stringProp, from:stringProp, prop:stringProp, as:stringProp,
             mutateEvents:stringProp, valFromTarget:stringProp, vft:stringProp,
@@ -193,8 +195,8 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
                 andAlsoActIfKeyIn: ['val', 'parseValAs', 'noblock'],
             },
             handleValChange:{
-                ifAllOf: ['isC', 'lastVal', 'enabled'],
-                andAlsoActIfKeyIn: ['debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'enabled'],
+                andAlsoActIfKeyIn: ['lastVal', 'debug', 'log', 'm', 'propFromTarget', 'to', 'careOf', 'from', 'prop', 'as', 'isC', 'enabled'],
                 
             },
             attachMutationEventHandler:{
