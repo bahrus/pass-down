@@ -5,10 +5,7 @@ import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { PDMixin, addDefaultMutObs } from './PDMixin.js';
 const ce = new CE();
 class PassDownCore extends HTMLElement {
-    connectedCallback() {
-        this.style.display = 'none';
-    }
-    doInit = ({ observedElement, parseValAs, cloneVal, initEvent }) => {
+    doInit({ observedElement, parseValAs, cloneVal, initEvent }) {
         if (observedElement === null) {
             console.error('404');
             return;
@@ -19,7 +16,7 @@ class PassDownCore extends HTMLElement {
                 setInitVal({ parseValAs, cloneVal }, this, observedElement);
             }, { once: true });
         }
-    };
+    }
     //https://web.dev/javascript-this/
     handleEvent = (e) => {
         if (this.ifTargetMatches !== undefined) {
@@ -80,11 +77,10 @@ class PassDownCore extends HTMLElement {
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
-    attachEventHandler(self) {
-        const { on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches } = self;
-        const previousElementToObserve = _wr !== undefined ? _wr.deref() : undefined; //TODO switch to ?. when bundlephobia catches up to the 2020's.
-        self._wr = undefined;
-        const elementToObserve = self.observedElement;
+    attachEventHandler({ on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches }) {
+        const previousElementToObserve = this._wr?.deref();
+        this._wr = undefined;
+        const elementToObserve = this.observedElement;
         if (!elementToObserve)
             throw "Could not locate element to observe.";
         let doNudge = previousElementToObserve !== elementToObserve;
@@ -105,27 +101,25 @@ class PassDownCore extends HTMLElement {
                 nudge(elementToObserve);
             }
         }
-        self.setAttribute('status', '👂');
-        self.previousOn = on;
-        addDefaultMutObs(self);
+        this.setAttribute('status', '👂');
+        this.previousOn = on;
+        addDefaultMutObs(this);
     }
     ;
-    doEvent(self) {
-        const { lastEvent, noblock, valFromEvent } = self;
-        self.setAttribute('status', '🌩️');
+    doEvent({ lastEvent, noblock, valFromEvent }) {
+        this.setAttribute('status', '🌩️');
         if (!noblock)
             lastEvent.stopPropagation();
         let valToPass = valFromEvent(lastEvent);
-        self.lastVal = valToPass;
+        this.lastVal = valToPass;
         //holding on to lastEvent could introduce memory leak
-        delete self.lastEvent;
-        self.setAttribute('status', '👂');
+        this.lastEvent = undefined; //wtf? why does't delete work?
+        this.setAttribute('status', '👂');
     }
-    setValFromTarget(self) {
-        const { valFromTarget } = self;
+    setValFromTarget({ valFromTarget }) {
         const initVal = valFromTarget === '' ? 'value' : valFromTarget;
         const val = 'target.' + initVal;
-        const on = self.on === undefined ? ce.toLisp(initVal) + '-changed' : self.on;
+        const on = this.on === undefined ? ce.toLisp(initVal) + '-changed' : this.on;
         return { on, val, initVal };
     }
     ;
@@ -190,6 +184,9 @@ export const PassDown = ce.def({
             setAliases: {
                 ifAllOf: ['vft'],
             }
+        },
+        style: {
+            display: 'none'
         }
     },
     superclass: PassDownCore,

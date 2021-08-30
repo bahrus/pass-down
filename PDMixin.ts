@@ -9,29 +9,29 @@ const p_std = 'p_std';
 
 export const PDMixin = (superclass: {new(): IPDMixin}) => class extends superclass implements IPDMixin {
 
-    handleValChange(self: this){
-        const {lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log} = self;
+    handleValChange({lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log}: this){
+        if(lastVal === undefined) return; //do not use falsy gatekeeper for this!
         if(debug){
             debugger;
         }else if(log){
+            const self = this;
             console.log('passVal', {lastVal, self});
         }
         let dynProp = prop;
         if(propFromTarget !== undefined){
-            dynProp = getProp(observedElement, propFromTarget.split('.'), self);
+            dynProp = getProp(observedElement, propFromTarget.split('.'), this);
         }
-        const matches = passVal(lastVal, self, to, careOf, m, from, dynProp, as);
-        self.setAttribute('matches', '' + matches.length);
+        const matches = passVal(lastVal, this, to, careOf, m, from, dynProp, as);
+        this.setAttribute('matches', '' + matches.length);
         
     }
 
-    attachMutationEventHandler(self: this){
-        const {parentElement, mutateEvents} = self;
+    attachMutationEventHandler({parentElement, mutateEvents}: this){
         if(!parentElement) return;
         for(const event of mutateEvents!){
             parentElement.addEventListener(event, e => {
-                if(self.lastVal !== undefined){
-                    self.handleValChange(self);
+                if(this.lastVal !== undefined){
+                    this.handleValChange(this);
                 }
             })
         }
