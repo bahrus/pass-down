@@ -63,7 +63,10 @@ class PassDownCore extends HTMLElement {
             return element;
         }
         let elementToObserve;
-        if (this.observeClosest) {
+        if (this.observeHost) {
+            elementToObserve = this.getRootNode().host;
+        }
+        else if (this.observeClosest) {
             elementToObserve = this.closest(this.observeClosest);
             if (elementToObserve !== null && this.observe) {
                 elementToObserve = getPreviousSib(elementToObserve.previousElementSibling || elementToObserve.parentElement, this.observe);
@@ -77,7 +80,7 @@ class PassDownCore extends HTMLElement {
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
-    attachEventHandler({ on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches }) {
+    attachEventHandler({ on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches, addMutObs }) {
         const previousElementToObserve = this._wr?.deref();
         this._wr = undefined;
         const elementToObserve = this.observedElement;
@@ -103,7 +106,9 @@ class PassDownCore extends HTMLElement {
         }
         this.setAttribute('status', '👂');
         this.previousOn = on;
-        addDefaultMutObs(this);
+        if (addMutObs) {
+            addDefaultMutObs(this);
+        }
     }
     ;
     doEvent({ lastEvent, noblock, valFromEvent }) {
@@ -146,6 +151,8 @@ export const PassDown = ce.def({
             m: Infinity,
             cloneVal: false,
             noblock: false,
+            observeHost: false,
+            addMutObs: false,
         },
         propInfo: {
             disabled: {
@@ -165,7 +172,7 @@ export const PassDown = ce.def({
             },
             attachEventHandler: {
                 ifAllOf: ['isC', 'on', 'enabled'],
-                ifKeyIn: ['observe', 'ifTargetMatches', 'isC'],
+                ifKeyIn: ['observe', 'ifTargetMatches', 'isC', 'observeHost'],
             },
             doEvent: {
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],

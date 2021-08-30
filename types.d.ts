@@ -117,6 +117,10 @@ export interface PassDownProps extends PDToFrom{
 
     observeClosest?: string;
 
+    observeHost?: boolean;
+
+    addMutObs?: boolean;
+
     observedElement?: Element | null;
 
     /**

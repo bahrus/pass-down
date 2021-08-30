@@ -72,7 +72,10 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
             return element;
         }
         let elementToObserve: Element | null;
-        if(this.observeClosest){
+        if(this.observeHost){
+            elementToObserve = (<any>this.getRootNode()).host;
+        }
+        else if(this.observeClosest){
             elementToObserve = this.closest(this.observeClosest);
             if(elementToObserve !== null && this.observe){
                 elementToObserve = getPreviousSib(elementToObserve.previousElementSibling || elementToObserve.parentElement as HTMLElement, this.observe) as Element;
@@ -85,7 +88,7 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
         return elementToObserve;
     }
 
-    attachEventHandler({on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches}: this) {
+    attachEventHandler({on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches, addMutObs}: this) {
         const previousElementToObserve = this._wr?.deref();
         this._wr = undefined;
         const elementToObserve = this.observedElement;
@@ -109,7 +112,10 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
         }
         this.setAttribute('status', '👂');
         this.previousOn = on;
-        addDefaultMutObs(this);
+        if(addMutObs){
+            addDefaultMutObs(this);
+
+        }
     };
 
 
@@ -162,6 +168,8 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
             m: Infinity,
             cloneVal: false,
             noblock: false,
+            observeHost: false,
+            addMutObs: false,
         },
         propInfo:{
             disabled:{
@@ -181,8 +189,7 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
             },
             attachEventHandler:{
                 ifAllOf: ['isC', 'on', 'enabled'],
-                ifKeyIn: ['observe', 'ifTargetMatches', 'isC'],
-                
+                ifKeyIn: ['observe', 'ifTargetMatches', 'isC', 'observeHost'],
             },
             doEvent:{
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],
