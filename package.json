@@ -28,7 +28,7 @@
   "dependencies": {
     "mut-obs": "0.0.10",
     "on-to-me": "0.0.35",
-    "trans-render": "0.0.357",
+    "trans-render": "0.0.369",
     "jsonpathesm": "0.0.2"
   },
   "devDependencies": {
@@ -40,7 +40,6 @@
   "scripts": {
     "test": "node test/test.js",
     "package-check": "package-check",
-    "pub": "git commit -m \"...\" && git push && npm version patch && npm publish && git push",
     "serve": "node node_modules/xtal-test/serve.js",
     "doc": "custom-elements-manifest analyze"
   },
