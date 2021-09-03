@@ -3,6 +3,7 @@ import {jsonPath} from 'jsonpathesm/JSONPath.js';
 import {xc, PropDef, PropDefMap} from 'xtal-element/lib/XtalCore.js';
 import {PassDownExtProps, PassDownProps} from './types.d.js';
 import {getProp} from 'on-to-me/on-to-me.js';
+import {PDMixin, addDefaultMutObs} from './PDMixin.js';
 
 /**
  * @element p-d-x

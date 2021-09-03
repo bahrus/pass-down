@@ -3,7 +3,7 @@ import {NotifyMixin, INotifyPropInfo} from 'trans-render/lib/mixins/notify.js';
 import {PassDownProps, IPassDown, IPassDownWithIPDMixin, PassDownActions, PassDownCompositeActions} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
-import {PDMixin, addDefaultMutObs} from './PDMixin.js';
+
 
 type pd = IPassDown;
 const ce = new CE<IPassDownWithIPDMixin, PassDownCompositeActions, INotifyPropInfo>();
@@ -88,7 +88,7 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
         return elementToObserve;
     }
 
-    attachEventHandler({on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches, addMutObs}: this) {
+    attachEventHandler({on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches}: this) {
         const previousElementToObserve = this._wr?.deref();
         this._wr = undefined;
         const elementToObserve = this.observedElement;
@@ -112,10 +112,6 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
         }
         this.setAttribute('status', '👂');
         this.previousOn = on;
-        if(addMutObs){
-            addDefaultMutObs(this);
-
-        }
     };
 
 
@@ -146,10 +142,6 @@ class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
 interface PassDownCore extends PassDownProps{}
 
 
-// const defaultFilters: Partial<Action<pd>> = {
-//     ifAllOf: ['isC', 'enabled'],
-// }
-
 const stringProp: PropInfo = {
     type: 'String'
 };
@@ -169,7 +161,6 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
             cloneVal: false,
             noblock: false,
             observeHost: false,
-            addMutObs: false,
         },
         propInfo:{
             disabled:{
@@ -216,7 +207,7 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
 
     },
     superclass: PassDownCore,
-    mixins: [NotifyMixin, PDMixin]
+    mixins: [NotifyMixin]
 });
 
 

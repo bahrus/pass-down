@@ -119,7 +119,7 @@ export interface PassDownProps extends PDToFrom{
 
     observeHost?: boolean;
 
-    addMutObs?: boolean;
+    
 
     observedElement?: Element | null;
 
@@ -185,6 +185,8 @@ export interface PassDownExtProps extends PassDownProps{
     valFilterScriptPropPath?: string;
 
     closestWeakMapKey?: string;
+
+    addMutObs?: boolean;
 
 
 }

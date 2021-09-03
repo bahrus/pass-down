@@ -132,9 +132,6 @@ class PassDownCore extends HTMLElement {
         self.valFromTarget = self.vft;
     }
 }
-// const defaultFilters: Partial<Action<pd>> = {
-//     ifAllOf: ['isC', 'enabled'],
-// }
 const stringProp = {
     type: 'String'
 };
