@@ -2,7 +2,6 @@ import { CE } from 'trans-render/lib/CE.js';
 import { NotifyMixin } from 'trans-render/lib/mixins/notify.js';
 import { getPreviousSib, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
-import { PDMixin, addDefaultMutObs } from './PDMixin.js';
 const ce = new CE();
 class PassDownCore extends HTMLElement {
     doInit({ observedElement, parseValAs, cloneVal, initEvent }) {
@@ -80,7 +79,7 @@ class PassDownCore extends HTMLElement {
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
-    attachEventHandler({ on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches, addMutObs }) {
+    attachEventHandler({ on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches }) {
         const previousElementToObserve = this._wr?.deref();
         this._wr = undefined;
         const elementToObserve = this.observedElement;
@@ -106,9 +105,6 @@ class PassDownCore extends HTMLElement {
         }
         this.setAttribute('status', '👂');
         this.previousOn = on;
-        if (addMutObs) {
-            addDefaultMutObs(this);
-        }
     }
     ;
     doEvent({ lastEvent, noblock, valFromEvent }) {
@@ -149,7 +145,6 @@ export const PassDown = ce.def({
             cloneVal: false,
             noblock: false,
             observeHost: false,
-            addMutObs: false,
         },
         propInfo: {
             disabled: {
@@ -194,7 +189,7 @@ export const PassDown = ce.def({
         }
     },
     superclass: PassDownCore,
-    mixins: [NotifyMixin, PDMixin]
+    mixins: [NotifyMixin]
 });
 function setInitVal({ parseValAs, cloneVal }, self, elementToObserve) {
     let val = self.parseInitVal(elementToObserve);

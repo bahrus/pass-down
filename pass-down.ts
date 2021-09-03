@@ -1,13 +1,13 @@
 import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
 import {NotifyMixin, INotifyPropInfo} from 'trans-render/lib/mixins/notify.js';
-import {PassDownProps, IPassDown, IPassDownWithIPDMixin, PassDownActions, PassDownCompositeActions} from './types.js';
+import {PassDownProps, PassDownActions, PassDownCompositeActions} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
 
 
-type pd = IPassDown;
-const ce = new CE<IPassDownWithIPDMixin, PassDownCompositeActions, INotifyPropInfo>();
-class PassDownCore extends HTMLElement implements IPassDown, PassDownActions {
+type pd = PassDownActions;
+const ce = new CE<PassDownProps, PassDownCompositeActions, INotifyPropInfo>();
+class PassDownCore extends HTMLElement implements PassDownActions {
 
 
     doInit({observedElement, parseValAs, cloneVal, initEvent}: this){
@@ -148,7 +148,7 @@ const stringProp: PropInfo = {
 
 const filters = ['isC', 'disabled'];
 
-export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
+export const PassDown = ce.def({
     config: {
         tagName: 'pass-down',
         propDefaults:{
@@ -211,7 +211,7 @@ export const PassDown: {new(): IPassDownWithIPDMixin} = ce.def({
 });
 
 
-function setInitVal({parseValAs, cloneVal}: Partial<pd>, self: IPassDown, elementToObserve: Element){
+function setInitVal({parseValAs, cloneVal}: Partial<PassDownProps>, self: PassDownActions & PassDownProps, elementToObserve: Element){
     let val = self.parseInitVal(elementToObserve);
     if(val === undefined) return false;
     if(parseValAs) val = convert(val, parseValAs);

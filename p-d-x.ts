@@ -1,20 +1,51 @@
-import {PD} from './p-d.js';
+import {PassDown} from './pass-down.js';
+import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
+import {PassDownExtProps} from './types';
+import {getProp, passVal} from 'on-to-me/on-to-me.js';
 import {jsonPath} from 'jsonpathesm/JSONPath.js';
-import {xc, PropDef, PropDefMap} from 'xtal-element/lib/XtalCore.js';
-import {PassDownExtProps, PassDownProps} from './types.d.js';
-import {getProp} from 'on-to-me/on-to-me.js';
-import {PDMixin, addDefaultMutObs} from './PDMixin.js';
+import { addDefaultMutObs } from './PDMixin.js';
 
-/**
- * @element p-d-x
- */
-export class PDX extends PD {
-    static is = 'p-d-x';
+export class PDXCore extends PassDown{
+    override handleValChange({lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log}: this){
+        if(lastVal === undefined) return; //do not use falsy gatekeeper for this!
+        if(debug){
+            debugger;
+        }else if(log){
+            const self = this;
+            console.log('passVal', {lastVal, self});
+        }
+        let dynProp = prop;
+        if(propFromTarget !== undefined){
+            dynProp = getProp(observedElement, propFromTarget.split('.'), this);
+        }
+        const matches = passVal(lastVal, this, to, careOf, m, from, dynProp, as);
+        this.setAttribute('matches', '' + matches.length);
+        
+    }
 
-    override parseInitVal(elementToObserve: Element){
-        let filteredVal = super.parseInitVal(elementToObserve);
+    attachMutationEventHandler({parentElement, mutateEvents}: this){
+        if(!parentElement) return;
+        for(const event of mutateEvents!){
+            parentElement.addEventListener(event, e => {
+                if(this.lastVal !== undefined){
+                    this.handleValChange(this);
+                }
+            })
+        }
+    }
+
+    override parseValFromEvent(e: Event){
+        let filteredVal = super.parseValFromEvent(e);
+
         return this.filterVal(filteredVal);
     }
+    override attachEventHandler({addMutObs}: this){
+        super.attachEventHandler(this);
+        if(addMutObs){
+            addDefaultMutObs(this);
+        }
+    }
+
     filterVal(val: any){
         let filteredVal = val;
         if(this.closestWeakMapKey !== undefined && filteredVal instanceof WeakMap){
@@ -48,32 +79,20 @@ export class PDX extends PD {
         }
         return filteredVal;
     }
-    override parseValFromEvent(e: Event){ //TODO:  share code with above
-        let filteredVal = super.parseValFromEvent(e);
-
-        return this.filterVal(filteredVal);
-    }
-
-    connectedCallback(){
-        super.connectedCallback();
-        xc.mergeProps(this, slicedPropDefs);
-    }
 }
-export interface PDX extends PassDownExtProps{}
-const strProp: PropDef = {
-    dry: true,
-    type: String,
-};
-const objProp: PropDef = {
-    dry: true,
-    type: Object
-}
-const propDefMap: PropDefMap<PDX> = {
-    valFilter: strProp,
-    valFilterScriptId: strProp,
-    valFilterScriptPropPath: strProp,
-    closestWeakMapKey: strProp,
-};
-const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
-xc.letThereBeProps(PDX, slicedPropDefs, 'onPropChange');
-xc.define(PDX);
+export interface PDXCore extends PassDownExtProps{}
+
+const ce = new CE<PassDownExtProps>({
+    config: {
+        tagName: 'p-d-x',
+        propDefaults:{
+            valFilter:'',
+            valFilterScriptId:'',
+            addMutObs: false,
+            valFilterScriptPropPath: '',
+            closestWeakMapKey:'',
+            
+        }
+    },
+    superclass: PDXCore
+});

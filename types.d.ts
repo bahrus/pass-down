@@ -153,15 +153,17 @@ export interface PassDownProps extends PDToFrom{
 
     vft?: string;
 
+    _wr: WeakRef<Element> | undefined; //TODO:  make private?
+
 }
 
-export interface PassDownActions {
-    doInit(self: this): void;
-    doEvent(self: this): void;
-    setValFromTarget(self: this): void;
-    setAliases(self: this): void;
-    attachEventHandler(self: this): void;
-}
+// export interface PassDownActions {
+//     doInit(self: this): void;
+//     doEvent(self: this): void;
+//     setValFromTarget(self: this): void;
+//     setAliases(self: this): void;
+//     attachEventHandler(self: this): void;
+// }
 
 export interface PassDown extends PassDownProps{
 
@@ -200,17 +202,18 @@ export interface IPDMixin extends PassDownProps, PDMixinActions{}
 
 export interface PassDownCompositeActions extends PDMixinActions, PassDownActions{}
 
-type pd = IPassDown;
-export interface IPassDown extends PassDownProps{
-    attachEventHandler(self: pd): void;
-    doEvent(self: pd): void;    
+type pd = PassDownActions;
+export interface PassDownActions{
+    attachEventHandler(self: this): void;
+    doEvent(self: this): void;    
     handleEvent: (e: Event) => void;
     parseInitVal(elementToObserve: Element): any;
-    setAliases(self: pd): void;
-    doInit(self: pd): void;
-    setValFromTarget(self: pd): void;
+    setAliases(self: this): void;
+    doInit(self: this): void;
+    setValFromTarget(self: this): void;
     valFromEvent(e: Event): void;
-    _wr: WeakRef<Element> | undefined; //TODO:  make private?
+    parseValFromEvent(e: Event): any;
+    
 }
 
-export interface IPassDownWithIPDMixin extends IPassDown, IPDMixin{}
+// export interface IPassDownWithIPDMixin extends Pass, IPDMixin{}

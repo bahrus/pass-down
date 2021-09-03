@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "ES2017",
+		"target": "ESNext",
 		"module":"ESNext",
 		"sourceMap": false,
 		"experimentalDecorators": false,
@@ -11,7 +11,7 @@
 	"files": [
 		"pass-down.ts",
 		"p-d.ts",
-		"PDMixin.ts"
+		"p-d-x.ts"
 	]
 
 }
