@@ -126,7 +126,22 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         this.setAttribute('status', '👂');
     }
 
-
+    handleValChange({lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log}: this){
+        if(lastVal === undefined) return; //do not use falsy gatekeeper for this!
+        if(debug){
+            debugger;
+        }else if(log){
+            const self = this;
+            console.log('passVal', {lastVal, self});
+        }
+        let dynProp = prop;
+        if(propFromTarget !== undefined){
+            dynProp = getProp(observedElement, propFromTarget.split('.'), this);
+        }
+        const matches = passVal(lastVal, this, to, careOf, m, from, dynProp, as);
+        this.setAttribute('matches', '' + matches.length);
+        
+    }
     setValFromTarget({valFromTarget}: this){
         const initVal = valFromTarget === '' ? 'value' : valFromTarget!;
         const val = 'target.' + initVal;

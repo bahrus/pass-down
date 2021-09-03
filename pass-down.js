@@ -1,6 +1,6 @@
 import { CE } from 'trans-render/lib/CE.js';
 import { NotifyMixin } from 'trans-render/lib/mixins/notify.js';
-import { getPreviousSib, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
+import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
 const ce = new CE();
 class PassDownCore extends HTMLElement {
@@ -116,6 +116,23 @@ class PassDownCore extends HTMLElement {
         //holding on to lastEvent could introduce memory leak
         this.lastEvent = undefined; //wtf? why does't delete work?
         this.setAttribute('status', '👂');
+    }
+    handleValChange({ lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log }) {
+        if (lastVal === undefined)
+            return; //do not use falsy gatekeeper for this!
+        if (debug) {
+            debugger;
+        }
+        else if (log) {
+            const self = this;
+            console.log('passVal', { lastVal, self });
+        }
+        let dynProp = prop;
+        if (propFromTarget !== undefined) {
+            dynProp = getProp(observedElement, propFromTarget.split('.'), this);
+        }
+        const matches = passVal(lastVal, this, to, careOf, m, from, dynProp, as);
+        this.setAttribute('matches', '' + matches.length);
     }
     setValFromTarget({ valFromTarget }) {
         const initVal = valFromTarget === '' ? 'value' : valFromTarget;

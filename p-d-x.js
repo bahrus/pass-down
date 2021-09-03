@@ -1,26 +1,8 @@
 import { PassDown } from './pass-down.js';
 import { CE } from 'trans-render/lib/CE.js';
-import { getProp, passVal } from 'on-to-me/on-to-me.js';
 import { jsonPath } from 'jsonpathesm/JSONPath.js';
 import { addDefaultMutObs } from './PDMixin.js';
 export class PDXCore extends PassDown {
-    handleValChange({ lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log }) {
-        if (lastVal === undefined)
-            return; //do not use falsy gatekeeper for this!
-        if (debug) {
-            debugger;
-        }
-        else if (log) {
-            const self = this;
-            console.log('passVal', { lastVal, self });
-        }
-        let dynProp = prop;
-        if (propFromTarget !== undefined) {
-            dynProp = getProp(observedElement, propFromTarget.split('.'), this);
-        }
-        const matches = passVal(lastVal, this, to, careOf, m, from, dynProp, as);
-        this.setAttribute('matches', '' + matches.length);
-    }
     attachMutationEventHandler({ parentElement, mutateEvents }) {
         if (!parentElement)
             return;

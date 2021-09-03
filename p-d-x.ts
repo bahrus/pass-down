@@ -6,22 +6,7 @@ import {jsonPath} from 'jsonpathesm/JSONPath.js';
 import { addDefaultMutObs } from './PDMixin.js';
 
 export class PDXCore extends PassDown{
-    override handleValChange({lastVal, prop, to, careOf, m, from, as, observedElement, propFromTarget, debug, log}: this){
-        if(lastVal === undefined) return; //do not use falsy gatekeeper for this!
-        if(debug){
-            debugger;
-        }else if(log){
-            const self = this;
-            console.log('passVal', {lastVal, self});
-        }
-        let dynProp = prop;
-        if(propFromTarget !== undefined){
-            dynProp = getProp(observedElement, propFromTarget.split('.'), this);
-        }
-        const matches = passVal(lastVal, this, to, careOf, m, from, dynProp, as);
-        this.setAttribute('matches', '' + matches.length);
-        
-    }
+
 
     attachMutationEventHandler({parentElement, mutateEvents}: this){
         if(!parentElement) return;
