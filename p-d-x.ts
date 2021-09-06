@@ -1,10 +1,12 @@
 import {PassDown} from './pass-down.js';
 import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
 import {PassDownExtProps} from './types';
-import {getProp, passVal} from 'on-to-me/on-to-me.js';
 import {jsonPath} from 'jsonpathesm/JSONPath.js';
-import { addDefaultMutObs } from './PDMixin.js';
-
+import { PDToFrom, PassDownProps, IPDMixin } from './types.js';
+import {passValToMatches, passVal, getProp} from 'on-to-me/on-to-me.js';
+import  'mut-obs/mut-obs.js';
+import {MutObs} from 'mut-obs/mut-obs.js'; //Typescript requires both of these
+const p_std = 'p_std';
 export class PDXCore extends PassDown{
 
 
@@ -81,3 +83,43 @@ const ce = new CE<PassDownExtProps>({
     },
     superclass: PDXCore
 });
+
+export function getFrom(self: PDToFrom){
+    return self.from !== undefined ? self.closest!(self.from) : self
+}
+
+export function isMatchAfterFrom(match: Element, self: PDToFrom){
+    const from = getFrom(self);
+    if(!from) return false;
+    let prev = match.previousElementSibling;
+    while(prev != null){
+        if(prev === from) return true;
+        prev = prev.previousElementSibling;
+    }
+    return false;
+}
+
+export function addDefaultMutObs(self: PDToFrom){
+    const parent = getFrom(self)?.parentElement;
+    if(parent){
+        const mutObs = document.createElement('mut-obs') as MutObs;
+        const s = mutObs.setAttribute.bind(mutObs);
+        s('dispatch', p_std);
+        s('child-list', '');
+        s('observe', 'parentElement');
+        s('on', self.to!);
+        parent.appendChild(mutObs);
+        mutObs.addEventListener(p_std, (e: Event) => {
+            e.stopPropagation();
+            const mutObj = e.target as MutObs;
+            if(self.lastVal !== undefined){
+                const ae = e as any;
+                const match = ae.detail.match;
+                if(isMatchAfterFrom(match, self)){
+                    passValToMatches([match], self.lastVal, self.to, self.careOf, self.prop, self.as);
+                }
+            }
+        });
+        
+    }
+}

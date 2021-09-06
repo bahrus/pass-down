@@ -155,7 +155,7 @@ export const PassDown = ce.def({
     config: {
         tagName: 'pass-down',
         propDefaults: {
-            initDelay: 60,
+            initDelay: 16,
             isC: true,
             disabled: false,
             debug: false,
