@@ -158,7 +158,6 @@ export const PassDown = ce.def({
             initDelay: 60,
             isC: true,
             disabled: false,
-            enabled: true,
             debug: false,
             log: false,
             m: Infinity,
@@ -178,6 +177,10 @@ export const PassDown = ce.def({
             },
             lastVal: {
                 dry: false,
+            },
+            enabled: {
+                type: 'Boolean',
+                parse: false,
             },
             cnt: {
                 notify: {
