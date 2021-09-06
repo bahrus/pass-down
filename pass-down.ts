@@ -187,7 +187,7 @@ export const PassDown = ce.def({
             disabled:{
                 notify:{
                     toggleTo:'enabled',
-                    toggleToDelay: 'initDelay',
+                    toggleDelay: 'initDelay',
                 }
             },
             lastVal:{
