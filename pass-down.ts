@@ -6,7 +6,7 @@ import {structuralClone} from 'trans-render/lib/structuralClone.js';
 
 
 type pd = PassDownActions;
-const ce = new CE<PassDownProps, PassDownCompositeActions, INotifyPropInfo>();
+const ce = new CE<PassDownProps, PassDownCompositeActions & NotifyMixin, INotifyPropInfo>();
 class PassDownCore extends HTMLElement implements PassDownActions {
 
 
@@ -182,6 +182,7 @@ export const PassDown = ce.def({
             cnt:0,
             
         },
+        propChangeMethod: 'onPropChange',
         propInfo:{
             disabled:{
                 notify:{

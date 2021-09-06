@@ -168,6 +168,7 @@ export const PassDown = ce.def({
             falseVal: '',
             cnt: 0,
         },
+        propChangeMethod: 'onPropChange',
         propInfo: {
             disabled: {
                 notify: {
