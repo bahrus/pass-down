@@ -1,12 +1,12 @@
 import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
-import {NotifyMixin, INotifyPropInfo} from 'trans-render/lib/mixins/notify.js';
+import {NotifyMixin, INotifyPropInfo, INotifyMixin} from 'trans-render/lib/mixins/notify.js';
 import {PassDownProps, PassDownActions, PassDownCompositeActions} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
 
 
 type pd = PassDownActions;
-const ce = new CE<PassDownProps, PassDownCompositeActions & NotifyMixin, INotifyPropInfo>();
+const ce = new CE<PassDownProps, PassDownCompositeActions & INotifyMixin, INotifyPropInfo>();
 class PassDownCore extends HTMLElement implements PassDownActions {
 
 
