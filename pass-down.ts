@@ -58,13 +58,7 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         if(this.parseValAs){
             valToPass = convert(valToPass, (this as unknown as PassDownProps).parseValAs!);
         }
-        if(typeof valToPass === 'boolean'){
-            if(valToPass && this.trueVal){
-                valToPass = this.trueVal
-            }else if(!valToPass && this.falseVal){
-                valToPass = this.falseVal;
-            }
-        }
+        valToPass = getBoolVal(valToPass, this);
         return this.cloneVal ? structuralClone(valToPass) :  valToPass;
     }
 
@@ -147,7 +141,7 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         }
         const matches = passVal(lastVal, this, to, careOf, m, from, dynProp, as);
         this.setAttribute('matches', '' + matches.length);
-        
+        this.cnt++;
     }
     setValFromTarget({valFromTarget}: this){
         const initVal = valFromTarget === '' ? 'value' : valFromTarget!;
@@ -242,12 +236,24 @@ export const PassDown = ce.def({
     mixins: [NotifyMixin]
 });
 
+function getBoolVal(val: any, {trueVal, falseVal}: PassDownProps){
+    let valToPass = val;
+    if(typeof valToPass === 'boolean'){
+        if(valToPass && trueVal){
+            valToPass = trueVal
+        }else if(!valToPass && falseVal){
+            valToPass = falseVal;
+        }
+    }
+    return valToPass;
+}
 
 function setInitVal({parseValAs, cloneVal}: Partial<PassDownProps>, self: PassDownActions & PassDownProps, elementToObserve: Element){
     let val = self.parseInitVal(elementToObserve);
     if(val === undefined) return false;
     if(parseValAs) val = convert(val, parseValAs);
     if(cloneVal) val = structuralClone(val);
+    val = getBoolVal(val, self);
     self.lastVal = val;
     return true;
 }
