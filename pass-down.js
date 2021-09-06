@@ -155,6 +155,7 @@ export const PassDown = ce.def({
     config: {
         tagName: 'pass-down',
         propDefaults: {
+            initDelay: 60,
             isC: true,
             disabled: false,
             enabled: true,
@@ -170,7 +171,10 @@ export const PassDown = ce.def({
         },
         propInfo: {
             disabled: {
-                notify: { toggleTo: 'enabled' }
+                notify: {
+                    toggleTo: 'enabled',
+                    toggleToDelay: 'initDelay',
+                }
             },
             lastVal: {
                 dry: false,

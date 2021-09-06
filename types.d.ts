@@ -62,6 +62,8 @@ export interface PDToFrom extends HTMLElement{
     disabled?: boolean;
 
     enabled?: boolean;
+
+    
 }
 
 export interface PassDownProps extends PDToFrom{
@@ -94,6 +96,8 @@ export interface PassDownProps extends PDToFrom{
     initEvent?: string;
 
     initVal?: string;
+
+    initDelay?: number;
 
     isC?: boolean;
 
