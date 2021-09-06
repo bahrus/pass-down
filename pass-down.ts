@@ -58,6 +58,13 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         if(this.parseValAs){
             valToPass = convert(valToPass, (this as unknown as PassDownProps).parseValAs!);
         }
+        if(typeof valToPass === 'boolean'){
+            if(valToPass && this.trueVal){
+                valToPass = this.trueVal
+            }else if(!valToPass && this.falseVal){
+                valToPass = this.falseVal;
+            }
+        }
         return this.cloneVal ? structuralClone(valToPass) :  valToPass;
     }
 
@@ -176,6 +183,9 @@ export const PassDown = ce.def({
             cloneVal: false,
             noblock: false,
             observeHost: false,
+            trueVal: '',
+            falseVal: '',
+            cnt:0,
         },
         propInfo:{
             disabled:{
@@ -183,6 +193,13 @@ export const PassDown = ce.def({
             },
             lastVal:{
                 dry: false,
+            },
+            cnt:{
+                notify:{
+                    reflect:{
+                        asAttr: true
+                    }
+                }
             },
             on:stringProp, initEvent:stringProp, parseValAs: stringProp, observe: stringProp, initVal:stringProp, ifTargetMatches:stringProp,
             val:stringProp, propFromTarget:stringProp, to:stringProp, careOf:stringProp, from:stringProp, prop:stringProp, as:stringProp,

@@ -155,6 +155,10 @@ export interface PassDownProps extends PDToFrom{
 
     _wr: WeakRef<Element> | undefined; //TODO:  make private?
 
+    trueVal: string;
+    falseVal: string;
+    cnt:number;
+
 }
 
 // export interface PassDownActions {
