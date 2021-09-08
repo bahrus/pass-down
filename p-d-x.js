@@ -20,8 +20,8 @@ export class PDXCore extends PassDown {
         let filteredVal = super.parseValFromEvent(e);
         return this.filterVal(filteredVal);
     }
-    attachEventHandler({ addMutObs }) {
-        super.attachEventHandler(this);
+    locateAndListen({ addMutObs }) {
+        super.locateAndListen(this);
         if (addMutObs) {
             addDefaultMutObs(this);
         }

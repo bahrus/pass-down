@@ -212,7 +212,7 @@ export interface PassDownCompositeActions extends PDMixinActions, PassDownAction
 
 type pd = PassDownActions;
 export interface PassDownActions{
-    attachEventHandler(self: this): void;
+    locateAndListen(self: this): void;
     doEvent(self: this): void;    
     handleEvent: (e: Event) => void;
     parseInitVal(elementToObserve: Element): any;

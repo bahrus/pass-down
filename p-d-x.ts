@@ -26,8 +26,8 @@ export class PDXCore extends PassDown{
 
         return this.filterVal(filteredVal);
     }
-    override attachEventHandler({addMutObs}: this){
-        super.attachEventHandler(this);
+    override locateAndListen({addMutObs}: this){
+        super.locateAndListen(this);
         if(addMutObs){
             addDefaultMutObs(this);
         }

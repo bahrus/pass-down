@@ -80,7 +80,7 @@ class PassDownCore extends HTMLElement {
         this._wr = new WeakRef(elementToObserve);
         return elementToObserve;
     }
-    attachEventHandler({ on, _wr, previousOn, handleEvent, capture, parentElement, ifTargetMatches }) {
+    locateAndListen({ on, _wr, previousOn, handleEvent, parentElement, ifTargetMatches }) {
         const previousElementToObserve = this._wr?.deref();
         this._wr = undefined;
         const elementToObserve = this.observedElement;
@@ -93,7 +93,7 @@ class PassDownCore extends HTMLElement {
         else {
             doNudge = true;
         }
-        elementToObserve.addEventListener(on, handleEvent, { capture: capture });
+        this.attach(elementToObserve, this);
         if (doNudge) {
             if (elementToObserve === parentElement && ifTargetMatches !== undefined) {
                 elementToObserve.querySelectorAll(ifTargetMatches).forEach(publisher => {
@@ -108,6 +108,9 @@ class PassDownCore extends HTMLElement {
         this.previousOn = on;
     }
     ;
+    attach(elementToObserve, { on, handleEvent, capture }) {
+        elementToObserve.addEventListener(on, handleEvent, { capture: capture });
+    }
     doEvent({ lastEvent, noblock, valFromEvent }) {
         this.setAttribute('status', '🌩️');
         if (!noblock)
@@ -199,7 +202,7 @@ export const PassDown = ce.def({
                 ifAllOf: ['initVal', 'isC', 'enabled'],
                 ifKeyIn: ['initEvent', 'parseValAs', 'cloneVal'],
             },
-            attachEventHandler: {
+            locateAndListen: {
                 ifAllOf: ['isC', 'on', 'enabled'],
                 ifKeyIn: ['observe', 'ifTargetMatches', 'isC', 'observeHost'],
             },
