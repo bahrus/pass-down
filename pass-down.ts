@@ -121,7 +121,7 @@ class PassDownCore extends HTMLElement implements PassDownActions {
 
     doEvent({lastEvent, noblock, valFromEvent}: this) {
         this.setAttribute('status', '🌩️');
-        if(!noblock) lastEvent!.stopPropagation();
+        if(!noblock && lastEvent!.stopPropagation) lastEvent!.stopPropagation();
         let valToPass = valFromEvent(lastEvent!);
         this.lastVal = valToPass;
         //holding on to lastEvent could introduce memory leak

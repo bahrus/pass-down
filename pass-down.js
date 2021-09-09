@@ -113,7 +113,7 @@ class PassDownCore extends HTMLElement {
     }
     doEvent({ lastEvent, noblock, valFromEvent }) {
         this.setAttribute('status', '🌩️');
-        if (!noblock)
+        if (!noblock && lastEvent.stopPropagation)
             lastEvent.stopPropagation();
         let valToPass = valFromEvent(lastEvent);
         this.lastVal = valToPass;
