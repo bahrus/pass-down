@@ -75,6 +75,12 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         let elementToObserve: Element | null;
         if(this.observeHost){
             elementToObserve = (<any>this.getRootNode()).host;
+            if(elementToObserve === undefined){
+                elementToObserve = this.parentElement;
+                while(elementToObserve && !elementToObserve.localName.includes('-')){
+                    elementToObserve = elementToObserve.parentElement;
+                }
+            }
         }
         else if(this.observeClosest){
             elementToObserve = this.closest(this.observeClosest);
@@ -145,10 +151,13 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         this.setAttribute('matches', '' + matches.length);
         this.cnt++;
     }
+    onFromProp(initVal: string){
+        return this.on === undefined ? ce.toLisp(initVal) + '-changed': this.on;
+    }
     setValFromTarget({valFromTarget}: this){
         const initVal = valFromTarget === '' ? 'value' : valFromTarget!;
         const val = 'target.' + initVal;
-        const on = this.on === undefined ? ce.toLisp(initVal) + '-changed' : this.on;
+        const on = this.onFromProp(initVal);
         return {on, val, initVal};
     };
     
