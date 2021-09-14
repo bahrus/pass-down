@@ -66,6 +66,17 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         return true;
     }
 
+    getHost({}: this){
+        let host = (<any>this.getRootNode()).host;
+        if(host === undefined){
+            host = this.parentElement;
+            while(host && !host.localName.includes('-')){
+                host = host.parentElement;
+            }
+        }
+        return {host};
+    }
+
     _wr: WeakRef<Element> | undefined;
     get observedElement() : Element | null{
         const element = this._wr === undefined ? undefined : this._wr?.deref(); //TODO  wait for bundlephobia to get over it's updatephobia
@@ -74,13 +85,7 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         }
         let elementToObserve: Element | null;
         if(this.observeHost){
-            elementToObserve = (<any>this.getRootNode()).host;
-            if(elementToObserve === undefined){
-                elementToObserve = this.parentElement;
-                while(elementToObserve && !elementToObserve.localName.includes('-')){
-                    elementToObserve = elementToObserve.parentElement;
-                }
-            }
+            elementToObserve = this.getHost(this).host;
         }
         else if(this.observeClosest){
             elementToObserve = this.closest(this.observeClosest);

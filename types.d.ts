@@ -221,7 +221,7 @@ export interface PassDownActions{
     setValFromTarget(self: this): void;
     valFromEvent(e: Event): void;
     parseValFromEvent(e: Event): any;
-    
+    onFromProp(initVal: string): string;
 }
 
 // export interface IPassDownWithIPDMixin extends Pass, IPDMixin{}
