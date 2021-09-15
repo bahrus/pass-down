@@ -15,7 +15,6 @@
   "exports": {
     ".": "./pass-down.js",
     "./pass-down.js": "./pass-down.js",
-    "./PDMixin.js": "./PDMixin.js",
     "./p-d.js": "./p-d.js",
     "./p-d-x.js": "./p-d-x.js"
   },
