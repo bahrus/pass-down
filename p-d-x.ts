@@ -2,8 +2,8 @@ import {PassDown} from './pass-down.js';
 import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
 import {PassDownExtProps} from './types';
 import {jsonPath} from 'jsonpathesm/JSONPath.js';
-import { PDToFrom, PassDownProps, IPDMixin } from './types.js';
-import {passValToMatches, passVal, getProp} from 'on-to-me/on-to-me.js';
+import { PDToFrom } from './types.js';
+import {passValToMatches} from 'on-to-me/on-to-me.js';
 import  'mut-obs/mut-obs.js';
 import {MutObs} from 'mut-obs/mut-obs.js'; //Typescript requires both of these
 const p_std = 'p_std';

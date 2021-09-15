@@ -27,13 +27,13 @@
   "types": "./types.d.ts",
   "dependencies": {
     "mut-obs": "0.0.10",
-    "on-to-me": "0.0.35",
-    "trans-render": "0.0.396",
+    "on-to-me": "0.0.37",
+    "trans-render": "0.0.406",
     "jsonpathesm": "0.0.2"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
-    "if-diff": "0.0.105",
+    "if-diff": "0.0.108",
     "xtal-test": "0.0.51",
     "@custom-elements-manifest/analyzer": "0.5.3"
   },

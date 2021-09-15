@@ -1,7 +1,8 @@
 import { CE } from 'trans-render/lib/CE.js';
 import { NotifyMixin } from 'trans-render/lib/mixins/notify.js';
-import { getPreviousSib, passVal, nudge, getProp, convert } from 'on-to-me/on-to-me.js';
+import { passVal, getProp, convert } from 'on-to-me/on-to-me.js';
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
+import { OnMixin } from 'on-to-me/on-mixin.js';
 const ce = new CE();
 class PassDownCore extends HTMLElement {
     doInit({ observedElement, parseValAs, cloneVal, initEvent }) {
@@ -16,16 +17,6 @@ class PassDownCore extends HTMLElement {
             }, { once: true });
         }
     }
-    //https://web.dev/javascript-this/
-    handleEvent = (e) => {
-        if (this.ifTargetMatches !== undefined) {
-            if (!e.target.matches(this.ifTargetMatches))
-                return;
-        }
-        if (!this.filterEvent(e))
-            return;
-        this.lastEvent = e;
-    };
     parseValFromEvent(e) {
         const val = this.val || 'target.value';
         const valToPass = getProp(e, val.split('.'), this);
@@ -53,70 +44,6 @@ class PassDownCore extends HTMLElement {
         valToPass = getBoolVal(valToPass, this);
         return this.cloneVal ? structuralClone(valToPass) : valToPass;
     };
-    filterEvent(e) {
-        return true;
-    }
-    _wr;
-    get observedElement() {
-        const element = this._wr === undefined ? undefined : this._wr?.deref(); //TODO  wait for bundlephobia to get over it's updatephobia
-        if (element !== undefined) {
-            return element;
-        }
-        let elementToObserve;
-        if (this.observeHost) {
-            elementToObserve = this.getRootNode().host;
-            if (elementToObserve === undefined) {
-                elementToObserve = this.parentElement;
-                while (elementToObserve && !elementToObserve.localName.includes('-')) {
-                    elementToObserve = elementToObserve.parentElement;
-                }
-            }
-        }
-        else if (this.observeClosest) {
-            elementToObserve = this.closest(this.observeClosest);
-            if (elementToObserve !== null && this.observe) {
-                elementToObserve = getPreviousSib(elementToObserve.previousElementSibling || elementToObserve.parentElement, this.observe);
-            }
-        }
-        else {
-            elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement, this.observe ?? null);
-        }
-        if (elementToObserve === null)
-            return null;
-        this._wr = new WeakRef(elementToObserve);
-        return elementToObserve;
-    }
-    locateAndListen({ on, _wr, previousOn, handleEvent, parentElement, ifTargetMatches }) {
-        const previousElementToObserve = this._wr?.deref();
-        this._wr = undefined;
-        const elementToObserve = this.observedElement;
-        if (!elementToObserve)
-            throw "Could not locate element to observe.";
-        let doNudge = previousElementToObserve !== elementToObserve;
-        if ((previousElementToObserve !== undefined) && (previousOn !== undefined || (previousElementToObserve !== elementToObserve))) {
-            previousElementToObserve.removeEventListener(previousOn || on, handleEvent);
-        }
-        else {
-            doNudge = true;
-        }
-        this.attach(elementToObserve, this);
-        if (doNudge) {
-            if (elementToObserve === parentElement && ifTargetMatches !== undefined) {
-                elementToObserve.querySelectorAll(ifTargetMatches).forEach(publisher => {
-                    nudge(publisher);
-                });
-            }
-            else {
-                nudge(elementToObserve);
-            }
-        }
-        this.setAttribute('status', '👂');
-        this.previousOn = on;
-    }
-    ;
-    attach(elementToObserve, { on, handleEvent, capture }) {
-        elementToObserve.addEventListener(on, handleEvent, { capture: capture });
-    }
     doEvent({ lastEvent, noblock, valFromEvent }) {
         this.setAttribute('status', '🌩️');
         if (!noblock && lastEvent.stopPropagation)
@@ -213,7 +140,7 @@ export const PassDown = ce.def({
             },
             locateAndListen: {
                 ifAllOf: ['isC', 'on', 'enabled'],
-                ifKeyIn: ['observe', 'ifTargetMatches', 'isC', 'observeHost'],
+                ifKeyIn: ['observe', 'ifTargetMatches', 'observeHost'],
             },
             doEvent: {
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],
@@ -238,7 +165,7 @@ export const PassDown = ce.def({
         }
     },
     superclass: PassDownCore,
-    mixins: [NotifyMixin]
+    mixins: [NotifyMixin, OnMixin]
 });
 function getBoolVal(val, { trueVal, falseVal }) {
     let valToPass = val;

@@ -70,11 +70,6 @@ export interface PassDownProps extends PDToFrom{
 
     async?: boolean;
 
-    /**
-     * A Boolean indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
-    */
-    capture?: boolean;
-
     cloneVal?: boolean;
 
     /**
@@ -82,12 +77,6 @@ export interface PassDownProps extends PDToFrom{
      * @attr fire-event
      */
     fireEvent?: string;
-
-    /**
-     * Only act on event if target element css-matches the expression specified by this attribute.
-     * @attr
-     */
-    ifTargetMatches?: string;
 
         
     /**
@@ -104,34 +93,6 @@ export interface PassDownProps extends PDToFrom{
     lastEvent?: Event;
 
     mutateEvents?: string[];
-
-    /**
-     * Don't block event propagation.
-     * @attr
-     */
-    noblock?: boolean;
-
-    /**
-     * Specifies element to latch on to, and listen for events.
-     * Searches previous siblings, parent, previous siblings of parent, etc.
-     * Stops at Shadow DOM boundary.
-     * @attr
-     */
-    observe?: string;
-
-    observeClosest?: string;
-
-    observeHost?: boolean;
-
-    
-
-    observedElement?: Element | null;
-
-    /**
-    * The event name to monitor for, from previous non-petalian element.
-    * @attr
-    */
-    on?: string;
 
     parseValAs?: 'int' | 'float' | 'bool' | 'date' | 'truthy' | 'falsy' | '';  
 
@@ -212,9 +173,7 @@ export interface PassDownCompositeActions extends PDMixinActions, PassDownAction
 
 type pd = PassDownActions;
 export interface PassDownActions{
-    locateAndListen(self: this): void;
     doEvent(self: this): void;    
-    handleEvent: (e: Event) => void;
     parseInitVal(elementToObserve: Element): any;
     setAliases(self: this): void;
     doInit(self: this): void;

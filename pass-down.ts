@@ -3,10 +3,11 @@ import {NotifyMixin, INotifyPropInfo, INotifyMixin} from 'trans-render/lib/mixin
 import {PassDownProps, PassDownActions, PassDownCompositeActions} from './types.js';
 import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
-
+import {OnMixin} from 'on-to-me/on-mixin.js';
+import {OnMixinActions, OnMixinProps} from 'on-to-me/types';
 
 type pd = PassDownActions;
-const ce = new CE<PassDownProps, PassDownCompositeActions & INotifyMixin, INotifyPropInfo>();
+const ce = new CE<PassDownProps & OnMixinProps, PassDownCompositeActions & INotifyMixin & OnMixinActions, INotifyPropInfo>();
 class PassDownCore extends HTMLElement implements PassDownActions {
 
 
@@ -23,14 +24,6 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         }
     }
 
-    //https://web.dev/javascript-this/
-    handleEvent = (e: Event) => {
-        if(this.ifTargetMatches !== undefined){
-            if(!(e.target as HTMLElement).matches(this.ifTargetMatches!)) return;
-        }
-        if(!this.filterEvent(e)) return;
-        this.lastEvent = e;
-    }
 
     parseValFromEvent(e: Event){
         const val = this.val || 'target.value';
@@ -62,73 +55,6 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         return this.cloneVal ? structuralClone(valToPass) :  valToPass;
     }
 
-    filterEvent(e: Event) : boolean{
-        return true;
-    }
-
-    getHost({}: this){
-        let host = (<any>this.getRootNode()).host;
-        if(host === undefined){
-            host = this.parentElement;
-            while(host && !host.localName.includes('-')){
-                host = host.parentElement;
-            }
-        }
-        return {host};
-    }
-
-    _wr: WeakRef<Element> | undefined;
-    get observedElement() : Element | null{
-        const element = this._wr === undefined ? undefined : this._wr?.deref(); //TODO  wait for bundlephobia to get over it's updatephobia
-        if(element !== undefined){
-            return element;
-        }
-        let elementToObserve: Element | null;
-        if(this.observeHost){
-            elementToObserve = this.getHost(this).host;
-        }
-        else if(this.observeClosest){
-            elementToObserve = this.closest(this.observeClosest);
-            if(elementToObserve !== null && this.observe){
-                elementToObserve = getPreviousSib(elementToObserve.previousElementSibling || elementToObserve.parentElement as HTMLElement, this.observe) as Element;
-            }
-        }else{
-            elementToObserve = getPreviousSib(this.previousElementSibling || this.parentElement as HTMLElement, this.observe ?? null) as Element;
-        }
-        if(elementToObserve === null) return null;
-        this._wr = new WeakRef(elementToObserve);
-        return elementToObserve;
-    }
-
-    locateAndListen({on, _wr, previousOn, handleEvent, parentElement, ifTargetMatches}: this) {
-        const previousElementToObserve = this._wr?.deref();
-        this._wr = undefined;
-        const elementToObserve = this.observedElement;
-        if(!elementToObserve) throw "Could not locate element to observe.";
-        let doNudge = previousElementToObserve !== elementToObserve;
-        if((previousElementToObserve !== undefined) && (previousOn !== undefined || (previousElementToObserve !== elementToObserve))){
-            previousElementToObserve.removeEventListener(previousOn || on as keyof ElementEventMap, handleEvent);
-        }else{
-            doNudge = true;
-        }
-        this.attach(elementToObserve, this);
-        if(doNudge){
-            if(elementToObserve === parentElement && ifTargetMatches !== undefined){
-                elementToObserve.querySelectorAll(ifTargetMatches).forEach(publisher =>{
-                    nudge(publisher);
-                });
-            }else{
-                nudge(elementToObserve);
-            }
-            
-        }
-        this.setAttribute('status', '👂');
-        this.previousOn = on;
-    };
-
-    attach(elementToObserve: Element, {on, handleEvent, capture}: this){
-        elementToObserve.addEventListener(on!, handleEvent, {capture: capture});
-    }
 
     doEvent({lastEvent, noblock, valFromEvent}: this) {
         this.setAttribute('status', '🌩️');
@@ -170,8 +96,8 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         self.valFromTarget = self.vft;
     }
 }
-
-interface PassDownCore extends PassDownProps{}
+type CompositeProps = PassDownProps & OnMixinProps;
+interface PassDownCore extends CompositeProps{}
 
 
 const stringProp: PropInfo = {
@@ -231,7 +157,7 @@ export const PassDown = ce.def({
             },
             locateAndListen:{
                 ifAllOf: ['isC', 'on', 'enabled'],
-                ifKeyIn: ['observe', 'ifTargetMatches', 'isC', 'observeHost'],
+                ifKeyIn: ['observe', 'ifTargetMatches', 'observeHost'],
             },
             doEvent:{
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],
@@ -258,7 +184,7 @@ export const PassDown = ce.def({
 
     },
     superclass: PassDownCore,
-    mixins: [NotifyMixin]
+    mixins: [NotifyMixin, OnMixin]
 });
 
 function getBoolVal(val: any, {trueVal, falseVal}: PassDownProps){
