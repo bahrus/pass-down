@@ -1,6 +1,7 @@
 import { CE } from 'trans-render/lib/CE.js';
 import { NotifyMixin } from 'trans-render/lib/mixins/notify.js';
-import { passVal, getProp, convert } from 'on-to-me/on-to-me.js';
+import { getProp, convert } from 'on-to-me/prop-mixin.js';
+import { passVal } from 'on-to-me/to-mixin.js';
 import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { OnMixin } from 'on-to-me/on-mixin.js';
 const ce = new CE();

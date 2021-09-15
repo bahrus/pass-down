@@ -1,7 +1,7 @@
 import { PassDown } from './pass-down.js';
 import { CE } from 'trans-render/lib/CE.js';
 import { jsonPath } from 'jsonpathesm/JSONPath.js';
-import { passValToMatches } from 'on-to-me/on-to-me.js';
+import { passValToMatches } from 'on-to-me/to-mixin.js';
 import 'mut-obs/mut-obs.js';
 const p_std = 'p_std';
 export class PDXCore extends PassDown {

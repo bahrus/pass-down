@@ -1,7 +1,8 @@
 import {CE, Action, PropInfo} from 'trans-render/lib/CE.js';
 import {NotifyMixin, INotifyPropInfo, INotifyMixin} from 'trans-render/lib/mixins/notify.js';
 import {PassDownProps, PassDownActions, PassDownCompositeActions} from './types.js';
-import {getPreviousSib, passVal, nudge, getProp, convert} from 'on-to-me/on-to-me.js';
+import {getProp, convert} from 'on-to-me/prop-mixin.js';
+import {passVal} from 'on-to-me/to-mixin.js';
 import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {OnMixin} from 'on-to-me/on-mixin.js';
 import {OnMixinActions, OnMixinProps} from 'on-to-me/types';
