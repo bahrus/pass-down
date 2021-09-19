@@ -149,7 +149,7 @@ export const PassDown = ce.def({
             },
             on:stringProp, initEvent:stringProp, parseValAs: stringProp, observe: stringProp, initVal:stringProp, ifTargetMatches:stringProp,
             val:stringProp, propFromTarget:stringProp, to:stringProp, careOf:stringProp, from:stringProp, prop:stringProp, as:stringProp,
-            mutateEvents:stringProp, valFromTarget:stringProp, vft:stringProp,
+            mutateEvents:stringProp, valFromTarget:stringProp, vft:stringProp, observeClosest: stringProp,
         },
         actions:{
             doInit:{
@@ -158,7 +158,7 @@ export const PassDown = ce.def({
             },
             locateAndListen:{
                 ifAllOf: ['isC', 'on', 'enabled'],
-                ifKeyIn: ['observe', 'ifTargetMatches', 'observeHost'],
+                ifKeyIn: ['observe', 'ifTargetMatches', 'observeHost', 'observeClosest'],
             },
             doEvent:{
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],
