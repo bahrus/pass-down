@@ -90,7 +90,12 @@ class PassDownCore extends HTMLElement {
     }
 }
 const stringProp = {
-    type: 'String'
+    type: 'String',
+    notify: {
+        reflect: {
+            asAttr: true,
+        }
+    }
 };
 const filters = ['isC', 'disabled'];
 export const PassDown = ce.def({

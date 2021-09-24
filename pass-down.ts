@@ -102,8 +102,13 @@ type CompositeProps = PassDownProps & OnMixinProps;
 interface PassDownCore extends CompositeProps{}
 
 
-const stringProp: PropInfo = {
-    type: 'String'
+const stringProp: INotifyPropInfo = {
+    type: 'String',
+    notify:{
+        reflect:{
+            asAttr: true,
+        }
+    }
 };
 
 const filters = ['isC', 'disabled'];
