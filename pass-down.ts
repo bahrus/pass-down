@@ -87,6 +87,7 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         return this.on === undefined ? ce.toLisp(initVal) + '-changed': this.on;
     }
     setValFromTarget({valFromTarget}: this){
+        if(valFromTarget === undefined) return;
         const initVal = valFromTarget === '' ? 'value' : valFromTarget!;
         const val = 'target.' + initVal;
         const on = this.onFromProp(initVal);
