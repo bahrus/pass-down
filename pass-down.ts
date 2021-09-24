@@ -106,13 +106,7 @@ interface PassDownCore extends CompositeProps{}
 const stringProp: INotifyPropInfo = {
     type: 'String',
 };
-const refStrProp: INotifyPropInfo = {
-    notify:{
-        reflect:{
-            asAttr: true,
-        }
-    }
-}
+
 
 const filters = ['isC', 'disabled'];
 
@@ -156,7 +150,7 @@ export const PassDown = ce.def({
                     }
                 }
             },
-            on:refStrProp, initEvent:stringProp, parseValAs: stringProp, observe: refStrProp, initVal:stringProp, ifTargetMatches:stringProp,
+            on:stringProp, initEvent:stringProp, parseValAs: stringProp, observe: stringProp, initVal:stringProp, ifTargetMatches:stringProp,
             val:stringProp, propFromTarget:stringProp, to:stringProp, careOf:stringProp, from:stringProp, prop:stringProp, as:stringProp,
             mutateEvents:stringProp, valFromTarget:stringProp, vft:stringProp, observeClosest: stringProp,
         },
