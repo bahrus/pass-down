@@ -93,8 +93,9 @@ class PassDownCore extends HTMLElement implements PassDownActions {
         return {on, val, initVal};
     };
     
-    setAliases(self: this){
-        self.valFromTarget = self.vft;
+    setAliases({vft}: this){
+        if(vft === undefined) return;
+        this.valFromTarget = vft;
     }
 }
 type CompositeProps = PassDownProps & OnMixinProps;
@@ -173,10 +174,11 @@ export const PassDown = ce.def({
                 ifAllOf: ['mutateEvents', 'isC', 'enabled'],
             },
             setValFromTarget:{
-                ifAllOf: ['valFromTarget', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'enabled'],
+                ifKeyIn: ['valFromTarget'],
             },
             setAliases: {
-                ifAllOf: ['vft'],
+                ifKeyIn: ['vft'],
             }
         },
         style:{

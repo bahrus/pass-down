@@ -83,8 +83,10 @@ class PassDownCore extends HTMLElement {
         return { on, val, initVal };
     }
     ;
-    setAliases(self) {
-        self.valFromTarget = self.vft;
+    setAliases({ vft }) {
+        if (vft === undefined)
+            return;
+        this.valFromTarget = vft;
     }
 }
 const stringProp = {
@@ -155,10 +157,11 @@ export const PassDown = ce.def({
                 ifAllOf: ['mutateEvents', 'isC', 'enabled'],
             },
             setValFromTarget: {
-                ifAllOf: ['valFromTarget', 'isC', 'enabled'],
+                ifAllOf: ['isC', 'enabled'],
+                ifKeyIn: ['valFromTarget'],
             },
             setAliases: {
-                ifAllOf: ['vft'],
+                ifKeyIn: ['vft'],
             }
         },
         style: {
