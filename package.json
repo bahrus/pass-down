@@ -26,8 +26,8 @@
   "types": "./types.d.ts",
   "dependencies": {
     "mut-obs": "0.0.10",
-    "on-to-me": "0.0.40",
-    "trans-render": "0.0.406",
+    "on-to-me": "0.0.43",
+    "trans-render": "0.0.413",
     "jsonpathesm": "0.0.2"
   },
   "devDependencies": {

@@ -144,8 +144,8 @@ export const PassDown = ce.def({
                 ifKeyIn: ['initEvent', 'parseValAs', 'cloneVal'],
             },
             locateAndListen: {
-                ifAllOf: ['isC', 'on', 'enabled'],
-                ifKeyIn: ['observe', 'ifTargetMatches', 'observeHost', 'observeClosest'],
+                ifAllOf: ['isC', 'enabled'],
+                ifKeyIn: ['on', 'onProp', 'observe', 'ifTargetMatches', 'observeHost', 'observeClosest'],
             },
             doEvent: {
                 ifAllOf: ['isC', 'lastEvent', 'enabled'],
