@@ -34,7 +34,9 @@
     "@skypack/package-check": "0.2.2",
     "if-diff": "0.0.108",
     "xtal-test": "0.0.51",
-    "@custom-elements-manifest/analyzer": "0.5.3"
+    "@custom-elements-manifest/analyzer": "0.5.3",
+    "xtal-editor": "0.0.64",
+    "xtal-shell": "0.0.25"
   },
   "scripts": {
     "test": "node test/test.js",
