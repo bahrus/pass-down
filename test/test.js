@@ -4,10 +4,6 @@ const xt = require('xtal-test/index');
         {
             path: 'test/fly-d.html',
             expectedNoOfSuccessMarkers: 2,
-        },
-        {
-            path: 'test/xtal-editor/dev.html',
-            expectedNoOfSuccessMarkers: 1
         }
     ]);
     if (passed) {

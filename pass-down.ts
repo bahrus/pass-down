@@ -111,7 +111,7 @@ const stringProp: INotifyPropInfo = {
 
 const filters = ['isC', 'disabled'];
 
-export const PassDown = ce.def({
+export const PassDown = await ce.def({
     config: {
         tagName: 'pass-down',
         propDefaults:{
@@ -192,6 +192,8 @@ export const PassDown = ce.def({
     superclass: PassDownCore,
     mixins: [NotifyMixin, OnMixin]
 });
+
+
 
 function getBoolVal(val: any, {trueVal, falseVal}: PassDownProps){
     let valToPass = val;

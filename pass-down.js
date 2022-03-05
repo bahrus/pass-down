@@ -94,7 +94,7 @@ const stringProp = {
     type: 'String',
 };
 const filters = ['isC', 'disabled'];
-export const PassDown = ce.def({
+export const PassDown = await ce.def({
     config: {
         tagName: 'pass-down',
         propDefaults: {
