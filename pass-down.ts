@@ -3,9 +3,10 @@ import {NotifyMixin, INotifyPropInfo, INotifyMixin} from 'trans-render/lib/mixin
 import {PassDownProps, PassDownActions, PassDownCompositeActions} from './types.js';
 import {getProp, convert} from 'on-to-me/prop-mixin.js';
 import {passVal} from 'on-to-me/to-mixin.js';
-import {structuralClone} from 'trans-render/lib/structuralClone.js';
 import {OnMixin} from 'on-to-me/on-mixin.js';
 import {OnMixinActions, OnMixinProps} from 'on-to-me/types';
+
+declare function structuredClone(obj: any): any;
 
 type pd = PassDownActions;
 const ce = new CE<PassDownProps & OnMixinProps, PassDownCompositeActions & INotifyMixin & OnMixinActions, INotifyPropInfo>();
@@ -53,7 +54,7 @@ class PassDownCore extends HTMLElement implements PassDownActions {
             valToPass = convert(valToPass, (this as unknown as PassDownProps).parseValAs!);
         }
         valToPass = getBoolVal(valToPass, this);
-        return this.cloneVal ? structuralClone(valToPass) :  valToPass;
+        return this.cloneVal ? structuredClone(valToPass) :  valToPass;
     }
 
 
@@ -208,7 +209,7 @@ function setInitVal({parseValAs, cloneVal}: Partial<PassDownProps>, self: PassDo
     let val = self.parseInitVal(elementToObserve);
     if(val === undefined) return false;
     if(parseValAs) val = convert(val, parseValAs);
-    if(cloneVal) val = structuralClone(val);
+    if(cloneVal) val = structuredClone(val);
     val = getBoolVal(val, self);
     self.lastVal = val;
     return true;

@@ -2,7 +2,6 @@ import { CE } from 'trans-render/lib/CE.js';
 import { NotifyMixin } from 'trans-render/lib/mixins/notify.js';
 import { getProp, convert } from 'on-to-me/prop-mixin.js';
 import { passVal } from 'on-to-me/to-mixin.js';
-import { structuralClone } from 'trans-render/lib/structuralClone.js';
 import { OnMixin } from 'on-to-me/on-mixin.js';
 const ce = new CE();
 class PassDownCore extends HTMLElement {
@@ -43,7 +42,7 @@ class PassDownCore extends HTMLElement {
             valToPass = convert(valToPass, this.parseValAs);
         }
         valToPass = getBoolVal(valToPass, this);
-        return this.cloneVal ? structuralClone(valToPass) : valToPass;
+        return this.cloneVal ? structuredClone(valToPass) : valToPass;
     };
     doEvent({ lastEvent, noblock, valFromEvent }) {
         this.setAttribute('status', '🌩️');
@@ -192,7 +191,7 @@ function setInitVal({ parseValAs, cloneVal }, self, elementToObserve) {
     if (parseValAs)
         val = convert(val, parseValAs);
     if (cloneVal)
-        val = structuralClone(val);
+        val = structuredClone(val);
     val = getBoolVal(val, self);
     self.lastVal = val;
     return true;
